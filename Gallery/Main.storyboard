@@ -118,24 +118,33 @@
         <scene sceneID="D9L-xd-0eJ">
             <objects>
                 <pageViewController autoresizesArchivedViewToFullSize="NO" automaticallyAdjustsScrollViewInsets="NO" transitionStyle="scroll" pageSpacing="30" navigationOrientation="horizontal" spineLocation="none" id="NKp-gH-msW" customClass="PhotoPageViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="Jpi-wM-nGT">
-                        <barButtonItem key="leftBarButtonItem" enabled="NO" systemItem="add" id="4eb-ua-NbN">
+                    <toolbarItems>
+                        <barButtonItem systemItem="action" id="FJ4-4R-mxM">
                             <connections>
-                                <action selector="likePhotoAction:" destination="NKp-gH-msW" id="Aa2-NM-80s"/>
+                                <action selector="sharePhotoAction:" destination="NKp-gH-msW" id="Epb-Rn-bCy"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" enabled="NO" title="Like" id="vJq-eO-nSy">
+                        <barButtonItem systemItem="flexibleSpace" id="2GE-OH-TFk"/>
+                        <barButtonItem enabled="NO" title="Like" image="like" id="vJq-eO-nSy">
                             <connections>
                                 <action selector="likePhotoAction:" destination="NKp-gH-msW" id="WcD-EO-1Nb"/>
                             </connections>
                         </barButtonItem>
-                    </navigationItem>
+                    </toolbarItems>
+                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="Jpi-wM-nGT"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="likePhotoButton" destination="vJq-eO-nSy" id="KMt-LG-Ehs"/>
+                        <outlet property="sharePhotoButton" destination="FJ4-4R-mxM" id="6cM-fv-vWa"/>
                     </connections>
                 </pageViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MwN-xG-cUO" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="Fod-43-uZG">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                    <items/>
+                </toolbar>
             </objects>
             <point key="canvasLocation" x="2374" y="1510"/>
         </scene>
@@ -232,5 +241,6 @@
     </scenes>
     <resources>
         <image name="Placeholder" width="280" height="200"/>
+        <image name="like" width="28" height="27"/>
     </resources>
 </document>

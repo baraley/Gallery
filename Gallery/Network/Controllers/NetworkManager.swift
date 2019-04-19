@@ -24,7 +24,7 @@ class NetworkManager {
     deinit {
         cancelAllRequests()
     }
-    
+	
     private var tasks: [URL: URLSessionDataTask] = [:]
 	
 	func performRequest<T: NetworkRequest>(_ request: T,

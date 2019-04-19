@@ -10,6 +10,7 @@ import UIKit
 
 class PhotoPageViewController: UIPageViewController {
     
+    @IBOutlet private var sharePhotoButton: UIBarButtonItem!
     @IBOutlet private var likePhotoButton: UIBarButtonItem!
     
     var photoStore: PhotoStore!
@@ -19,8 +20,12 @@ class PhotoPageViewController: UIPageViewController {
 	// MARK: - Actions
 		
 	@IBAction private func likePhotoAction(_ sender: UIBarButtonItem) {
-        toggleLikeOfSelectedPhoto()
+        toggleLikeOfPhoto()
 	}
+    
+    @IBAction private func sharePhotoAction(_ sender: UIBarButtonItem) {
+        sharePhoto()
+    }
 		
 	// MARK: - Life cycle
     
@@ -31,6 +36,18 @@ class PhotoPageViewController: UIPageViewController {
         delegate = self
 		
 		setupFirstViewController()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        navigationController?.isToolbarHidden = false
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        navigationController?.isToolbarHidden = true
     }
 	
 	override func viewDidAppear(_ animated: Bool) {
@@ -60,8 +77,19 @@ private extension PhotoPageViewController {
 		
 		return photoViewController
 	}
+    
+    func updateLikeButton() {
+        guard photoStore.isLikeTogglingAvailable,
+            let selectedPhotoIndex = photoStore.selectedPhotoIndex,
+            let photo = photoStore.photoAt(selectedPhotoIndex)
+            else { return }
+        
+        
+        likePhotoButton.isEnabled = true
+        likePhotoButton.image = photo.isLiked ? #imageLiteral(resourceName: "unlike") : #imageLiteral(resourceName: "like")
+    }
 	
-	func toggleLikeOfSelectedPhoto() {
+	func toggleLikeOfPhoto() {
 		
 		guard let selectedPhotoIndex = photoStore.selectedPhotoIndex else { return }
 		
@@ -71,22 +99,22 @@ private extension PhotoPageViewController {
 			if let error = errorString {
 				self?.showAlertWith(error)
 			} else {
-				self?.navigationItem.setRightBarButton(self?.likePhotoButton, animated: true)
+                self?.navigationItem.setRightBarButton(nil, animated: true)
 				self?.updateLikeButton()
 			}
 		}
 	}
-	
-	func updateLikeButton() {
-		guard photoStore.isLikeTogglingAvailable,
-			let selectedPhotoIndex = photoStore.selectedPhotoIndex,
-			let photo = photoStore.photoAt(selectedPhotoIndex)
-		else { return }
-		
-		
-		likePhotoButton.isEnabled = true
-		likePhotoButton.title = photo.isLiked ? "Unlike" : "Like"
-	}
+    
+    func sharePhoto() {
+        guard let photoController = viewControllers?.first as? PhotoViewContorller,
+            let image = photoController.photoScrollView.image?.jpegData(compressionQuality: 1.0)
+        else { return }
+        
+        let vc = UIActivityViewController(activityItems: [image], applicationActivities: [])
+        vc.popoverPresentationController?.barButtonItem = sharePhotoButton
+        
+        present(vc, animated: true, completion: nil)
+    }
 }
 
 // MARK: - UIPageViewControllerDataSource

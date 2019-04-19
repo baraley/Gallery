@@ -10,7 +10,7 @@ import UIKit
 
 class PhotoViewContorller: UIViewController {
 	
-    @IBOutlet private var photoScrollView: ImageScrollView!
+    @IBOutlet var photoScrollView: ImageScrollView!
 	@IBOutlet private var imageLoadingView: UIActivityIndicatorView!
 	
     var photo: Photo!
@@ -87,9 +87,13 @@ private extension PhotoViewContorller {
 	
 	// MARK: - Background layout -
 	
-	func updateNavigationBar() {
-        if let navBarIsHidden = navigationController?.isNavigationBarHidden {
+	func updateBars() {
+        if let navBarIsHidden = navigationController?.isNavigationBarHidden,
+            let toolBarIsHidden = navigationController?.isToolbarHidden {
+            
             navigationController?.setNavigationBarHidden(!navBarIsHidden, animated: true)
+            navigationController?.setToolbarHidden(!toolBarIsHidden, animated: true)
+            
 			UIView.animate(withDuration: 0.35) {
 				self.updateBackgroundColors()
 			}
@@ -150,9 +154,10 @@ private extension PhotoViewContorller {
 	}
 }
 
-extension PhotoViewContorller: ImageScrollViewHandler {
+extension PhotoViewContorller: ImageScrollViewGesturesHandler {
+    
 	func imageScrollView(_ imageScrollView: ImageScrollView, singleTapDidHappenIn location: CGPoint) {
-		updateNavigationBar()
+		updateBars()
 	}
 	
 	func imageScrollView(_ imageScrollView: ImageScrollView, doubleTapDidHappenIn location: CGPoint) {

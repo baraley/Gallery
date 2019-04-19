@@ -20,7 +20,7 @@ class PhotoStore {
 	
 	private let networkManager: NetworkManager
 	
-	private var photosLoader: PhotosLoader
+	private let photosLoader: PhotosLoader
 	private var photoLikesToggle: PhotoLikesToggle?
 	
 	init(networkManager: NetworkManager, photoListRequest: PhotoListRequest) {
@@ -30,8 +30,6 @@ class PhotoStore {
 		
 		if let accessToken = photoListRequest.accessToken {
 			photoLikesToggle = PhotoLikesToggle(networkManager: networkManager, accessToken: accessToken)
-		} else {
-			photoLikesToggle = nil
 		}
 	}
 	
@@ -42,7 +40,9 @@ class PhotoStore {
 	func photoAt(_ index: Int) -> Photo? {
 		guard !photos.isEmpty, index >= 0 && index < numberOfPhotos else { return nil }
 		
-		if index > numberOfPhotos - 5 { loadPhotos() }
+		if index > numberOfPhotos - 5 {
+            loadPhotos()
+        }
 		
 		return photos[index]
 	}

@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol ImageScrollViewHandler: AnyObject {
+protocol ImageScrollViewGesturesHandler: AnyObject {
 	func imageScrollView(_ imageScrollView: ImageScrollView, singleTapDidHappenIn location: CGPoint)
 	func imageScrollView(_ imageScrollView: ImageScrollView, doubleTapDidHappenIn location: CGPoint)
 }
@@ -19,7 +19,7 @@ class ImageScrollView: UIScrollView {
 		didSet{ imageView.image = image }
 	}
 	
-	weak var tapGesturesHandler: ImageScrollViewHandler?
+	weak var tapGesturesHandler: ImageScrollViewGesturesHandler?
 	
 	@IBOutlet var singleTapGestureRecognizer: UITapGestureRecognizer!
 	@IBOutlet var doubleTapGestureRecognizer: UITapGestureRecognizer!
