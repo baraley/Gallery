@@ -35,7 +35,7 @@ struct UnsplashAccessTokenRequest: UnsplashRequest {
 		let itemsDictionary = [
 			UnsplashQueryParameterName.clientID:        UnsplashAPI.clientID,
 			UnsplashQueryParameterName.clientSecret:	UnsplashAPI.clientSecret,
-			UnsplashQueryParameterName.redirectURI:     UnsplashAPI.redirectURI,
+			UnsplashQueryParameterName.redirectURI:     UnsplashAPI.callbackUrlScheme,
 			UnsplashQueryParameterName.code:   			code,
 			UnsplashQueryParameterName.grantType:       UnsplashQueryParameterName.authorizationCode
 		]

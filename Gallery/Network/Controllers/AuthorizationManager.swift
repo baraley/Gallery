@@ -8,6 +8,7 @@
 
 import Foundation
 import SafariServices
+import AuthenticationServices
 import SwiftKeychainWrapper
 
 extension Notification.Name {
@@ -60,7 +61,8 @@ class AuthorizationManager: NSObject {
 			delegate?.authorizationManager(self, didChangeAuthorizationState: authorizationState)
 		}
 	}
-    
+	
+	private var webAuthSession: ASWebAuthenticationSession?
     private var safariViewController: SFSafariViewController?
     private var isLogOutPerforming = false
 }
@@ -68,24 +70,17 @@ class AuthorizationManager: NSObject {
 // MARK: - Public methods
 extension AuthorizationManager {
 	
-	func performLogIn(from presentingViewController: UIViewController) {
-		NotificationCenter.default.addObserver(self, selector: #selector(parseAuthorizationCode(_:)),
-											   name: .authorizationCallback, object: nil)
-        safariViewController = SFSafariViewController(url: UnsplashAPI.logInURL)
-        safariViewController?.delegate = self
-        safariViewController?.modalPresentationStyle = .overFullScreen
-		
-        presentingViewController.present(safariViewController!, animated: true, completion: nil)
+	func performLogIn(from presentingViewController: UIViewController) {		
+		requestAuthorizationCode()
 	}
 	
 	func performLogOut(from presentingViewController: UIViewController) {
-		
 		safariViewController = SFSafariViewController(url: UnsplashAPI.logOutURL)
 		safariViewController?.delegate = self
-		safariViewController?.modalPresentationStyle = .popover
-		
+		safariViewController?.modalPresentationStyle = .overFullScreen
+
 		isLogOutPerforming = true
-		
+
 		presentingViewController.present(safariViewController!, animated: true, completion: nil)
 	}
 }
@@ -119,16 +114,24 @@ private extension AuthorizationManager {
 		loadAuthorizedUser(with: accessToken)
 	}
 	
-	@objc func parseAuthorizationCode(_ notification : Notification) {
-		NotificationCenter.default.removeObserver(self, name: .authorizationCallback, object: nil)
-		guard let url = notification.object as? URL else { return }
-		
-		let urlComponents = URLComponents(string: url.absoluteString)
-		if let code = urlComponents?.queryItems?.filter({$0.name == "code"}).first?.value {
+	func requestAuthorizationCode() {
+		let handler: ASWebAuthenticationSession.CompletionHandler = {
+			[weak self] (callBack:URL?, error:Error?) in
 			
-			requestAccessToken(with: code)
+			guard let successURL = callBack else { return }
+			
+			let queryItems = URLComponents(string: successURL.absoluteString)?.queryItems
+			
+			if let code = queryItems?.filter({$0.name == "code"}).first?.value {
+				self?.requestAccessToken(with: code)
+			}
 		}
-		safariViewController?.dismiss(animated: true, completion: nil)
+		
+		webAuthSession = ASWebAuthenticationSession.init(
+		url: UnsplashAPI.logInURL, callbackURLScheme: nil, completionHandler: handler
+		)
+		
+		webAuthSession?.start()
 	}
 	
 	func requestAccessToken(with code: String) {

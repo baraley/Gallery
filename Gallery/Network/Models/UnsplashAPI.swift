@@ -26,7 +26,7 @@ enum UnsplashPhotoListOrder: String {
 struct UnsplashAPI {
 	
 	static let accessTokenKey = "accessTokenKey"
-	static let redirectURI = "galleryApp://authorization"
+	static let callbackUrlScheme = "galleryApp://authorization"
 	static let clientID = "eaf1051cca529d4fadd399ced3d2f84c983c8f7f76085acb9363f2b50e278013"
 	static let clientSecret = "7d772bcd4792a380975c329504dd841689e89a8defc465b864951c510c28c50a"
 	
@@ -46,7 +46,7 @@ struct UnsplashAPI {
 		
 		return [
 			URLQueryItem(name: UnsplashQueryParameterName.clientID, value: UnsplashAPI.clientID),
-			URLQueryItem(name: UnsplashQueryParameterName.redirectURI, value: UnsplashAPI.redirectURI),
+			URLQueryItem(name: UnsplashQueryParameterName.redirectURI, value: UnsplashAPI.callbackUrlScheme),
 			URLQueryItem(name: UnsplashQueryParameterName.responseType, value: "code"),
 			URLQueryItem(name: UnsplashQueryParameterName.scope, value: scope)
 		]

@@ -21,17 +21,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
 		return true
 	}
-
-	func application(_ app: UIApplication, open url: URL,
-					 options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-		
-		guard let sourceApplication = options[.sourceApplication] as? String,
-			sourceApplication == "com.apple.SafariViewService"
-		else { return false }
-		
-		NotificationCenter.default.post(name: .authorizationCallback, object: url)
-		return true
-	}
 	
 	private func setupHomeViewController() {
 		let networkManager = NetworkManager(session: URLSession.shared)
