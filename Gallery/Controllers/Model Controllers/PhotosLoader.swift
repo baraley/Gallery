@@ -10,10 +10,10 @@ import Foundation
 
 class PhotosLoader {
 	
-	private let networkManager: NetworkManager
+	private let networkManager: NetworkRequestPerformer
 	private var photoListRequest: PhotoListRequest
 	
-	init(networkManager: NetworkManager, photoListRequest: PhotoListRequest) {
+	init(networkManager: NetworkRequestPerformer, photoListRequest: PhotoListRequest) {
 		self.networkManager = networkManager
 		self.photoListRequest = photoListRequest
 	}
@@ -25,7 +25,7 @@ class PhotosLoader {
 		set { photoListRequest.page = newValue }
 	}
 	
-	func loadPhotos(_ completionHandler: @escaping ([Photo], String?) -> Void) {
+	func loadPhotos(_ completionHandler: @escaping (Result<[Photo], RequestError>) -> Void) {
 		
 		networkManager.performRequest(photoListRequest) { [weak self] (result) in
 			switch result {
@@ -34,10 +34,10 @@ class PhotosLoader {
 				self?.totalPages = photoListRequestResult.totalPagesNumber ?? 1
 				self?.setupRequestForNextPage()
 				
-				completionHandler(photoListRequestResult.photos, nil)
+				completionHandler(.success(photoListRequestResult.photos))
 				
-			case let .failure(errorMessage):
-				completionHandler([], errorMessage)
+			case let .failure(error):
+				completionHandler(.failure(error))
 			}
 		}
 	}

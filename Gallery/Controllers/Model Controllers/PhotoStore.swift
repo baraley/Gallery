@@ -11,19 +11,19 @@ import UIKit
 protocol PhotoStoreDelegate: AnyObject {
 	func photoStoreDidStartLoading(_ store: PhotoStore)
 	func photoStore(_ store: PhotoStore, didInsertPhotos number: Int, atIndex index: Int)
-	func photoStore(_ store: PhotoStore, loadingFailedWithErrorMessage message: String)
+	func photoStore(_ store: PhotoStore, loadingFailedWithError error: RequestError)
 }
 
 class PhotoStore {
 	
 	weak var delegate: PhotoStoreDelegate?
 	
-	private let networkManager: NetworkManager
+	private let networkManager: NetworkRequestPerformer
 	
 	private let photosLoader: PhotosLoader
 	private var photoLikesToggle: PhotoLikesToggle?
 	
-	init(networkManager: NetworkManager, photoListRequest: PhotoListRequest) {
+	init(networkManager: NetworkRequestPerformer, photoListRequest: PhotoListRequest) {
 		self.networkManager = networkManager
 		self.photosLoader = PhotosLoader(networkManager: networkManager,
 										 photoListRequest: photoListRequest)
@@ -65,7 +65,7 @@ class PhotoStore {
 		return photoLikesToggle != nil
 	}
 	
-	func toggleLikeOfPhoto(at index: Int, completionHandler: @escaping (String?) -> Void ) {
+	func toggleLikeOfPhoto(at index: Int, completionHandler: @escaping (RequestError?) -> Void ) {
 		guard photoLikesToggle != nil else { return }
 		
 		let photo = photos[index]
@@ -77,8 +77,8 @@ class PhotoStore {
 					self?.photos[index] = toggledPhoto
 					completionHandler(nil)
 					
-				case let .failure(errorMessage):
-					completionHandler(errorMessage)
+				case let .failure(error):
+					completionHandler(error)
 				}
 			}
 		})
@@ -93,15 +93,16 @@ private extension PhotoStore {
 		
 		delegate?.photoStoreDidStartLoading(self)
 		
-		photosLoader.loadPhotos { [weak self] (newPhotos, errorMessage) in
+		photosLoader.loadPhotos { [weak self] (result) in
 			guard let self = self else { return }
 			
 			DispatchQueue.main.async {
-				if let message = errorMessage {
-					self.delegate?.photoStore(self, loadingFailedWithErrorMessage: message)
-					return
-				} else {
+				switch result {
+				case .success(let newPhotos):
 					self.insertNewPhotos(newPhotos)
+					
+				case .failure(let error):
+					self.delegate?.photoStore(self, loadingFailedWithError: error)
 				}
 			}
 		}

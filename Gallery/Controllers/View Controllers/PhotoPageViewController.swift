@@ -15,7 +15,7 @@ class PhotoPageViewController: UIPageViewController {
     
     var photoStore: PhotoStore!
 	
-	var imageLoader: ImageLoader?
+	var networkRequestPerformer: NetworkRequestPerformer?
 	
 	// MARK: - Actions
 		
@@ -73,7 +73,7 @@ private extension PhotoPageViewController {
 			.instantiateViewController(withIdentifier: "PhotoViewContorller") as! PhotoViewContorller
 		
 		photoViewController.photo = photo
-		photoViewController.imageLoader = imageLoader
+		photoViewController.networkRequestPerformer = networkRequestPerformer
 		
 		return photoViewController
 	}
@@ -95,12 +95,18 @@ private extension PhotoPageViewController {
 		
 		navigationItem.setRightBarButton(UIBarButtonItem.loadingBarButtonItem, animated: true)
 		
-		photoStore.toggleLikeOfPhoto(at: selectedPhotoIndex) { [weak self] (errorString) in
-			if let error = errorString {
-				self?.showAlertWith(error)
-			} else {
-                self?.navigationItem.setRightBarButton(nil, animated: true)
+		photoStore.toggleLikeOfPhoto(at: selectedPhotoIndex) { [weak self] (error) in
+			guard let error = error else {
+				self?.navigationItem.setRightBarButton(nil, animated: true)
 				self?.updateLikeButton()
+				return
+			}
+			
+			switch error {
+			case .noInternet, .limitExceeded:
+				self?.showAlertWith(error.localizedDescription)
+			default:
+				print(error.localizedDescription)
 			}
 		}
 	}

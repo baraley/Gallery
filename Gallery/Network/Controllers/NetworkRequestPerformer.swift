@@ -8,12 +8,7 @@
 
 import UIKit
 
-enum NetworkResult<ParsetData> {
-	case success(parsetData: ParsetData)
-	case failure(String)
-}
-
-class NetworkManager {
+class NetworkRequestPerformer {
 	
     private let session: URLSession
     
@@ -27,22 +22,17 @@ class NetworkManager {
 	
     private var tasks: [URL: URLSessionDataTask] = [:]
 	
-	func performRequest<T: NetworkRequest>(_ request: T,
-									 completionHandler: @escaping (NetworkResult<T.Model>) -> Void) {
+	func performRequest<T: NetworkRequest>(
+		_ request: T, completionHandler: @escaping (Result<T.ResultModel, T.ResultError>) -> Void
+		) {
 
 		guard let url = request.urlRequest.url, tasks[url] == nil else { return }
 
 		let dataTask = session.dataTask(with: request.urlRequest) { [weak self] (data, response, error) in
 			DispatchQueue.main.async { self?.tasks[url] = nil }
 			
-			if let data = data, let response = response,
-				let parsedData = request.decode(data, response: response) {
-				
-				completionHandler(.success(parsetData: parsedData))
-			} else {
-				let message = self?.parseErrorMessage(from: data, error: error) ?? "Occurred unknown error"
-				completionHandler(.failure(message))
-			}
+			let result = request.decode(data, response: response, error: error)
+			completionHandler(result)
 		}
 		tasks[url] = dataTask
 		dataTask.resume()
@@ -57,12 +47,4 @@ class NetworkManager {
     private func cancelAllRequests() {
         tasks.forEach { $1.cancel() }
     }
-	
-	private func parseErrorMessage(from data: Data?, error: Error?) -> String? {
-		var message = error?.localizedDescription
-		if let dataString = data, let errorString = String(data: dataString, encoding: .utf8) {
-			message = errorString
-		}
-		return message
-	}
 }

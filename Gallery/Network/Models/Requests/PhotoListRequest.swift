@@ -16,7 +16,7 @@ struct PhotoListRequest: UnsplashRequest {
     private(set) var pageSize: UnsplashPageSize
     private let order: UnsplashPhotoListOrder
 	
-	init(pageSize: UnsplashPageSize = .small,
+	init(pageSize: UnsplashPageSize = .large,
          order: UnsplashPhotoListOrder = .latest,
          accessToken: String? = nil) {
         
@@ -49,21 +49,24 @@ struct PhotoListRequest: UnsplashRequest {
 	}
 	
     // MARK: - NetworkRequest
-    
-	func decode(_ data: Data, response: URLResponse?) -> PhotoListRequestResult? {
+	
+	func decode(
+		_ data: Data?, response: URLResponse?, error: Error?
+		) -> Result<PhotoListRequestResult, RequestError> {
 		
 		let totalPages = parseTotalPages(from: response)
 		
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
+		let decoder = JSONDecoder()
+		decoder.dateDecodingStrategy = .iso8601
 		
-		if let photos = try? decoder.decode([Photo].self, from: data) {
-			return (photos, totalPages)
-		} else {
-			return nil
+		if let data = data, let photos = try? decoder.decode([Photo].self, from: data) {
+			return .success((photos, totalPages))
 		}
-    }
-    
+		
+		let error =	parseError(data, response: response, error: error)
+		return .failure(error)
+	}
+	
     // MARK: - UnsplashRequest
     
     private(set) var accessToken: String?

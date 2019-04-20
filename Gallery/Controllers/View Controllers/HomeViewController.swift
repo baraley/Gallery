@@ -65,7 +65,7 @@ class HomeViewController: UIViewController {
 		
 		photosCollectionViewController = segue.destination as? PhotosCollectionViewController
 		
-		photosCollectionViewController?.imageLoader = ImageLoader(networkManager: NetworkManager())
+		photosCollectionViewController?.networkRequestPerformer = NetworkRequestPerformer()
 	}
 }
 
@@ -112,7 +112,7 @@ private extension HomeViewController {
 			photoListRequest = PhotoListRequest()
 		}
 		
-		photosCollectionViewController?.photoStore = PhotoStore(networkManager: NetworkManager(),
+		photosCollectionViewController?.photoStore = PhotoStore(networkManager: NetworkRequestPerformer(),
 																photoListRequest: photoListRequest)
 	}
 }
@@ -126,8 +126,14 @@ extension HomeViewController: AuthorizationManagerDelegate {
 		updatePhotosStore()
 	}
     
-    func authorizationManager(_ manager: AuthorizationManager, didFailAuthorizationWith errorMessage: String) {
-        print(errorMessage)
+    func authorizationManager(_ manager: AuthorizationManager,
+							  didFailAuthorizationWith error: RequestError) {
+		switch error {
+		case .noInternet, .limitExceeded:
+			showAlertWith(error.localizedDescription)
+		default:
+			print(error.localizedDescription)
+		}
     }
 }
 

@@ -14,7 +14,7 @@ class PhotoViewContorller: UIViewController {
 	@IBOutlet private var imageLoadingView: UIActivityIndicatorView!
 	
     var photo: Photo!
-	var imageLoader: ImageLoader?
+	var networkRequestPerformer: NetworkRequestPerformer?
 	
 	private var photoImage: UIImage? {
 		didSet{ photoScrollView.image = photoImage }
@@ -43,7 +43,7 @@ class PhotoViewContorller: UIViewController {
 	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
 		
-		imageLoader?.cancelImageLoading(from: photo.imageURL)
+		networkRequestPerformer?.cancel(ImageRequest(url: photo.imageURL))
 	}
 	
 	override func viewWillTransition(to size: CGSize,
@@ -66,22 +66,29 @@ private extension PhotoViewContorller {
 	func loadPhoto() {
 		imageLoadingView?.isHidden = false
 		
-		imageLoader?.loadImage(from: photo.imageURL, completionHandler: { [weak self]  (result) in
+		let request = ImageRequest(url: photo.imageURL)
+		
+		networkRequestPerformer?.performRequest(request) { [weak self]  (result) in
 			DispatchQueue.main.async {
 				self?.handleLoadingResult(result)
 				self?.imageLoadingView?.isHidden = true
 			}
-		})
+		}
 	}
 	
-	func handleLoadingResult(_ result: NetworkResult<UIImage>) {
+	func handleLoadingResult(_ result: Result<UIImage, RequestError>) {
 		switch result {
 		case .success(let image):
 			photoImage = image
 			layoutScrollViewContent(for: view.frame.size)
 			
-		case let .failure(errorMessage):
-			print(errorMessage)
+		case let .failure(error):
+			switch error {
+			case .noInternet, .limitExceeded:
+				showAlertWith(error.localizedDescription)
+			default:
+				print(error.localizedDescription)
+			}
 		}
 	}
 	

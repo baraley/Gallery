@@ -27,18 +27,22 @@ struct TogglePhotoLikeRequest: UnsplashRequest {
 	private(set) var accessToken: String?
 	
 	// MARK: - NetworkRequest
-	
-	func decode(_ data: Data, response: URLResponse?) -> Photo? {
-		guard let json = (try? JSONSerialization.jsonObject(with: data, options: [])) as? [String: Any],
+	func decode(_ data: Data?, response: URLResponse?, error: Error?) -> Result<Photo, RequestError> {
+		
+		if let data = data,
+			let json = (try? JSONSerialization.jsonObject(with: data, options: [])) as? [String: Any],
 			let jsonPhoto = json["photo"] as? [String: Any],
 			let isLiked = jsonPhoto["liked_by_user"] as? Bool,
-			let likes = jsonPhoto["likes"] as? Int
-		else { return nil }
+			let likes = jsonPhoto["likes"] as? Int {
+			
+			var newPhoto = photo
+			newPhoto.isLiked = isLiked
+			newPhoto.likes = likes
+			
+			return .success(newPhoto)
+		}
 		
-		var newPhoto = photo
-		newPhoto.isLiked = isLiked
-		newPhoto.likes = likes
-
-		return newPhoto
+		let error =	parseError(data, response: response, error: error)
+		return .failure(error)
 	}
 }

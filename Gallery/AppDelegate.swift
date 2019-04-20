@@ -23,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	}
 	
 	private func setupHomeViewController() {
-		let networkManager = NetworkManager(session: URLSession.shared)
+		let networkManager = NetworkRequestPerformer(session: URLSession.shared)
 		let authorizationManager = AuthorizationManager(networkManager: networkManager)
 		
 		if let navController = window?.rootViewController as? UINavigationController,

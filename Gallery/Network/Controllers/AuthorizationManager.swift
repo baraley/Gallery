@@ -19,7 +19,7 @@ protocol AuthorizationManagerDelegate: AnyObject {
 	func authorizationManager(_ manager: AuthorizationManager,
 							  didChangeAuthorizationState state: AuthorizationManager.AuthorizationState)
 	func authorizationManager(_ manager: AuthorizationManager,
-							  didFailAuthorizationWith errorMessage: String)
+							  didFailAuthorizationWith error: RequestError)
 }
 
 class AuthorizationManager: NSObject {
@@ -48,9 +48,9 @@ class AuthorizationManager: NSObject {
 
     // MARK: - Private properties
     
-    private let networkManager: NetworkManager
+    private let networkManager: NetworkRequestPerformer
     
-    init(networkManager: NetworkManager) {		
+    init(networkManager: NetworkRequestPerformer) {		
         self.networkManager = networkManager
 		super.init()
 		loadUserDataIfAvailable()
@@ -146,8 +146,12 @@ private extension AuthorizationManager {
 					KeychainWrapper.standard.set(token, forKey: UnsplashAPI.accessTokenKey)
 					self?.loadAuthorizedUser(with: token)
 					
-				case let .failure(errorMessage):
-					print(errorMessage)
+				case let .failure(error):
+					if let self = self {
+						self.delegate?.authorizationManager(
+							self, didFailAuthorizationWith: error
+						)
+					}
 				}
 			}
 		}
@@ -168,9 +172,11 @@ private extension AuthorizationManager {
 					let userData = AuthorizedUserData(accessToken: accessToken, user: user)
 					self?.userDataState = (false, userData)
 					
-				case let .failure(errorMessage):
+				case let .failure(error):
 					if let self = self {
-						self.delegate?.authorizationManager( self, didFailAuthorizationWith: errorMessage)
+						self.delegate?.authorizationManager(
+							self, didFailAuthorizationWith: error
+						)
 					}
 					self?.cleanAuthorizationData()
 				}

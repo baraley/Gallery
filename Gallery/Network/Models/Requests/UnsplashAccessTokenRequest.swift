@@ -9,7 +9,7 @@
 import Foundation
 
 struct UnsplashAccessTokenRequest: UnsplashRequest {
-		
+	
 	private let code: String
 	
 	init(authorizationCode: String) {
@@ -18,9 +18,16 @@ struct UnsplashAccessTokenRequest: UnsplashRequest {
 	
 	// MARK: - NetworkRequest
 	
-	func decode(_ data: Data, response: URLResponse?) -> String? {
-		let json = (try? JSONSerialization.jsonObject(with: data, options: [])) as? [String: Any]
-		return json?[UnsplashQueryParameterName.accessToken] as? String
+	func decode(_ data: Data?, response: URLResponse?, error: Error?) -> Result<String, RequestError> {
+		if let data = data,
+			let json = (try? JSONSerialization.jsonObject(with: data, options: [])) as? [String: Any],
+			let accessToken = json[UnsplashQueryParameterName.accessToken] as? String {
+			
+			return .success(accessToken)
+		}
+		
+		let error =	parseError(data, response: response, error: error)
+		return .failure(error)
 	}
 	
 	// MARK: - UnsplashRequest

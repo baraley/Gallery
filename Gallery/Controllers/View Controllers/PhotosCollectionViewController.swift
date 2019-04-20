@@ -13,10 +13,11 @@ class PhotosCollectionViewController: UICollectionViewController {
 	var photoStore: PhotoStore? {
 		didSet { photoStoreDidChange() }
 	}
-	
-	var imageLoader: ImageLoader?
+	var networkRequestPerformer: NetworkRequestPerformer?
     
 	// MARK: - Private properties
+	
+	private var errorMessageWasShown = false
     
     private weak var activityIndicatorView: UIActivityIndicatorView?
 	
@@ -64,10 +65,8 @@ class PhotosCollectionViewController: UICollectionViewController {
 		
         let photoPageViewController = segue.destination as! PhotoPageViewController
         photoPageViewController.photoStore = photoStore
-		photoPageViewController.imageLoader = imageLoader
+		photoPageViewController.networkRequestPerformer = networkRequestPerformer
     }
-	
-	
 }
 
 // MARK: - Helpers
@@ -86,8 +85,8 @@ private extension PhotosCollectionViewController {
 			let layout = collectionView?.collectionViewLayout as? PinterestCollectionViewLayout
 		else { return }
 		
+		errorMessageWasShown = false
 		layout.dataSource = photoStore
-		
 		photoStore.delegate = self
 		refreshPhotos()
 	}
@@ -111,14 +110,27 @@ private extension PhotosCollectionViewController {
 		collectionView?.insertItems(at: indexPaths)
 	}
 	
-	func handleThumbLoading(ofPhotoAt indexPath: IndexPath, with result: NetworkResult<UIImage>) {
+	func handleThumbLoading(ofPhotoAt indexPath: IndexPath,
+							with result: Result<UIImage, RequestError>) {
 		switch result {
 		case .success(let thumb):
 			let cell = collectionView?.cellForItem(at: indexPath) as? PhotoCollectionViewCell
 			cell?.imageView.image = thumb
 			
-		case let .failure(errorMessage):
-			print(errorMessage)
+		case let .failure(error):
+			handle(error)
+		}
+	}
+	
+	func handle(_ error: RequestError) {
+		switch error {
+		case .noInternet, .limitExceeded:
+			if errorMessageWasShown == false {
+				errorMessageWasShown = true
+				showAlertWith(error.localizedDescription)
+			}
+		default:
+			print(error.localizedDescription)
 		}
 	}
 }
@@ -154,11 +166,14 @@ extension PhotosCollectionViewController {
                         willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
 		
 		if let photo = photoStore?.photoAt(indexPath.row) {
-			imageLoader?.loadImage(from: photo.thumbURL, completionHandler: { [weak self] (result) in
+			
+			let imageRequest = ImageRequest(url: photo.thumbURL)
+			
+			networkRequestPerformer?.performRequest(imageRequest) { [weak self] (result) in
 				DispatchQueue.main.async {
 					self?.handleThumbLoading(ofPhotoAt: indexPath, with: result)
 				}
-			})
+			}
 		}
 		
     }
@@ -172,7 +187,8 @@ extension PhotosCollectionViewController {
                         forItemAt indexPath: IndexPath) {
 		
 		if let photo = photoStore?.photoAt(indexPath.row) {
-			imageLoader?.cancelImageLoading(from: photo.thumbURL)
+			let imageRequest = ImageRequest(url: photo.thumbURL)
+			networkRequestPerformer?.cancel(imageRequest)
 		}
     }
     
@@ -197,6 +213,7 @@ extension PhotosCollectionViewController: PhotoStoreDelegate {
 	func photoStore(_ store: PhotoStore, didInsertPhotos number: Int, atIndex index: Int) {
 		refreshControl.endRefreshing()
 		activityIndicatorView?.stopAnimating()
+		errorMessageWasShown = false
 		
 		guard number > 0 else { return }
 		
@@ -208,10 +225,10 @@ extension PhotosCollectionViewController: PhotoStoreDelegate {
 		collectionView?.insertItems(at: indexPaths)
 	}
 		
-	func photoStore(_ store: PhotoStore, loadingFailedWithErrorMessage message: String) {
+	func photoStore(_ store: PhotoStore, loadingFailedWithError error: RequestError) {
 		refreshControl.endRefreshing()
 		activityIndicatorView?.stopAnimating()
-		showAlertWith(message)
+		handle(error)
 	}
 }
 
