@@ -50,7 +50,7 @@ enum RequestError: Error, LocalizedError {
 	var errorDescription: String? {
 		switch self {
 		case .noInternet:			return "The Internet connection appears to be offline."
-		case .limitExceeded: 		return "Requests rate limit to Unsplash is exceeded"
+		case .limitExceeded: 		return "Requests' limit to Unsplash is exceeded"
 		case .unknown(let message): return message
 		}
 	}

@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import SafariServices
 import AuthenticationServices
 import SwiftKeychainWrapper
 
@@ -63,7 +62,6 @@ class AuthorizationManager: NSObject {
 	}
 	
 	private var webAuthSession: ASWebAuthenticationSession?
-    private var safariViewController: SFSafariViewController?
     private var isLogOutPerforming = false
 }
 
@@ -75,30 +73,8 @@ extension AuthorizationManager {
 	}
 	
 	func performLogOut(from presentingViewController: UIViewController) {
-		safariViewController = SFSafariViewController(url: UnsplashAPI.logOutURL)
-		safariViewController?.delegate = self
-		safariViewController?.modalPresentationStyle = .overFullScreen
-
-		isLogOutPerforming = true
-
-		presentingViewController.present(safariViewController!, animated: true, completion: nil)
-	}
-}
-
-// MARK: - SFSafariViewControllerDelegate
-extension AuthorizationManager: SFSafariViewControllerDelegate {
-	
-	func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-		safariViewController = nil
-	}
-	
-	func safariViewController(_ controller: SFSafariViewController,
-							  didCompleteInitialLoad didLoadSuccessfully: Bool) {
-		
-		if isLogOutPerforming && didLoadSuccessfully {
-            isLogOutPerforming = false
-            cleanAuthorizationData()
-			controller.dismiss(animated: true, completion: nil)
+		UIApplication.shared.open(UnsplashAPI.logOutURL) { [weak self] (success) in
+			if success { self?.cleanAuthorizationData() }
 		}
 	}
 }

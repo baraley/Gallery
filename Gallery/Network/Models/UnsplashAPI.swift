@@ -6,11 +6,6 @@
 //  Copyright © 2018 Alexander Baraley. All rights reserved.
 //
 
-
-//KeychainWrapper.standard.string(forKey: UnsplashAccessToken.key)
-//KeychainWrapper.standard.removeObject(forKey: UnsplashAccessToken.key)
-//KeychainWrapper.standard.set(unsplashAccessToken.token, forKey: UnsplashAccessToken.key)
-
 import Foundation
 
 enum UnsplashPageSize: Int {
