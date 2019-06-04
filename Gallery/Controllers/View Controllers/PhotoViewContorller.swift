@@ -14,7 +14,7 @@ class PhotoViewContorller: UIViewController {
 	@IBOutlet private var imageLoadingView: UIActivityIndicatorView!
 	
     var photo: Photo!
-	var networkRequestPerformer: NetworkRequestPerformer?
+	var networkRequestPerformer: NetworkService?
 	
 	private var photoImage: UIImage? {
 		didSet{ photoScrollView.image = photoImage }
@@ -82,7 +82,7 @@ private extension PhotoViewContorller {
 			photoImage = image
 			layoutScrollViewContent(for: view.frame.size)
 			
-		case let .failure(error):
+		case .failure(let error):
 			switch error {
 			case .noInternet, .limitExceeded:
 				showAlertWith(error.localizedDescription)

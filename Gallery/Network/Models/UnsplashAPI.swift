@@ -18,7 +18,7 @@ enum UnsplashPhotoListOrder: String {
 	case latest, oldest, popular
 }
 
-struct UnsplashAPI {
+enum UnsplashAPI {
 	
 	static let accessTokenKey = "accessTokenKey"
 	static let callbackUrlScheme = "galleryApp://authorization"
@@ -37,12 +37,17 @@ struct UnsplashAPI {
 	}
 	
 	private static var authorizationQueryParameters: [URLQueryItem] {
-		let scope = "public+read_user+read_photos+read_collections+write_likes"
+		let scopeValues: [UnsplashPermitionScope] = [
+			.readPublicData, .readUserData, .readUserPhotos, .readUserCollections, .writeUserLikes
+		]
+		
+		let responseType = "code"
+		let scope = scopeValues.map { $0.rawValue }.joined(separator: "+")
 		
 		return [
 			URLQueryItem(name: UnsplashQueryParameterName.clientID, value: UnsplashAPI.clientID),
 			URLQueryItem(name: UnsplashQueryParameterName.redirectURI, value: UnsplashAPI.callbackUrlScheme),
-			URLQueryItem(name: UnsplashQueryParameterName.responseType, value: "code"),
+			URLQueryItem(name: UnsplashQueryParameterName.responseType, value: responseType),
 			URLQueryItem(name: UnsplashQueryParameterName.scope, value: scope)
 		]
 	}
@@ -62,3 +67,16 @@ enum UnsplashQueryParameterName {
 	static let authorizationCode = "authorization_code"
 	static let accessToken = "access_token"
 }
+
+enum UnsplashPermitionScope: String {
+	case readPublicData = "public"					// Default. Read public data.
+	case readUserData = "read_user"					// Access user’s private data.
+	case writeUserData = "write_user"				// Update the user’s profile.
+	case readUserPhotos = "read_photos"				// Read private data from the user’s photos.
+	case writeUserPhotos = "write_photos"			// Update photos on the user’s behalf.
+	case writeUserLikes = "write_likes"				// Like or unlike a photo on the user’s behalf.
+	case writeUserSubscritions = "write_followers"	// Follow or unfollow a user on the user’s behalf.
+	case readUserCollections = "read_collections" 	// View a user’s private collections.
+	case writeUserCollections = "write_collections"	// Create and update a user’s collections.
+}
+

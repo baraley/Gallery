@@ -10,11 +10,11 @@ import Foundation
 
 class PhotoLikesToggle {
 	
-	private let networkManager: NetworkRequestPerformer
+	private let networkService: NetworkService
 	private let accessToken: String
 	
-	init(networkManager: NetworkRequestPerformer, accessToken: String) {
-		self.networkManager = networkManager
+	init(networkService: NetworkService, accessToken: String) {
+		self.networkService = networkService
 		self.accessToken = accessToken
 	}
 	
@@ -22,7 +22,7 @@ class PhotoLikesToggle {
 		
 		let toggleRequest = TogglePhotoLikeRequest(photo: photo, accessToken: accessToken)
 		
-		networkManager.performRequest(toggleRequest) { (result) in
+		networkService.performRequest(toggleRequest) { (result) in
 			
 			completionHandler(result)
 		}
@@ -31,6 +31,6 @@ class PhotoLikesToggle {
 	func cancelLikeToggling(of photo: Photo) {
 		let toggleRequest = TogglePhotoLikeRequest(photo: photo, accessToken: accessToken)
 		
-		networkManager.cancel(toggleRequest)
+		networkService.cancel(toggleRequest)
 	}
 }

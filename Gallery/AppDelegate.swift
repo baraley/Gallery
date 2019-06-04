@@ -17,20 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 				
 		setupCacheCapacity()
-        setupHomeViewController()
-        
 		return true
-	}
-	
-	private func setupHomeViewController() {
-		let networkManager = NetworkRequestPerformer(session: URLSession.shared)
-		let authorizationManager = AuthorizationManager(networkManager: networkManager)
-		
-		if let navController = window?.rootViewController as? UINavigationController,
-			let homeViewController = navController.viewControllers.first as? HomeViewController {
-		
-			homeViewController.authorizationManager = authorizationManager
-		}
 	}
 	
 	private func setupCacheCapacity() {

@@ -1,5 +1,5 @@
 //
-//  NetworkManager.swift
+//  NetworkService.swift
 //  Gallery
 //
 //  Created by Alexander Baraley on 1/8/18.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class NetworkRequestPerformer {
+class NetworkService {
 	
     private let session: URLSession
     

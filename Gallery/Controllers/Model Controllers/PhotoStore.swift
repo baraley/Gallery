@@ -18,18 +18,18 @@ class PhotoStore {
 	
 	weak var delegate: PhotoStoreDelegate?
 	
-	private let networkManager: NetworkRequestPerformer
+	private let networkService: NetworkService
 	
 	private let photosLoader: PhotosLoader
 	private var photoLikesToggle: PhotoLikesToggle?
 	
-	init(networkManager: NetworkRequestPerformer, photoListRequest: PhotoListRequest) {
-		self.networkManager = networkManager
-		self.photosLoader = PhotosLoader(networkManager: networkManager,
+	init(networkService: NetworkService, photoListRequest: PhotoListRequest) {
+		self.networkService = networkService
+		self.photosLoader = PhotosLoader(networkService: networkService,
 										 photoListRequest: photoListRequest)
 		
 		if let accessToken = photoListRequest.accessToken {
-			photoLikesToggle = PhotoLikesToggle(networkManager: networkManager, accessToken: accessToken)
+			photoLikesToggle = PhotoLikesToggle(networkService: networkService, accessToken: accessToken)
 		}
 	}
 	
@@ -65,21 +65,18 @@ class PhotoStore {
 		return photoLikesToggle != nil
 	}
 	
-	func toggleLikeOfPhoto(at index: Int, completionHandler: @escaping (RequestError?) -> Void ) {
+	func toggleLikeOfPhoto(at index: Int,
+						   completionHandler: @escaping (Result<Photo, RequestError>) -> Void ) {
 		guard photoLikesToggle != nil else { return }
 		
 		let photo = photos[index]
 		
 		photoLikesToggle?.toggleLike(of: photo, completionHandler: { [weak self] (result) in
 			DispatchQueue.main.async {
-				switch result {
-				case let .success(toggledPhoto):
+				if let toggledPhoto = try? result.get() {
 					self?.photos[index] = toggledPhoto
-					completionHandler(nil)
-					
-				case let .failure(error):
-					completionHandler(error)
 				}
+				completionHandler(result)
 			}
 		})
 	}

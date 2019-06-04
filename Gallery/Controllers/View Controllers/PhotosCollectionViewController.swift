@@ -13,7 +13,7 @@ class PhotosCollectionViewController: UICollectionViewController {
 	var photoStore: PhotoStore? {
 		didSet { photoStoreDidChange() }
 	}
-	var networkRequestPerformer: NetworkRequestPerformer?
+	var networkRequestPerformer: NetworkService?
     
 	// MARK: - Private properties
 	
@@ -41,7 +41,8 @@ class PhotosCollectionViewController: UICollectionViewController {
 		scrollToSelectedPhoto(animated: false)
 	}
 	
-	override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+	override func viewWillTransition(to size: CGSize,
+									 with coordinator: UIViewControllerTransitionCoordinator) {
 		super.viewWillTransition(to: size, with: coordinator)
 		
 		coordinator.animate(alongsideTransition: { (_) in
@@ -117,7 +118,7 @@ private extension PhotosCollectionViewController {
 			let cell = collectionView?.cellForItem(at: indexPath) as? PhotoCollectionViewCell
 			cell?.imageView.image = thumb
 			
-		case let .failure(error):
+		case .failure(let error):
 			handle(error)
 		}
 	}
@@ -163,8 +164,9 @@ extension PhotosCollectionViewController {
 extension PhotosCollectionViewController {
 	
     override func collectionView(_ collectionView: UICollectionView,
-                        willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-		
+								 willDisplay cell: UICollectionViewCell,
+								 forItemAt indexPath: IndexPath) {
+		 
 		if let photo = photoStore?.photoAt(indexPath.row) {
 			
 			let imageRequest = ImageRequest(url: photo.thumbURL)
@@ -178,7 +180,8 @@ extension PhotosCollectionViewController {
 		
     }
 	
-	override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+	override func collectionView(_ collectionView: UICollectionView,
+								 didSelectItemAt indexPath: IndexPath) {
 		photoStore?.selectedPhotoIndex = indexPath.item
 	}
     

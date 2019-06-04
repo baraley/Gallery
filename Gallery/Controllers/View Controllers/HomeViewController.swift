@@ -18,9 +18,9 @@ class HomeViewController: UIViewController {
     
     // MARK: - Public properties
     
-    var authorizationManager: AuthorizationManager! {
-        didSet { authorizationManager.delegate = self }
-    }
+    private lazy var authorizationPerformer = AuthorizationPerformer(
+		networkService: NetworkService(session: URLSession.shared)
+	)
     
     // MARK: - Outlets
     
@@ -38,9 +38,9 @@ class HomeViewController: UIViewController {
     // MARK: - Actions
     
     @IBAction private func authorizationButtonAction(_ sender: UIBarButtonItem) {
-        switch authorizationManager.authorizationState {
-        case .authorized(_):    authorizationManager.performLogOut(from: self)
-        case .unauthorized:     authorizationManager.performLogIn(from: self)
+        switch authorizationPerformer.state {
+        case .authorized(_):    authorizationPerformer.performLogOut()
+        case .unauthorized:     showAuthorizationAlert()
         default: break
         }
     }
@@ -54,6 +54,8 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 		
+		authorizationPerformer.delegate = self
+		
         updateNavigationBar()
 		updatePhotosStore()
 	}
@@ -65,7 +67,7 @@ class HomeViewController: UIViewController {
 		
 		photosCollectionViewController = segue.destination as? PhotosCollectionViewController
 		
-		photosCollectionViewController?.networkRequestPerformer = NetworkRequestPerformer()
+		photosCollectionViewController?.networkRequestPerformer = NetworkService()
 	}
 }
 
@@ -73,7 +75,7 @@ class HomeViewController: UIViewController {
 private extension HomeViewController {
 	
     func updateNavigationBar() {
-        switch authorizationManager.authorizationState {
+        switch authorizationPerformer.state {
 		case .isAuthorizing:
 			navigationItem.leftBarButtonItem = UIBarButtonItem.loadingBarButtonItem
         case let state:
@@ -84,7 +86,7 @@ private extension HomeViewController {
     }
 	
 	func updateSegmentedControl() {
-		switch authorizationManager.authorizationState {
+		switch authorizationPerformer.state {
 		case .authorized(_):
 			photoTypeSegmentedControl.setEnabled(true, forSegmentAt: 1)
 		case .unauthorized, .isAuthorizing:
@@ -94,7 +96,7 @@ private extension HomeViewController {
 	}
 	
 	func updatePhotosStore() {
-		let state = authorizationManager.authorizationState
+		let state = authorizationPerformer.state
 		
 		let photoListRequest: PhotoListRequest
 		
@@ -112,22 +114,40 @@ private extension HomeViewController {
 			photoListRequest = PhotoListRequest()
 		}
 		
-		photosCollectionViewController?.photoStore = PhotoStore(networkManager: NetworkRequestPerformer(),
-																photoListRequest: photoListRequest)
+		photosCollectionViewController?.photoStore = PhotoStore(
+			networkService: NetworkService(), photoListRequest: photoListRequest
+		)
+	}
+	
+	func showAuthorizationAlert() {
+		let message = """
+Login alredy in the pastboard.
+Password(8): 	11111111
+"""
+		let alert = UIAlertController(
+			title: "Sample accaunt", message: message, preferredStyle: .alert
+		)
+		
+		alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
+			UIPasteboard.general.string = "jimlikokno@desoz.com"
+			self.authorizationPerformer.performLogIn()
+		})
+		
+		present(alert, animated: true)
 	}
 }
 
-// MARK: - AuthorizationManagerDelegate
-extension HomeViewController: AuthorizationManagerDelegate {
+// MARK: - authorizationPerformerDelegate
+extension HomeViewController: AuthorizationPerformerDelegate {
 	
-	func authorizationManager(_ manager: AuthorizationManager,
-							  didChangeAuthorizationState state: AuthorizationManager.AuthorizationState) {
+	func authorizationPerformer(_ performer: AuthorizationPerformer,
+								didChangeAuthorizationState state: AuthorizationPerformer.State) {
 		updateNavigationBar()
 		updatePhotosStore()
 	}
     
-    func authorizationManager(_ manager: AuthorizationManager,
-							  didFailAuthorizationWith error: RequestError) {
+    func authorizationPerformer(_ performer: AuthorizationPerformer,
+								didFailAuthorizationWith error: RequestError) {
 		switch error {
 		case .noInternet, .limitExceeded:
 			showAlertWith(error.localizedDescription)

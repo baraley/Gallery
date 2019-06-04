@@ -1,5 +1,5 @@
 use_frameworks!
-platform :ios, '10.3'
+platform :ios, '12.0'
 
 target 'Gallery' do
    pod 'SwiftKeychainWrapper'

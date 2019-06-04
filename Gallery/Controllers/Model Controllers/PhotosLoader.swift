@@ -10,11 +10,11 @@ import Foundation
 
 class PhotosLoader {
 	
-	private let networkManager: NetworkRequestPerformer
+	private let networkService: NetworkService
 	private var photoListRequest: PhotoListRequest
 	
-	init(networkManager: NetworkRequestPerformer, photoListRequest: PhotoListRequest) {
-		self.networkManager = networkManager
+	init(networkService: NetworkService, photoListRequest: PhotoListRequest) {
+		self.networkService = networkService
 		self.photoListRequest = photoListRequest
 	}
 	
@@ -27,7 +27,7 @@ class PhotosLoader {
 	
 	func loadPhotos(_ completionHandler: @escaping (Result<[Photo], RequestError>) -> Void) {
 		
-		networkManager.performRequest(photoListRequest) { [weak self] (result) in
+		networkService.performRequest(photoListRequest) { [weak self] (result) in
 			switch result {
 			case let .success(photoListRequestResult):
 				
@@ -36,7 +36,7 @@ class PhotosLoader {
 				
 				completionHandler(.success(photoListRequestResult.photos))
 				
-			case let .failure(error):
+			case .failure(let error):
 				completionHandler(.failure(error))
 			}
 		}

@@ -26,10 +26,10 @@
 		3D772CAD20B8EA3A00F3DC48 /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D772CAB20B8EA3A00F3DC48 /* Photo.swift */; };
 		3D772CAF20B8EA4200F3DC48 /* Identifiable+protocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D772CAE20B8EA4200F3DC48 /* Identifiable+protocol.swift */; };
 		3D772CB120B8EA4900F3DC48 /* PhotoStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D772CB020B8EA4900F3DC48 /* PhotoStore.swift */; };
-		3D772CB720B8EAC900F3DC48 /* NetworkRequestPerformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D772CB620B8EAC900F3DC48 /* NetworkRequestPerformer.swift */; };
+		3D772CB720B8EAC900F3DC48 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D772CB620B8EAC900F3DC48 /* NetworkService.swift */; };
 		3D81AAB920BBB113009B2660 /* UnsplashAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D81AAB820BBB113009B2660 /* UnsplashAPI.swift */; };
 		3D81AABB20BBB130009B2660 /* UnsplashAccessTokenRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D81AABA20BBB130009B2660 /* UnsplashAccessTokenRequest.swift */; };
-		3D81AABE20BC7A79009B2660 /* AuthorizationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D81AABD20BC7A79009B2660 /* AuthorizationManager.swift */; };
+		3D81AABE20BC7A79009B2660 /* AuthorizationPerformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D81AABD20BC7A79009B2660 /* AuthorizationPerformer.swift */; };
 		3D81AAC020BC7D0E009B2660 /* UserRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D81AABF20BC7D0E009B2660 /* UserRequest.swift */; };
 		3D9C6D08217A6C3F00D59D36 /* PinterestCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9C6D07217A6C3F00D59D36 /* PinterestCollectionViewLayout.swift */; };
 		3D9C6D0A217A793500D59D36 /* PinterestLayoutFrameCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9C6D09217A793500D59D36 /* PinterestLayoutFrameCalculator.swift */; };
@@ -69,10 +69,10 @@
 		3D772CAB20B8EA3A00F3DC48 /* Photo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
 		3D772CAE20B8EA4200F3DC48 /* Identifiable+protocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Identifiable+protocol.swift"; sourceTree = "<group>"; };
 		3D772CB020B8EA4900F3DC48 /* PhotoStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoStore.swift; sourceTree = "<group>"; };
-		3D772CB620B8EAC900F3DC48 /* NetworkRequestPerformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkRequestPerformer.swift; sourceTree = "<group>"; };
+		3D772CB620B8EAC900F3DC48 /* NetworkService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		3D81AAB820BBB113009B2660 /* UnsplashAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnsplashAPI.swift; sourceTree = "<group>"; };
 		3D81AABA20BBB130009B2660 /* UnsplashAccessTokenRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnsplashAccessTokenRequest.swift; sourceTree = "<group>"; };
-		3D81AABD20BC7A79009B2660 /* AuthorizationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorizationManager.swift; sourceTree = "<group>"; };
+		3D81AABD20BC7A79009B2660 /* AuthorizationPerformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorizationPerformer.swift; sourceTree = "<group>"; };
 		3D81AABF20BC7D0E009B2660 /* UserRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRequest.swift; sourceTree = "<group>"; };
 		3D9C6D07217A6C3F00D59D36 /* PinterestCollectionViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinterestCollectionViewLayout.swift; sourceTree = "<group>"; };
 		3D9C6D09217A793500D59D36 /* PinterestLayoutFrameCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinterestLayoutFrameCalculator.swift; sourceTree = "<group>"; };
@@ -233,8 +233,8 @@
 		3DEC5BE9217AF87F00AD6330 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				3D772CB620B8EAC900F3DC48 /* NetworkRequestPerformer.swift */,
-				3D81AABD20BC7A79009B2660 /* AuthorizationManager.swift */,
+				3D772CB620B8EAC900F3DC48 /* NetworkService.swift */,
+				3D81AABD20BC7A79009B2660 /* AuthorizationPerformer.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -360,7 +360,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Gallery/Pods-Gallery-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Gallery/Pods-Gallery-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/SwiftKeychainWrapper/SwiftKeychainWrapper.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -369,7 +369,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Gallery/Pods-Gallery-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Gallery/Pods-Gallery-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -385,7 +385,7 @@
 				3D772CAD20B8EA3A00F3DC48 /* Photo.swift in Sources */,
 				3D2EE30B21F0775200E7AB52 /* ImageScrollView.swift in Sources */,
 				3D772CB120B8EA4900F3DC48 /* PhotoStore.swift in Sources */,
-				3D772CB720B8EAC900F3DC48 /* NetworkRequestPerformer.swift in Sources */,
+				3D772CB720B8EAC900F3DC48 /* NetworkService.swift in Sources */,
 				3D772C6720B8E93F00F3DC48 /* AppDelegate.swift in Sources */,
 				3DCDB57820B99373006297A4 /* ImageRequest.swift in Sources */,
 				3D9C6D0A217A793500D59D36 /* PinterestLayoutFrameCalculator.swift in Sources */,
@@ -409,7 +409,7 @@
 				3D638F40212AAC5A00386C4F /* UIViewController+extension.swift in Sources */,
 				3D772CAC20B8EA3A00F3DC48 /* User.swift in Sources */,
 				3DBC2C5221E019EA004DE7F1 /* UIColor+extension.swift in Sources */,
-				3D81AABE20BC7A79009B2660 /* AuthorizationManager.swift in Sources */,
+				3D81AABE20BC7A79009B2660 /* AuthorizationPerformer.swift in Sources */,
 				3D81AAC020BC7D0E009B2660 /* UserRequest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

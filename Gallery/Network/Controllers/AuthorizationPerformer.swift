@@ -1,5 +1,5 @@
 //
-//  AuthorizationManager.swift
+//  AuthorizationPerformer.swift
 //  Gallery
 //
 //  Created by Alexander Baraley on 1/14/18.
@@ -10,22 +10,18 @@ import Foundation
 import AuthenticationServices
 import SwiftKeychainWrapper
 
-extension Notification.Name {
-	static let authorizationCallback = Notification.Name("AuthorizationCallback")
+protocol AuthorizationPerformerDelegate: AnyObject {
+	func authorizationPerformer(_ performer: AuthorizationPerformer,
+								didChangeAuthorizationState state: AuthorizationPerformer.State)
+	func authorizationPerformer(_ performer: AuthorizationPerformer,
+								didFailAuthorizationWith error: RequestError)
 }
 
-protocol AuthorizationManagerDelegate: AnyObject {
-	func authorizationManager(_ manager: AuthorizationManager,
-							  didChangeAuthorizationState state: AuthorizationManager.AuthorizationState)
-	func authorizationManager(_ manager: AuthorizationManager,
-							  didFailAuthorizationWith error: RequestError)
-}
-
-class AuthorizationManager: NSObject {
+class AuthorizationPerformer: NSObject {
 	
 	// MARK: - Types
 	
-	enum AuthorizationState: Equatable {
+	enum State: Equatable {
 		case authorized(AuthorizedUserData)
 		case unauthorized
 		case isAuthorizing
@@ -33,9 +29,9 @@ class AuthorizationManager: NSObject {
     
     // MARK: - Public properties
     
-    weak var delegate: AuthorizationManagerDelegate?
+    weak var delegate: AuthorizationPerformerDelegate?
 	
-	var authorizationState: AuthorizationState {
+	var state: State {
 		if let userData = userDataState.userData  {
 			return .authorized(userData)
 		} else if userDataState.isLoading {
@@ -47,32 +43,30 @@ class AuthorizationManager: NSObject {
 
     // MARK: - Private properties
     
-    private let networkManager: NetworkRequestPerformer
+    private let networkService: NetworkService
+	private var webAuthSession: ASWebAuthenticationSession?
     
-    init(networkManager: NetworkRequestPerformer) {		
-        self.networkManager = networkManager
+    init(networkService: NetworkService) {		
+        self.networkService = networkService
 		super.init()
 		loadUserDataIfAvailable()
     }
 	
 	private var userDataState: (isLoading: Bool, userData: AuthorizedUserData?) = (false, nil) {
 		didSet {
-			delegate?.authorizationManager(self, didChangeAuthorizationState: authorizationState)
+			delegate?.authorizationPerformer(self, didChangeAuthorizationState: state)
 		}
 	}
-	
-	private var webAuthSession: ASWebAuthenticationSession?
-    private var isLogOutPerforming = false
 }
 
 // MARK: - Public methods
-extension AuthorizationManager {
+extension AuthorizationPerformer {
 	
-	func performLogIn(from presentingViewController: UIViewController) {		
+	func performLogIn() {
 		requestAuthorizationCode()
 	}
 	
-	func performLogOut(from presentingViewController: UIViewController) {
+	func performLogOut() {
 		UIApplication.shared.open(UnsplashAPI.logOutURL) { [weak self] (success) in
 			if success { self?.cleanAuthorizationData() }
 		}
@@ -80,7 +74,7 @@ extension AuthorizationManager {
 }
 
 // MARK: - Helpers
-private extension AuthorizationManager {
+private extension AuthorizationPerformer {
 	
 	func loadUserDataIfAvailable() {
 		guard
@@ -113,7 +107,7 @@ private extension AuthorizationManager {
 	func requestAccessToken(with code: String) {
 		let authorizationRequest = UnsplashAccessTokenRequest(authorizationCode: code)
 		
-		networkManager.performRequest(authorizationRequest) { [weak self] (result) in
+		networkService.performRequest(authorizationRequest) { [weak self] (result) in
 			DispatchQueue.main.async {
 				
 				switch result {
@@ -122,9 +116,9 @@ private extension AuthorizationManager {
 					KeychainWrapper.standard.set(token, forKey: UnsplashAPI.accessTokenKey)
 					self?.loadAuthorizedUser(with: token)
 					
-				case let .failure(error):
+				case .failure(let error):
 					if let self = self {
-						self.delegate?.authorizationManager(
+						self.delegate?.authorizationPerformer(
 							self, didFailAuthorizationWith: error
 						)
 					}
@@ -134,25 +128,21 @@ private extension AuthorizationManager {
 	}
 	
 	func loadAuthorizedUser(with accessToken: String) {
-		
 		userDataState = (true, nil)
 		
 		let userRequest = UserRequest(accessToken: accessToken)
 		
-		networkManager.performRequest(userRequest) { [weak self] (result) in
+		networkService.performRequest(userRequest) { [weak self] (result) in
 			DispatchQueue.main.async {
 				
 				switch result {
 				case .success(let user):
-					
 					let userData = AuthorizedUserData(accessToken: accessToken, user: user)
 					self?.userDataState = (false, userData)
 					
-				case let .failure(error):
+				case .failure(let error):
 					if let self = self {
-						self.delegate?.authorizationManager(
-							self, didFailAuthorizationWith: error
-						)
+						self.delegate?.authorizationPerformer(self, didFailAuthorizationWith: error)
 					}
 					self?.cleanAuthorizationData()
 				}

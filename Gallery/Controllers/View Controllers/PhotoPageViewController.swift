@@ -10,12 +10,14 @@ import UIKit
 
 class PhotoPageViewController: UIPageViewController {
     
-    @IBOutlet private var sharePhotoButton: UIBarButtonItem!
-    @IBOutlet private var likePhotoButton: UIBarButtonItem!
-    
     var photoStore: PhotoStore!
 	
-	var networkRequestPerformer: NetworkRequestPerformer?
+	var networkRequestPerformer: NetworkService?
+	
+	// MARK: - Outlets -
+	
+	@IBOutlet private var sharePhotoButton: UIBarButtonItem!
+	@IBOutlet private var likePhotoButton: UIBarButtonItem!
 	
 	// MARK: - Actions
 		
@@ -93,20 +95,25 @@ private extension PhotoPageViewController {
 		
 		guard let selectedPhotoIndex = photoStore.selectedPhotoIndex else { return }
 		
-		navigationItem.setRightBarButton(UIBarButtonItem.loadingBarButtonItem, animated: true)
+		toolbarItems?.removeLast()
+		toolbarItems?.append(UIBarButtonItem.loadingBarButtonItem)
 		
-		photoStore.toggleLikeOfPhoto(at: selectedPhotoIndex) { [weak self] (error) in
-			guard let error = error else {
-				self?.navigationItem.setRightBarButton(nil, animated: true)
-				self?.updateLikeButton()
-				return
-			}
+		photoStore.toggleLikeOfPhoto(at: selectedPhotoIndex) { [weak self] (result) in
+			guard let self = self else { return }
 			
-			switch error {
-			case .noInternet, .limitExceeded:
-				self?.showAlertWith(error.localizedDescription)
-			default:
-				print(error.localizedDescription)
+			switch result {
+			case .success(_):
+				self.toolbarItems?.removeLast()
+				self.toolbarItems?.append(self.likePhotoButton)
+				self.updateLikeButton()
+				
+			case .failure(let error):
+				switch error {
+				case .noInternet, .limitExceeded:
+					self.showAlertWith(error.localizedDescription)
+				default:
+					print(error.localizedDescription)
+				}
 			}
 		}
 	}
