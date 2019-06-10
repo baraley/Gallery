@@ -46,10 +46,8 @@ class PhotosCollectionViewController: UICollectionViewController {
 		super.viewWillTransition(to: size, with: coordinator)
 		
 		coordinator.animate(alongsideTransition: { (_) in
-			self.collectionViewLayout.invalidateLayout()
-		}, completion: { (_) in
-			self.scrollToSelectedPhoto(animated: false)
-		} )
+            self.collectionViewLayout.invalidateLayout()
+		})
 	}
 	
 	func scrollToSelectedPhoto(animated: Bool) {
