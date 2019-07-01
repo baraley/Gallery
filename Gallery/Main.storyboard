@@ -19,7 +19,6 @@
                         <subviews>
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gZb-lv-Ows">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <color key="backgroundColor" red="0.95754462480000002" green="0.1160253619" blue="0.20826768400000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <connections>
                                     <segue destination="zA0-3G-vFu" kind="embed" identifier="photosCollectionViewSegue" id="3mz-hM-9CZ"/>
                                 </connections>
@@ -110,6 +109,14 @@
                     </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lGA-H2-int" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" id="ola-4C-BhL">
+                    <rect key="frame" x="0.0" y="0.0" width="121" height="28"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <segments>
+                        <segment title="First"/>
+                        <segment title="Second"/>
+                    </segments>
+                </segmentedControl>
                 <customObject id="yQB-bh-Tq1"/>
             </objects>
             <point key="canvasLocation" x="1436" y="1509.8950524737631"/>

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -109,7 +109,7 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		3D30DFFC21BA5E46002EF119 /* View Controllers */ = {
+		3D30DFFC21BA5E46002EF119 /* View */ = {
 			isa = PBXGroup;
 			children = (
 				3D30DFFD21BA5E77002EF119 /* HomeViewController.swift */,
@@ -117,7 +117,7 @@
 				3D30DFFF21BA5E77002EF119 /* PhotoPageViewController.swift */,
 				3D30E00521BA5E97002EF119 /* PhotoViewContorller.swift */,
 			);
-			path = "View Controllers";
+			path = View;
 			sourceTree = "<group>";
 		};
 		3D772C5A20B8E93F00F3DC48 = {
@@ -143,7 +143,6 @@
 			children = (
 				3D772C6620B8E93F00F3DC48 /* AppDelegate.swift */,
 				3D81AABC20BBC144009B2660 /* Helpers */,
-				3DEC5BE7217AF81900AD6330 /* Network */,
 				3D772CB220B8EA5200F3DC48 /* Models */,
 				3D772CB420B8EA7100F3DC48 /* Views */,
 				3DEC5BEC217AF98200AD6330 /* Controllers */,
@@ -158,6 +157,7 @@
 		3D772CB220B8EA5200F3DC48 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				3DEC5BE8217AF87800AD6330 /* Network */,
 				3D772CAB20B8EA3A00F3DC48 /* Photo.swift */,
 				3D772CAA20B8EA3900F3DC48 /* User.swift */,
 				3D52559920DB78D700A11A4B /* AuthorizedUserData.swift */,
@@ -168,10 +168,10 @@
 		3D772CB420B8EA7100F3DC48 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				3DEC5BE6217AF7FE00AD6330 /* Layout */,
 				3D772CA820B8EA2E00F3DC48 /* PhotoCollectionViewCell.swift */,
 				3DCDB58320B9ED66006297A4 /* PhotoListCollectionViewFooter.swift */,
 				3D2EE30A21F0775200E7AB52 /* ImageScrollView.swift */,
-				3DEC5BE6217AF7FE00AD6330 /* Layout */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -210,16 +210,7 @@
 			path = Layout;
 			sourceTree = "<group>";
 		};
-		3DEC5BE7217AF81900AD6330 /* Network */ = {
-			isa = PBXGroup;
-			children = (
-				3DEC5BE9217AF87F00AD6330 /* Controllers */,
-				3DEC5BE8217AF87800AD6330 /* Models */,
-			);
-			path = Network;
-			sourceTree = "<group>";
-		};
-		3DEC5BE8217AF87800AD6330 /* Models */ = {
+		3DEC5BE8217AF87800AD6330 /* Network */ = {
 			isa = PBXGroup;
 			children = (
 				3D81AAB820BBB113009B2660 /* UnsplashAPI.swift */,
@@ -227,33 +218,35 @@
 				3DCDB57D20B9AE23006297A4 /* UnsplashRequest.swift */,
 				3DCDB57C20B99376006297A4 /* Requests */,
 			);
-			path = Models;
+			path = Network;
 			sourceTree = "<group>";
 		};
-		3DEC5BE9217AF87F00AD6330 /* Controllers */ = {
+		3DEC5BE9217AF87F00AD6330 /* Network */ = {
 			isa = PBXGroup;
 			children = (
 				3D772CB620B8EAC900F3DC48 /* NetworkService.swift */,
 				3D81AABD20BC7A79009B2660 /* AuthorizationPerformer.swift */,
 			);
-			path = Controllers;
+			name = Network;
+			path = ../Network/Network;
 			sourceTree = "<group>";
 		};
-		3DEC5BEB217AF91C00AD6330 /* Model Controllers */ = {
+		3DEC5BEB217AF91C00AD6330 /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				3D772CB020B8EA4900F3DC48 /* PhotoStore.swift */,
 				3D0F68E321F8D082003BDE8C /* PhotosLoader.swift */,
 				3D058D8321F8862E000B02A3 /* PhotoLikesToggle.swift */,
 			);
-			path = "Model Controllers";
+			path = Model;
 			sourceTree = "<group>";
 		};
 		3DEC5BEC217AF98200AD6330 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				3DEC5BEB217AF91C00AD6330 /* Model Controllers */,
-				3D30DFFC21BA5E46002EF119 /* View Controllers */,
+				3DEC5BE9217AF87F00AD6330 /* Network */,
+				3DEC5BEB217AF91C00AD6330 /* Model */,
+				3D30DFFC21BA5E46002EF119 /* View */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
