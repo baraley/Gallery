@@ -18,6 +18,7 @@ struct UserRequest: UnsplashRequest {
 	}
 	
 	// MARK: - NetworkRequest
+	
 	func decode(_ data: Data?, response: URLResponse?, error: Error?) -> Result<User, RequestError> {
 		if let data = data, let user = try? JSONDecoder().decode(User.self, from: data) {
 			return .success(user)

@@ -8,15 +8,15 @@
 
 import Foundation
 
-struct PhotoListRequest: UnsplashRequest {
+struct PhotoListRequest: UnsplashRequest, Equatable {
 	
-	typealias PhotoListRequestResult = (photos: [Photo], totalPagesNumber: Int?)
+	typealias PhotoListRequestResult = (photos: [Photo], totalPagesNumber: Int)
     
     var page: Int = 1
     private(set) var pageSize: UnsplashPageSize
     private let order: UnsplashPhotoListOrder
 	
-	init(pageSize: UnsplashPageSize = .large,
+	init(pageSize: UnsplashPageSize = .small,
          order: UnsplashPhotoListOrder = .latest,
          accessToken: String? = nil) {
         
@@ -41,7 +41,7 @@ struct PhotoListRequest: UnsplashRequest {
 		guard let httpResponse = response as? HTTPURLResponse,
 			let photosNumberString = httpResponse.allHeaderFields["x-total"] as? String,
 			let totalPhotos = Int(photosNumberString)
-		else { return 0 }
+		else { return 1 }
 		
 		let approximately = Float(totalPhotos) / Float(pageSize.rawValue)
 		

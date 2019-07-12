@@ -10,11 +10,15 @@ import UIKit
 
 protocol PhotoStoreDelegate: AnyObject {
 	func photoStoreDidStartLoading(_ store: PhotoStore)
-	func photoStore(_ store: PhotoStore, didInsertPhotos number: Int, atIndex index: Int)
+	func photoStore(_ store: PhotoStore, didInsertPhotos numberOfPhotos: Int, at index: Int)
 	func photoStore(_ store: PhotoStore, loadingFailedWithError error: RequestError)
 }
 
-class PhotoStore {
+class PhotoStore: Equatable {
+	
+	static func == (lhs: PhotoStore, rhs: PhotoStore) -> Bool {
+		return lhs.photosLoader == rhs.photosLoader
+	}
 	
 	weak var delegate: PhotoStoreDelegate?
 	
@@ -33,16 +37,14 @@ class PhotoStore {
 		}
 	}
 	
-	private var photos: [Photo] = [] { didSet { numberOfPhotos = photos.count } }
+	private var photos: [Photo] = [] //{ didSet { numberOfPhotos = photos.count } }
 	
-	private(set) var numberOfPhotos: Int = 0
+	var numberOfPhotos: Int {
+		return photos.count
+	}
 	
 	func photoAt(_ index: Int) -> Photo? {
 		guard !photos.isEmpty, index >= 0 && index < numberOfPhotos else { return nil }
-		
-		if index > numberOfPhotos - 5 {
-            loadPhotos()
-        }
 		
 		return photos[index]
 	}
@@ -57,6 +59,26 @@ class PhotoStore {
 		photosLoader.currentPage = 1
 		photos.removeAll()
 		loadPhotos()
+	}
+	
+	func loadPhotos() {
+		if photosLoader.totalPages != 0, photosLoader.currentPage > photosLoader.totalPages { return }
+		
+		delegate?.photoStoreDidStartLoading(self)
+		
+		photosLoader.loadPhotos { [weak self] (result) in
+			guard let self = self else { return }
+			
+			DispatchQueue.main.async {
+				switch result {
+				case .success(let newPhotos):
+					self.insertNewPhotos(newPhotos)
+					
+				case .failure(let error):
+					self.delegate?.photoStore(self, loadingFailedWithError: error)
+				}
+			}
+		}
 	}
 	
 	// MARK: - Like -
@@ -85,26 +107,6 @@ class PhotoStore {
 // MARK: - Private
 private extension PhotoStore {
 	
-	func loadPhotos() {
-		if photosLoader.totalPages != 0, photosLoader.currentPage > photosLoader.totalPages { return }
-		
-		delegate?.photoStoreDidStartLoading(self)
-		
-		photosLoader.loadPhotos { [weak self] (result) in
-			guard let self = self else { return }
-			
-			DispatchQueue.main.async {
-				switch result {
-				case .success(let newPhotos):
-					self.insertNewPhotos(newPhotos)
-					
-				case .failure(let error):
-					self.delegate?.photoStore(self, loadingFailedWithError: error)
-				}
-			}
-		}
-	}
-	
 	func insertNewPhotos(_ newPhotos: [Photo]) {
 		let newPhotosNumber: Int
 		let index = numberOfPhotos == 0 ? 0 : numberOfPhotos - 1
@@ -122,7 +124,7 @@ private extension PhotoStore {
 			photos.append(contentsOf: newPhotos)
 		}
 		
-		delegate?.photoStore(self, didInsertPhotos: newPhotosNumber, atIndex: index)
+		delegate?.photoStore(self, didInsertPhotos: newPhotosNumber, at: index)
 	}
 }
 

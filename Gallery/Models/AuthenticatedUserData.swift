@@ -1,5 +1,5 @@
 //
-//  AuthorizedUserData.swift
+//  AuthenticatedUserData.swift
 //  Gallery
 //
 //  Created by Alexander Baraley on 6/20/18.
@@ -8,13 +8,13 @@
 
 import Foundation
 
-struct AuthorizedUserData {
+struct AuthenticatedUserData {
     let accessToken: String
     let user: User
 }
 
-extension AuthorizedUserData: Equatable {
-    static func == (lhs: AuthorizedUserData, rhs: AuthorizedUserData) -> Bool {
+extension AuthenticatedUserData: Equatable {
+    static func == (lhs: AuthenticatedUserData, rhs: AuthenticatedUserData) -> Bool {
         return lhs.accessToken == rhs.accessToken && lhs.user.id == rhs.user.id
     }
 }

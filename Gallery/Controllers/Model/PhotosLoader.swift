@@ -8,7 +8,13 @@
 
 import Foundation
 
-class PhotosLoader {
+class PhotosLoader: Equatable {
+	
+	static func == (lhs: PhotosLoader, rhs: PhotosLoader) -> Bool {
+		return lhs.photoListRequest == rhs.photoListRequest &&
+			lhs.currentPage == rhs.currentPage &&
+			lhs.totalPages == rhs.totalPages
+	}
 	
 	private let networkService: NetworkService
 	private var photoListRequest: PhotoListRequest
@@ -31,7 +37,7 @@ class PhotosLoader {
 			switch result {
 			case let .success(photoListRequestResult):
 				
-				self?.totalPages = photoListRequestResult.totalPagesNumber ?? 1
+				self?.totalPages = photoListRequestResult.totalPagesNumber
 				self?.setupRequestForNextPage()
 				
 				completionHandler(.success(photoListRequestResult.photos))

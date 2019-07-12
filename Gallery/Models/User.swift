@@ -12,8 +12,11 @@ struct User: Decodable {
     let id: String
     let userName: String
     let name: String
+	let location: String?
     let biography: String?
+	let totalPhotos: Int
     let totalLikes: Int
+	let totalCollections: Int
     let profileImageURL: URL
     
     enum CodingKeys: String, CodingKey {
@@ -21,7 +24,10 @@ struct User: Decodable {
         case userName = "username"
         case name
         case biography = "bio"
+		case location
+		case totalPhotos = "total_photos"
         case totalLikes = "total_likes"
+		case totalCollections = "total_collections"
         case profileImageURL = "profile_image"
     }
     
@@ -38,7 +44,10 @@ struct User: Decodable {
         userName = try values.decode(String.self, forKey: .userName)
         name = try values.decode(String.self, forKey: .name)
         biography = try? values.decode(String.self, forKey: .biography)
+		location = try? values.decode(String.self, forKey: .location)
+		totalPhotos = try values.decode(Int.self, forKey: .totalPhotos)
         totalLikes = try values.decode(Int.self, forKey: .totalLikes)
+		totalCollections = try values.decode(Int.self, forKey: .totalCollections)
         
         let profileImageURLs = try values.nestedContainer(keyedBy: ProfileImageKey.self,
                                                           forKey: .profileImageURL)

@@ -43,7 +43,7 @@ extension NetworkRequest {
 	}
 }
 
-enum RequestError: Error, LocalizedError {
+enum RequestError: Error, LocalizedError, Equatable {
 	case noInternet, limitExceeded
 	case unknown(String)
 	

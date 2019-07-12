@@ -65,6 +65,10 @@ private extension PhotoPageViewController {
 		guard let selectedPhotoIndex = photoStore.selectedPhotoIndex,
 			let photo = photoStore.photoAt(selectedPhotoIndex) else { return }
 		
+		if selectedPhotoIndex > photoStore.numberOfPhotos - 5 {
+			photoStore.loadPhotos()
+		}
+		
 		setViewControllers([photoViewControllerWith(photo)],
 						   direction: .forward, animated: false, completion: nil)
 	}
@@ -150,6 +154,10 @@ extension PhotoPageViewController: UIPageViewControllerDataSource {
 		guard let selectedPhotoIndex = photoStore.selectedPhotoIndex,
 		let photo = photoStore.photoAt(selectedPhotoIndex + 1)
 		else { return nil }
+		
+		if selectedPhotoIndex == photoStore.numberOfPhotos - 5 {
+			photoStore.loadPhotos()
+		}
 		
         return photoViewControllerWith(photo)
     }

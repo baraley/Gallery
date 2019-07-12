@@ -10,9 +10,7 @@ import UIKit
 
 class PhotosCollectionViewController: UICollectionViewController {
 	
-	var photoStore: PhotoStore? {
-		didSet { photoStoreDidChange() }
-	}
+	var photoStore: PhotoStore? { didSet { photoStoreDidChange() } }
 	var networkRequestPerformer: NetworkService?
     
 	// MARK: - Private properties
@@ -76,18 +74,19 @@ private extension PhotosCollectionViewController {
 		
 		collectionView?.register(PhotoListCollectionViewFooter.self,
 								 forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
-								 withReuseIdentifier: "PhotoListCollectionViewFooter")
+								 withReuseIdentifier: PhotoListCollectionViewFooter.identifier)
 	}
 	
 	func photoStoreDidChange() {
 		guard let photoStore = photoStore,
 			let layout = collectionView?.collectionViewLayout as? PinterestCollectionViewLayout
-		else { return }
+		else { refreshPhotos(); return }
 		
 		errorMessageWasShown = false
 		layout.dataSource = photoStore
 		photoStore.delegate = self
-		refreshPhotos()
+		layout.reset()
+		collectionView?.reloadData()
 	}
 	
 	@objc func refreshPhotos() {
@@ -98,12 +97,12 @@ private extension PhotosCollectionViewController {
 		collectionView?.reloadData()
 	}
 	
-	func insertItemsForNewPhotos(_ numberOfPhotos: Int) {
-		let currentNumber = photoStore?.numberOfPhotos ?? 0
-		let oldNumber = currentNumber - numberOfPhotos
+	func insertItems(_ numberOfItems: Int, at index: Int) {
+		guard numberOfItems > 0 else { return }
 		
 		var indexPaths: [IndexPath] = []
-		for i in oldNumber..<currentNumber {
+		
+		for i in index..<index + numberOfItems {
 			indexPaths.append(IndexPath(item: i, section: 0))
 		}
 		collectionView?.insertItems(at: indexPaths)
@@ -199,6 +198,8 @@ extension PhotosCollectionViewController {
         
         guard let footer = view as? PhotoListCollectionViewFooter else { return }
         activityIndicatorView = footer.activityIndicator
+		
+		photoStore?.loadPhotos()
     }
 }
 
@@ -211,22 +212,17 @@ extension PhotosCollectionViewController: PhotoStoreDelegate {
 		}
 	}
 	
-	func photoStore(_ store: PhotoStore, didInsertPhotos number: Int, atIndex index: Int) {
+	func photoStore(_ store: PhotoStore, didInsertPhotos numberOfPhotos: Int, at index: Int) {
+		
 		refreshControl.endRefreshing()
 		activityIndicatorView?.stopAnimating()
 		errorMessageWasShown = false
 		
-		guard number > 0 else { return }
-		
-		var indexPaths: [IndexPath] = []
-		
-		for i in index..<index + number {
-			indexPaths.append(IndexPath(item: i, section: 0))
-		}
-		collectionView?.insertItems(at: indexPaths)
+		insertItems(numberOfPhotos, at: index)
 	}
 		
 	func photoStore(_ store: PhotoStore, loadingFailedWithError error: RequestError) {
+		
 		refreshControl.endRefreshing()
 		activityIndicatorView?.stopAnimating()
 		handle(error)
