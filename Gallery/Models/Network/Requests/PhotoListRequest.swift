@@ -16,7 +16,7 @@ struct PhotoListRequest: UnsplashRequest, Equatable {
     private(set) var pageSize: UnsplashPageSize
     private let order: UnsplashPhotoListOrder
 	
-	init(pageSize: UnsplashPageSize = .small,
+	init(pageSize: UnsplashPageSize = .large,
          order: UnsplashPhotoListOrder = .latest,
          accessToken: String? = nil) {
         
@@ -76,9 +76,9 @@ struct PhotoListRequest: UnsplashRequest, Equatable {
     
     var queryItems: [URLQueryItem] {
         var items = [URLQueryItem]()
-        items.append(URLQueryItem(name: UnsplashQueryParameterName.page, value: "\(page)"))
-        items.append(URLQueryItem(name: UnsplashQueryParameterName.perPage, value: "\(pageSize.rawValue)"))
-        items.append(URLQueryItem(name: UnsplashQueryParameterName.orderedBy, value: order.rawValue))
+        items.append(URLQueryItem(name: UnsplashParameterName.Pagination.page, value: "\(page)"))
+        items.append(URLQueryItem(name: UnsplashParameterName.Pagination.perPage, value: "\(pageSize.rawValue)"))
+        items.append(URLQueryItem(name: UnsplashParameterName.Pagination.orderedBy, value: order.rawValue))
         return items
     }
 }

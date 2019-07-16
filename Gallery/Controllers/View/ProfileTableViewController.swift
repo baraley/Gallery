@@ -17,6 +17,7 @@ class ProfileTableViewController: UITableViewController, SegueHandlerType {
     }
 	
 	var updateUserDataAction: (() -> ())?
+	var editProfileAction: (() -> ())?
 	var logOutAction: (() -> ())?
 	
 	// MARK: - Outlets
@@ -29,9 +30,7 @@ class ProfileTableViewController: UITableViewController, SegueHandlerType {
 	
 	@IBOutlet private var locationLabel: UILabel!
 	
-	@IBOutlet private var photosRow: UITableViewCell!
 	@IBOutlet private var likesRow: UITableViewCell!
-	@IBOutlet private var collectionsRow: UITableViewCell!
 	
 	// MARK: - Life cycle
 	
@@ -84,8 +83,13 @@ class ProfileTableViewController: UITableViewController, SegueHandlerType {
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		print("select \(indexPath)\n")
 		
-		if Section(rawValue: indexPath.section) == .logOut {
+		switch Section(rawValue: indexPath.section)! {
+		case .edit:
+			editProfileAction?()
+		case .logOut:
 			logOutAction?()
+		default:
+			break
 		}
 	}
 }
@@ -128,13 +132,8 @@ private extension ProfileTableViewController {
 			DispatchQueue.main.async { self?.imageView.image = image }
         }
 		
-		photosRow.detailTextLabel?.text = String(user.totalPhotos)
 		likesRow.detailTextLabel?.text = String(user.totalLikes)
-		collectionsRow.detailTextLabel?.text = String(user.totalCollections)
-		
-		photosRow.accessoryType = user.totalPhotos > 0 ? .disclosureIndicator : .none
 		likesRow.accessoryType = user.totalLikes > 0 ? .disclosureIndicator : .none
-		collectionsRow.accessoryType = .none//user.totalCollections > 0 ? .disclosureIndicator : .none
 		
 		tableView.reloadData()
     }

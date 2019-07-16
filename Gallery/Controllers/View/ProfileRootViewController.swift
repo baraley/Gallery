@@ -48,7 +48,7 @@ class ProfileRootViewController: UIViewController, SegueHandlerType {
 	// MARK: - Navigation
 	
 	enum SegueIdentifier: String {
-		case profile
+		case profile, editUserData
 	}
 	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -56,6 +56,21 @@ class ProfileRootViewController: UIViewController, SegueHandlerType {
 		case .profile:
 			profileTableViewController = segue.destination as? ProfileTableViewController
 			profileTableViewController?.view.isHidden = true
+			
+		case .editUserData:
+			let navVC = segue.destination as! UINavigationController
+			let editProfileViewController = navVC.viewControllers[0] as! EditProfileTableViewController
+			
+			if let state = authenticationPerformer?.state, case .authenticated(let userData) = state {
+				editProfileViewController.userData = EditableUserData(user: userData.user)
+			}
+		}
+	}
+	
+	@IBAction private func unwindFromEditProfileController(_ segue: UIStoryboardSegue) {
+		if let editProfileController = segue.source as? EditProfileTableViewController,
+			let userData = editProfileController.userData {
+			authenticationPerformer?.updateUserData(with: userData)
 		}
 	}
 }
@@ -68,6 +83,9 @@ private extension ProfileRootViewController {
 		
 		profileVC.updateUserDataAction = { [weak self] in
 			self?.authenticationPerformer?.updateUserData()
+		}
+		profileVC.editProfileAction = { [weak self] in
+			self?.performSegue(withIdentifier: .editUserData, sender: nil)
 		}
 		profileVC.logOutAction = { [weak self] in
 			self?.authenticationPerformer?.performLogOut()

@@ -49,6 +49,32 @@ extension AuthenticationPerformer {
 		loadUserDataIfAvailable()
 	}
 	
+	func updateUserData(with userDataToUpdate: EditableUserData) {
+		guard case .authenticated(let userData) = state else { return }
+		
+		let updateUserRequest = UpdateUserRequest(
+			userDataToUpdate: userDataToUpdate, accessToken: userData.accessToken
+		)
+		
+		state = .isAuthenticating
+		
+		networkService.performRequest(updateUserRequest) { [weak self] (result) in
+			switch result {
+			case .success(let updatedUser):
+				let updatedUserData = AuthenticatedUserData(
+					accessToken: userData.accessToken, user: updatedUser
+				)
+				DispatchQueue.main.async {
+					self?.state = .authenticated(updatedUserData)
+				}
+			case .failure(let error):
+				DispatchQueue.main.async {
+					self?.state = .authenticationFailed(error)
+				}
+			}
+		}
+	}
+	
 	func performLogIn() {
         switch state {
         case .unauthenticated, .authenticationFailed(_):

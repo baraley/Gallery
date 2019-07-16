@@ -21,7 +21,7 @@ struct UnsplashAccessTokenRequest: UnsplashRequest {
 	func decode(_ data: Data?, response: URLResponse?, error: Error?) -> Result<String, RequestError> {
 		if let data = data,
 			let json = (try? JSONSerialization.jsonObject(with: data, options: [])) as? [String: Any],
-			let accessToken = json[UnsplashQueryParameterName.accessToken] as? String {
+			let accessToken = json[UnsplashParameterName.Authentication.accessToken] as? String {
 			
 			return .success(accessToken)
 		}
@@ -40,11 +40,11 @@ struct UnsplashAccessTokenRequest: UnsplashRequest {
 		var items = [URLQueryItem]()
 		
 		let itemsDictionary = [
-			UnsplashQueryParameterName.clientID:        UnsplashAPI.clientID,
-			UnsplashQueryParameterName.clientSecret:	UnsplashAPI.clientSecret,
-			UnsplashQueryParameterName.redirectURI:     UnsplashAPI.callbackUrlScheme,
-			UnsplashQueryParameterName.code:   			code,
-			UnsplashQueryParameterName.grantType:       UnsplashQueryParameterName.authorizationCode
+			UnsplashParameterName.Authentication.clientID:      UnsplashAPI.clientID,
+			UnsplashParameterName.Authentication.clientSecret:	UnsplashAPI.clientSecret,
+			UnsplashParameterName.Authentication.redirectURI:   UnsplashAPI.callbackUrlScheme,
+			UnsplashParameterName.Authentication.code:   		code,
+			UnsplashParameterName.Authentication.grantType:     UnsplashParameterName.Authentication.authorizationCode
 		]
 		for (key, value) in itemsDictionary {
 			items.append(URLQueryItem(name: key, value: value))

@@ -12,6 +12,8 @@ struct User: Decodable {
     let id: String
     let userName: String
     let name: String
+	let firstName: String
+	let lastName: String?
 	let location: String?
     let biography: String?
 	let totalPhotos: Int
@@ -23,6 +25,8 @@ struct User: Decodable {
         case id
         case userName = "username"
         case name
+		case firstName = "first_name"
+		case lastName = "last_name"
         case biography = "bio"
 		case location
 		case totalPhotos = "total_photos"
@@ -43,6 +47,8 @@ struct User: Decodable {
         id = try values.decode(String.self, forKey: .id)
         userName = try values.decode(String.self, forKey: .userName)
         name = try values.decode(String.self, forKey: .name)
+		firstName = try values.decode(String.self, forKey: .firstName)
+		lastName = try? values.decode(String.self, forKey: .lastName)
         biography = try? values.decode(String.self, forKey: .biography)
 		location = try? values.decode(String.self, forKey: .location)
 		totalPhotos = try values.decode(Int.self, forKey: .totalPhotos)
@@ -51,6 +57,6 @@ struct User: Decodable {
         
         let profileImageURLs = try values.nestedContainer(keyedBy: ProfileImageKey.self,
                                                           forKey: .profileImageURL)
-        profileImageURL = try profileImageURLs.decode(URL.self, forKey: .large)
+        profileImageURL = try profileImageURLs.decode(URL.self, forKey: .medium)
     }
 }

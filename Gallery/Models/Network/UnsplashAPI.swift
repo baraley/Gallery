@@ -38,34 +38,51 @@ enum UnsplashAPI {
 	
 	private static var authorizationQueryParameters: [URLQueryItem] {
 		let scopeValues: [UnsplashPermitionScope] = [
-			.readPublicData, .readUserData, .readUserPhotos, .readUserCollections, .writeUserLikes
+			.readPublicData, .readUserData, .readUserPhotos, .readUserCollections,
+			.writeUserData, .writeUserLikes
 		]
 		
 		let responseType = "code"
 		let scope = scopeValues.map { $0.rawValue }.joined(separator: "+")
 		
 		return [
-			URLQueryItem(name: UnsplashQueryParameterName.clientID, value: UnsplashAPI.clientID),
-			URLQueryItem(name: UnsplashQueryParameterName.redirectURI, value: UnsplashAPI.callbackUrlScheme),
-			URLQueryItem(name: UnsplashQueryParameterName.responseType, value: responseType),
-			URLQueryItem(name: UnsplashQueryParameterName.scope, value: scope)
+			URLQueryItem(name: UnsplashParameterName.Authentication.clientID, value: UnsplashAPI.clientID),
+			URLQueryItem(name: UnsplashParameterName.Authentication.redirectURI, value: UnsplashAPI.callbackUrlScheme),
+			URLQueryItem(name: UnsplashParameterName.Authentication.responseType, value: responseType),
+			URLQueryItem(name: UnsplashParameterName.Authentication.scope, value: scope)
 		]
 	}
 }
 
-enum UnsplashQueryParameterName {
-	static let page = "page"
-	static let perPage = "per_page"
-	static let orderedBy = "order_by"
-	static let clientID = "client_id"
-	static let clientSecret = "client_secret"
-	static let redirectURI = "redirect_uri"
-	static let code = "code"
-	static let scope = "scope"
-	static let responseType = "response_type"
-	static let grantType = "grant_type"
-	static let authorizationCode = "authorization_code"
-	static let accessToken = "access_token"
+enum UnsplashParameterName {
+	enum Authentication {
+		static let authorizationCode = "authorization_code"
+		static let accessToken = "access_token"
+		static let clientID = "client_id"
+		static let clientSecret = "client_secret"
+		static let redirectURI = "redirect_uri"
+		static let responseType = "response_type"
+		static let code = "code"
+		static let scope = "scope"
+		static let grantType = "grant_type"
+	}
+	
+	enum Pagination {
+		static let page = "page"
+		static let perPage = "per_page"
+		static let orderedBy = "order_by"
+	}
+	
+	enum User {
+		static let userName			 = "username"
+		static let firstName		 = "first_name"
+		static let lastName			 = "last_name"
+		static let email			 = "email"
+		static let url				 = "url"	//Portfolio/personal URL.
+		static let location			 = "location"
+		static let bio				 = "bio"
+		static let instagramUserName = "instagram_username"
+	}
 }
 
 enum UnsplashPermitionScope: String {
