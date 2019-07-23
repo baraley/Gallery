@@ -81,15 +81,10 @@ class ProfileTableViewController: UITableViewController, SegueHandlerType {
 	}
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		print("select \(indexPath)\n")
-		
 		switch Section(rawValue: indexPath.section)! {
-		case .edit:
-			editProfileAction?()
-		case .logOut:
-			logOutAction?()
-		default:
-			break
+		case .edit:		editProfileAction?()
+		case .logOut:	logOutAction?()
+		default: 		break
 		}
 	}
 }

@@ -26,7 +26,7 @@ class RootViewController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        selectedViewController = viewControllers?[1]
+//        selectedViewController = viewControllers?[2]
         parseViewControllers()
     }
 }

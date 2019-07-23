@@ -8,10 +8,8 @@
 
 import Foundation
 
-struct PhotoListRequest: UnsplashRequest, Equatable {
+struct PhotoListRequest: UnsplashRequest, Equatable, PaginalRequest {
 	
-	typealias PhotoListRequestResult = (photos: [Photo], totalPagesNumber: Int)
-    
     var page: Int = 1
     private(set) var pageSize: UnsplashPageSize
     private let order: UnsplashPhotoListOrder
@@ -37,30 +35,27 @@ struct PhotoListRequest: UnsplashRequest, Equatable {
 		endpoint = "/users/\(userName)/likes"
 	}
 	
-	private func parseTotalPages(from response: URLResponse?) -> Int {
-		guard let httpResponse = response as? HTTPURLResponse,
-			let photosNumberString = httpResponse.allHeaderFields["x-total"] as? String,
-			let totalPhotos = Int(photosNumberString)
-		else { return 1 }
+	init(photosFromCollection photoCollection: PhotoCollection,
+		 pageSize: UnsplashPageSize = .large,
+		 order: UnsplashPhotoListOrder = .latest,
+		 accessToken: String? = nil) {
 		
-		let approximately = Float(totalPhotos) / Float(pageSize.rawValue)
+		self.init(pageSize: pageSize, order: order, accessToken: accessToken)
 		
-		return Int(approximately.rounded(FloatingPointRoundingRule.up))
+		endpoint = "/collections/\(photoCollection.id)/photos"
 	}
 	
     // MARK: - NetworkRequest
 	
 	func decode(
 		_ data: Data?, response: URLResponse?, error: Error?
-		) -> Result<PhotoListRequestResult, RequestError> {
-		
-		let totalPages = parseTotalPages(from: response)
-		
+		) -> Result<[Photo], RequestError> {
+				
 		let decoder = JSONDecoder()
 		decoder.dateDecodingStrategy = .iso8601
 		
 		if let data = data, let photos = try? decoder.decode([Photo].self, from: data) {
-			return .success((photos, totalPages))
+			return .success(photos)
 		}
 		
 		let error =	parseError(data, response: response, error: error)

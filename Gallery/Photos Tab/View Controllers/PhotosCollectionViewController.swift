@@ -8,7 +8,7 @@
 
 import UIKit
 
-class PhotosCollectionViewController: UICollectionViewController {
+class PhotosCollectionViewController: UICollectionViewController, SegueHandlerType {
 	
 	var photoStore: PhotoStore? { didSet { photoStoreDidChange() } }
 	var networkRequestPerformer: NetworkService?
@@ -47,15 +47,12 @@ class PhotosCollectionViewController: UICollectionViewController {
             self.collectionViewLayout.invalidateLayout()
 		})
 	}
-	
-	func scrollToSelectedPhoto(animated: Bool) {
-		if let index = photoStore?.selectedPhotoIndex {
-			let indexPath = IndexPath(item: index, section: 0)
-			collectionView?.scrollToItem(at: indexPath, at: .centeredVertically, animated: animated)
-		}
-	}
 
     // MARK: - Navigation
+	
+	enum SegueIdentifier: String {
+		case photoPageViewController
+	}
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard case .photoPageViewController = segueIdentifier(for: segue) else { return  }
@@ -72,9 +69,9 @@ private extension PhotosCollectionViewController {
 	func setup() {
 		collectionView?.refreshControl = refreshControl
 		
-		collectionView?.register(PhotoListCollectionViewFooter.self,
+		collectionView?.register(CollectionViewLoadingFooter.self,
 								 forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
-								 withReuseIdentifier: PhotoListCollectionViewFooter.identifier)
+								 withReuseIdentifier: CollectionViewLoadingFooter.identifier)
 	}
 	
 	func photoStoreDidChange() {
@@ -87,6 +84,13 @@ private extension PhotosCollectionViewController {
 		photoStore.delegate = self
 		layout.reset()
 		collectionView?.reloadData()
+	}
+	
+	func scrollToSelectedPhoto(animated: Bool) {
+		if let index = photoStore?.selectedPhotoIndex {
+			let indexPath = IndexPath(item: index, section: 0)
+			collectionView?.scrollToItem(at: indexPath, at: .centeredVertically, animated: animated)
+		}
 	}
 	
 	@objc func refreshPhotos() {
@@ -152,7 +156,7 @@ extension PhotosCollectionViewController {
                         at indexPath: IndexPath) -> UICollectionReusableView {
 		
         let view = collectionView
-            .dequeueSupplementaryView(of: kind, at: indexPath) as PhotoListCollectionViewFooter
+            .dequeueSupplementaryView(of: kind, at: indexPath) as CollectionViewLoadingFooter
         return view
     }
 }
@@ -186,7 +190,7 @@ extension PhotosCollectionViewController {
                         didEndDisplaying cell: UICollectionViewCell,
                         forItemAt indexPath: IndexPath) {
 		
-		if let photo = photoStore?.photoAt(indexPath.row) {
+		if let photo = photoStore?.photoAt(indexPath.item) {
 			let imageRequest = ImageRequest(url: photo.thumbURL)
 			networkRequestPerformer?.cancel(imageRequest)
 		}
@@ -196,7 +200,7 @@ extension PhotosCollectionViewController {
                         willDisplaySupplementaryView view: UICollectionReusableView,
                         forElementKind elementKind: String, at indexPath: IndexPath) {
         
-        guard let footer = view as? PhotoListCollectionViewFooter else { return }
+        guard let footer = view as? CollectionViewLoadingFooter else { return }
         activityIndicatorView = footer.activityIndicator
 		
 		photoStore?.loadPhotos()
@@ -227,11 +231,4 @@ extension PhotosCollectionViewController: PhotoStoreDelegate {
 		activityIndicatorView?.stopAnimating()
 		handle(error)
 	}
-}
-
-// MARK: - SegueHandlerType
-extension PhotosCollectionViewController: SegueHandlerType {
-    enum SegueIdentifier: String {
-        case photoPageViewController
-    }
 }

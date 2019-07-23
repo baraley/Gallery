@@ -27,3 +27,10 @@ extension UITableView {
 		return self.indexPathForRow(at: point)
 	}
 }
+
+// MARK: - IndexPath -
+extension IndexPath {
+	static var first: IndexPath {
+		return IndexPath(row: 0, section: 0)
+	}
+}

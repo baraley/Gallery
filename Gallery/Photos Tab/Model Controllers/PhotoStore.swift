@@ -14,34 +14,28 @@ protocol PhotoStoreDelegate: AnyObject {
 	func photoStore(_ store: PhotoStore, loadingFailedWithError error: RequestError)
 }
 
-class PhotoStore: Equatable {
-	
-	static func == (lhs: PhotoStore, rhs: PhotoStore) -> Bool {
-		return lhs.photosLoader == rhs.photosLoader
-	}
+class PhotoStore {
 	
 	weak var delegate: PhotoStoreDelegate?
 	
 	private let networkService: NetworkService
-	
-	private let photosLoader: PhotosLoader
+
+	private let paginalContentLoader: PaginalContentLoader<PhotoListRequest>
 	private var photoLikesToggle: PhotoLikesToggle?
 	
 	init(networkService: NetworkService, photoListRequest: PhotoListRequest) {
 		self.networkService = networkService
-		self.photosLoader = PhotosLoader(networkService: networkService,
-										 photoListRequest: photoListRequest)
+		self.paginalContentLoader = PaginalContentLoader(networkService: networkService,
+														 request: photoListRequest)
 		
 		if let accessToken = photoListRequest.accessToken {
 			photoLikesToggle = PhotoLikesToggle(networkService: networkService, accessToken: accessToken)
 		}
 	}
 	
-	private var photos: [Photo] = [] //{ didSet { numberOfPhotos = photos.count } }
+	private var photos: [Photo] = [] { didSet { numberOfPhotos = photos.count } }
 	
-	var numberOfPhotos: Int {
-		return photos.count
-	}
+	private(set) var numberOfPhotos: Int = 0
 	
 	func photoAt(_ index: Int) -> Photo? {
 		guard !photos.isEmpty, index >= 0 && index < numberOfPhotos else { return nil }
@@ -56,17 +50,17 @@ class PhotoStore: Equatable {
 	var selectedPhotoIndex: Int?
 		
 	func reloadPhotos() {
-		photosLoader.currentPage = 1
+		paginalContentLoader.resetToFirstPage()
 		photos.removeAll()
 		loadPhotos()
 	}
 	
 	func loadPhotos() {
-		if photosLoader.totalPages != 0, photosLoader.currentPage > photosLoader.totalPages { return }
+		guard paginalContentLoader.hasContentToLoad else { return }
 		
 		delegate?.photoStoreDidStartLoading(self)
 		
-		photosLoader.loadPhotos { [weak self] (result) in
+		paginalContentLoader.loadContent { [weak self] (result) in
 			guard let self = self else { return }
 			
 			DispatchQueue.main.async {

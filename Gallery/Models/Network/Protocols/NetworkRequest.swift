@@ -42,16 +42,3 @@ extension NetworkRequest {
 		return .unknown(error?.localizedDescription ?? "Unknown error")
 	}
 }
-
-enum RequestError: Error, LocalizedError, Equatable {
-	case noInternet, limitExceeded
-	case unknown(String)
-	
-	var errorDescription: String? {
-		switch self {
-		case .noInternet:			return "The Internet connection appears to be offline."
-		case .limitExceeded: 		return "Requests' limit to Unsplash is exceeded"
-		case .unknown(let message): return message
-		}
-	}
-}

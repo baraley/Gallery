@@ -15,7 +15,7 @@ class ProfileRootViewController: UIViewController, SegueHandlerType {
     var authenticationPerformer: AuthenticationPerformer? {
         didSet { authenticationPerformer?.addObserve(self) }
     }
-    
+	
     // MARK: - Private properties
     
 	private var profileTableViewController: ProfileTableViewController? {
@@ -24,8 +24,8 @@ class ProfileRootViewController: UIViewController, SegueHandlerType {
 	
     // MARK: - Outlets
 	
-	@IBOutlet private var loadingView: UIActivityIndicatorView!
-    @IBOutlet private var authorizationButton: UIButton!
+	@IBOutlet private var loadingView: UIActivityIndicatorView?
+    @IBOutlet private var authorizationButton: UIButton?
 	
     // MARK: - Actions
     
@@ -42,8 +42,14 @@ class ProfileRootViewController: UIViewController, SegueHandlerType {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
+	}
+	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		
 		authenticationStateDidChange()
 	}
+
 	
 	// MARK: - Navigation
 	
@@ -93,26 +99,27 @@ private extension ProfileRootViewController {
 	}
 	
 	func authenticationStateDidChange() {
-		loadingView.stopAnimating()
+		loadingView?.stopAnimating()
 		profileTableViewController?.view.isHidden = true
 		
 		guard let state = authenticationPerformer?.state else { return }
 		
 		switch state {
 		case .authenticated(let userData):
+			authorizationButton?.isHidden = true
 			profileTableViewController?.networkService = NetworkService()
 			profileTableViewController?.userData = userData
 			profileTableViewController?.view.isHidden = false
 			
 		case .unauthenticated:
-			authorizationButton.isHidden = false
+			authorizationButton?.isHidden = false
 			
 		case .isAuthenticating:
-			loadingView.startAnimating()
-			authorizationButton.isHidden = true
+			loadingView?.startAnimating()
+			authorizationButton?.isHidden = true
 			
 		case .authenticationFailed(let error):
-			authorizationButton.isHidden = true
+			authorizationButton?.isHidden = true
 			show(error)
 		}
 	}

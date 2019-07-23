@@ -9,12 +9,6 @@
 import UIKit
 
 class PhotosRootViewController: UIViewController, SegueHandlerType {
-	
-	// MARK: - Types
-	
-	enum PhotosType {
-		case newPhotos, likedPhotos
-	}
     
     // MARK: - Public properties
     

@@ -15,7 +15,7 @@
                 <viewControllerPlaceholder storyboardName="Photos" referencedIdentifier="PhotosCollectionViewController" id="Xiq-Do-TwJ" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pNU-ZM-mDB" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1113" y="2055"/>
+            <point key="canvasLocation" x="2081" y="1889"/>
         </scene>
         <!--Profile-->
         <scene sceneID="nZc-ge-aOM">

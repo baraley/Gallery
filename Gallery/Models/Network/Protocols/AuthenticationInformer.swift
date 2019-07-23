@@ -8,17 +8,17 @@
 
 import Foundation
 
-enum AuthenticationState: Equatable {
-	case authenticated(AuthenticatedUserData)
-	case unauthenticated
-	case isAuthenticating
-	case authenticationFailed(RequestError)
-}
-
 protocol AuthenticationInformer {
 	
 	var state: AuthenticationState { get }
 	
 	func addObserve(_ observer: AuthenticationObserver)
 	func removeObserver(_ observer: AuthenticationObserver)
+}
+
+enum AuthenticationState: Equatable {
+	case authenticated(AuthenticatedUserData)
+	case unauthenticated
+	case isAuthenticating
+	case authenticationFailed(RequestError)
 }

@@ -8,8 +8,6 @@
 
 import Foundation
 
-
-
 struct EditableUserData {
 	var userName: String
 	var firstName: String
