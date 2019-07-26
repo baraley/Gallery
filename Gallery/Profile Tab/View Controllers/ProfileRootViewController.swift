@@ -16,7 +16,7 @@ class ProfileRootViewController: UIViewController, SegueHandlerType {
         didSet { authenticationPerformer?.addObserve(self) }
     }
 	
-    // MARK: - Private properties
+    // MARK: - Private propertiesv
     
 	private var profileTableViewController: ProfileTableViewController? {
 		didSet { setupProfileTableViewController() }

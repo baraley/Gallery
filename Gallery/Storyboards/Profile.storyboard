@@ -101,7 +101,7 @@
                                                     <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="profile placeholder" id="4Cs-IQ-41y">
+                                                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="profilePlaceholder" id="4Cs-IQ-41y">
                                                     <rect key="frame" x="16" y="0.0" width="44" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <userDefinedRuntimeAttributes>
@@ -358,7 +358,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="profile placeholder" width="64" height="64"/>
         <image name="profileIcon" width="22" height="25"/>
+        <image name="profilePlaceholder" width="64" height="64"/>
     </resources>
 </document>

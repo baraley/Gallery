@@ -23,7 +23,6 @@ class PhotoLikesToggle {
 		let toggleRequest = TogglePhotoLikeRequest(photo: photo, accessToken: accessToken)
 		
 		networkService.performRequest(toggleRequest) { (result) in
-			
 			completionHandler(result)
 		}
 	}

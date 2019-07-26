@@ -8,15 +8,7 @@
 
 import UIKit
 
-protocol PhotoStoreDelegate: AnyObject {
-	func photoStoreDidStartLoading(_ store: PhotoStore)
-	func photoStore(_ store: PhotoStore, didInsertPhotos numberOfPhotos: Int, at index: Int)
-	func photoStore(_ store: PhotoStore, loadingFailedWithError error: RequestError)
-}
-
-class PhotoStore {
-	
-	weak var delegate: PhotoStoreDelegate?
+final class PhotoStore: NSObject {
 	
 	private let networkService: NetworkService
 
@@ -48,6 +40,12 @@ class PhotoStore {
 	}
 	
 	var selectedPhotoIndex: Int?
+	
+	var contentDidStartLoadingAction: (() -> Void)?
+	
+	var newContentDidLoadAction: ((_ numberOfItems: Int, _ index: Int) -> Void)?
+	
+	var contentLoadingWasFailedAction: ((_ error: RequestError) -> Void)?
 		
 	func reloadPhotos() {
 		paginalContentLoader.resetToFirstPage()
@@ -58,18 +56,15 @@ class PhotoStore {
 	func loadPhotos() {
 		guard paginalContentLoader.hasContentToLoad else { return }
 		
-		delegate?.photoStoreDidStartLoading(self)
+		contentDidStartLoadingAction?()
 		
 		paginalContentLoader.loadContent { [weak self] (result) in
 			guard let self = self else { return }
 			
 			DispatchQueue.main.async {
 				switch result {
-				case .success(let newPhotos):
-					self.insertNewPhotos(newPhotos)
-					
-				case .failure(let error):
-					self.delegate?.photoStore(self, loadingFailedWithError: error)
+				case .success(let newPhotos):	self.insertNewPhotos(newPhotos)
+				case .failure(let error): 		self.contentLoadingWasFailedAction?(error)
 				}
 			}
 		}
@@ -88,9 +83,10 @@ class PhotoStore {
 		let photo = photos[index]
 		
 		photoLikesToggle?.toggleLike(of: photo, completionHandler: { [weak self] (result) in
+			guard let self = self else { return }
 			DispatchQueue.main.async {
 				if let toggledPhoto = try? result.get() {
-					self?.photos[index] = toggledPhoto
+					self.photos[index] = toggledPhoto
 				}
 				completionHandler(result)
 			}
@@ -118,7 +114,31 @@ private extension PhotoStore {
 			photos.append(contentsOf: newPhotos)
 		}
 		
-		delegate?.photoStore(self, didInsertPhotos: newPhotosNumber, at: index)
+		newContentDidLoadAction?(newPhotosNumber, index)
+	}
+}
+
+// MARK: - UICollectionViewDataSource
+extension PhotoStore: UICollectionViewDataSource {
+	
+	func collectionView(_ collectionView: UICollectionView,
+								 numberOfItemsInSection section: Int) -> Int {
+		return numberOfPhotos
+	}
+	
+	func collectionView(_ collectionView: UICollectionView,
+								 cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+		let cell = collectionView.dequeueCell(indexPath: indexPath) as PhotoCollectionViewCell
+		return cell
+	}
+	
+	func collectionView(_ collectionView: UICollectionView,
+								 viewForSupplementaryElementOfKind kind: String,
+								 at indexPath: IndexPath) -> UICollectionReusableView {
+		
+		let view = collectionView
+			.dequeueSupplementaryView(of: kind, at: indexPath) as CollectionViewLoadingFooter
+		return view
 	}
 }
 
@@ -133,5 +153,53 @@ extension PhotoStore: PinterestCollectionViewLayoutDataSource {
 		let sizeRatio = photo.sizeRatio
 		
 		return (cellWidth * sizeRatio).rounded()
+	}
+}
+
+extension PhotoStore: ImageCollectionViewDataSource {
+	
+	var selectedItemIndex: Int? {
+		get { return selectedPhotoIndex }
+		set { selectedPhotoIndex = newValue }
+	}
+	
+	func reloadContent(for collectionView: UICollectionView) {
+		reloadPhotos()
+		collectionView.reloadData()
+	}
+	
+	func loadMoreContent(for collectionView: UICollectionView) {
+		loadPhotos()
+	}
+	
+	func collectionView(_ collectionView: UICollectionView,
+						loadContentForCellAt indexPath: IndexPath) {
+		
+		guard let photo = photoAt(indexPath.row) else  { return }
+		
+		networkService.performRequest(ImageRequest(url: photo.thumbURL)) {
+			[weak self, weak collectionView] (result) in
+			
+			guard let self = self, let collectionView = collectionView else { return }
+			
+			DispatchQueue.main.async {
+				switch result {
+				case .success(let thumb):
+					let cell = collectionView.cellForItem(at: indexPath) as? PhotoCollectionViewCell
+					cell?.imageView.image = thumb
+					
+				case .failure(let error):
+					self.contentLoadingWasFailedAction?(error)
+				}
+			}
+		}
+	}
+	
+	func collectionView(_ collectionView: UICollectionView,
+						cancelLoadingContentForCellAt indexPath: IndexPath) {
+		
+		if let photo = photoAt(indexPath.item) {
+			networkService.cancel(ImageRequest(url: photo.thumbURL))
+		}
 	}
 }

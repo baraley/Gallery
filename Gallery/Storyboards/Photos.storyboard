@@ -12,7 +12,7 @@
         <!--Gallery-->
         <scene sceneID="8gf-yb-dNn">
             <objects>
-                <viewController id="KLX-ml-d0D" customClass="PhotosRootViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="KLX-ml-d0D" customClass="ImagesRootViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="6dX-G0-hwV">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -20,7 +20,7 @@
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gZb-lv-Ows">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <connections>
-                                    <segue destination="zA0-3G-vFu" kind="embed" identifier="photosCollectionViewSegue" id="3mz-hM-9CZ"/>
+                                    <segue destination="zA0-3G-vFu" kind="embed" identifier="photos" id="3mz-hM-9CZ"/>
                                 </connections>
                             </containerView>
                         </subviews>
@@ -40,10 +40,10 @@
             </objects>
             <point key="canvasLocation" x="460" y="1512"/>
         </scene>
-        <!--Photos Collection View Controller-->
+        <!--Images Collection View Controller-->
         <scene sceneID="Xfm-9z-8Ja">
             <objects>
-                <collectionViewController storyboardIdentifier="PhotosCollectionViewController" id="zA0-3G-vFu" customClass="PhotosCollectionViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
+                <collectionViewController storyboardIdentifier="PhotosCollectionViewController" id="zA0-3G-vFu" customClass="ImagesCollectionViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" contentInsetAdjustmentBehavior="scrollableAxes" bouncesZoom="NO" dataMode="prototypes" id="Xtx-Ju-I7R">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

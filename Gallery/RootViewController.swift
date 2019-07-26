@@ -12,11 +12,17 @@ class RootViewController: UITabBarController {
     
 	private lazy var authenticationPerformer: AuthenticationPerformer = .init()
     
-    private var photosRootViewController: PhotosRootViewController? {
+    private var photosRootViewController: ImagesRootViewController? {
         didSet {
             photosRootViewController?.authenticationInformer = authenticationPerformer
         }
     }
+	
+	private var photoCollectionsRootViewController: ImagesRootViewController? {
+		didSet {
+			photoCollectionsRootViewController?.authenticationInformer = authenticationPerformer
+		}
+	}
     
     private var profileRootViewController: ProfileRootViewController?{
         didSet {
@@ -41,14 +47,8 @@ private extension RootViewController {
             let navVC = $0 as? UINavigationController
             return navVC?.viewControllers[0] ?? nil
         }
-        
-        tabRootControllers.forEach({
-            if let photosRootVC = $0 as? PhotosRootViewController {
-                photosRootViewController = photosRootVC
-                
-            } else if let profileRootVC = $0 as? ProfileRootViewController {
-                profileRootViewController = profileRootVC
-            }
-        })
+		photosRootViewController = tabRootControllers[0] as? ImagesRootViewController
+        photoCollectionsRootViewController = tabRootControllers[1] as? ImagesRootViewController
+		profileRootViewController = tabRootControllers[2] as? ProfileRootViewController
     }
 }
