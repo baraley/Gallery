@@ -9,10 +9,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--PhotosCollectionViewController-->
+        <!--ImagesCollectionViewController-->
         <scene sceneID="Enb-Od-zD1">
             <objects>
-                <viewControllerPlaceholder storyboardName="Photos" referencedIdentifier="PhotosCollectionViewController" id="Xiq-Do-TwJ" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardName="Photos" referencedIdentifier="ImagesCollectionViewController" id="Xiq-Do-TwJ" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pNU-ZM-mDB" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2081" y="1889"/>

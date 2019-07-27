@@ -156,7 +156,7 @@ extension PhotoStore: PinterestCollectionViewLayoutDataSource {
 	}
 }
 
-extension PhotoStore: ImageCollectionViewDataSource {
+extension PhotoStore: ImagesCollectionViewDataSource {
 	
 	var selectedItemIndex: Int? {
 		get { return selectedPhotoIndex }

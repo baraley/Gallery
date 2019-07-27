@@ -25,7 +25,7 @@
 		118C0E2322E11E6800395509 /* PhotoCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118C0E2222E11E6800395509 /* PhotoCollection.swift */; };
 		118C0E2522E11FB600395509 /* PhotoCollectionListRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 118C0E2422E11FB600395509 /* PhotoCollectionListRequest.swift */; };
 		119B822B22E72AD30044D384 /* PaginalRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119B822A22E72AD30044D384 /* PaginalRequest.swift */; };
-		11A1657522E85552000943CC /* ImageCollectionViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A1657422E85552000943CC /* ImageCollectionViewDataSource.swift */; };
+		11A1657522E85552000943CC /* ImagesCollectionViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A1657422E85552000943CC /* ImagesCollectionViewDataSource.swift */; };
 		11FD5CC622DCE4C400840D01 /* EditProfileTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11FD5CC522DCE4C400840D01 /* EditProfileTableViewController.swift */; };
 		11FD5CC822DCEBC600840D01 /* UITableView+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11FD5CC722DCEBC600840D01 /* UITableView+extension.swift */; };
 		11FD5CCA22DDB02600840D01 /* EditProfileTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11FD5CC922DDB02600840D01 /* EditProfileTableViewCell.swift */; };
@@ -87,7 +87,7 @@
 		118C0E2222E11E6800395509 /* PhotoCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCollection.swift; sourceTree = "<group>"; };
 		118C0E2422E11FB600395509 /* PhotoCollectionListRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCollectionListRequest.swift; sourceTree = "<group>"; };
 		119B822A22E72AD30044D384 /* PaginalRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginalRequest.swift; sourceTree = "<group>"; };
-		11A1657422E85552000943CC /* ImageCollectionViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCollectionViewDataSource.swift; sourceTree = "<group>"; };
+		11A1657422E85552000943CC /* ImagesCollectionViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesCollectionViewDataSource.swift; sourceTree = "<group>"; };
 		11FD5CC522DCE4C400840D01 /* EditProfileTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileTableViewController.swift; sourceTree = "<group>"; };
 		11FD5CC722DCEBC600840D01 /* UITableView+extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UITableView+extension.swift"; sourceTree = "<group>"; };
 		11FD5CC922DDB02600840D01 /* EditProfileTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileTableViewCell.swift; sourceTree = "<group>"; };
@@ -316,7 +316,7 @@
 				1100DBD222CCF06F0022E653 /* RootViewController.swift */,
 				3D30DFFD21BA5E77002EF119 /* ImagesRootViewController.swift */,
 				3D30E00021BA5E77002EF119 /* ImagesCollectionViewController.swift */,
-				11A1657422E85552000943CC /* ImageCollectionViewDataSource.swift */,
+				11A1657422E85552000943CC /* ImagesCollectionViewDataSource.swift */,
 				3DEC5BE8217AF87800AD6330 /* Network */,
 				118C0E1B22E11CDE00395509 /* Photos Tab */,
 				118C0E2622E126C800395509 /* Collections Tab */,
@@ -561,7 +561,7 @@
 				3D5FB29E21B7DB1D0095EE9A /* UIBarButtonItem+extension.swift in Sources */,
 				119B822B22E72AD30044D384 /* PaginalRequest.swift in Sources */,
 				1156A3BD22E2DB2D00997C19 /* PhotoCollectionStore.swift in Sources */,
-				11A1657522E85552000943CC /* ImageCollectionViewDataSource.swift in Sources */,
+				11A1657522E85552000943CC /* ImagesCollectionViewDataSource.swift in Sources */,
 				11FD5CC822DCEBC600840D01 /* UITableView+extension.swift in Sources */,
 				3DCDB57E20B9AE23006297A4 /* UnsplashRequest.swift in Sources */,
 				3D30E00421BA5E77002EF119 /* ImagesCollectionViewController.swift in Sources */,

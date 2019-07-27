@@ -61,7 +61,8 @@ class ProfileTableViewController: UITableViewController, SegueHandlerType {
 			let request = PhotoListRequest(likedPhotosOfUser: userName, accessToken: accessToken)
 			
 			vc.title = "Liked photos"
-			vc.dataSource = PhotoStore(networkService: NetworkService(), photoListRequest: request)
+			vc.contentType = .photos(PhotoStore(networkService: NetworkService(),
+												photoListRequest: request))
 			
 		default:
 			break

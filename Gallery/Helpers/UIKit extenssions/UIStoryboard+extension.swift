@@ -11,9 +11,10 @@ import UIKit
 extension UIStoryboard {
 	
 	enum Storyboard: String {
-		case main		= "Main"
-		case photos		= "Photos"
-		case profile	= "Profile"
+		case main				= "Main"
+		case photos				= "Photos"
+		case collections		= "Collections"
+		case profile			= "Profile"
 	}
 	
 	convenience init(storyboard: Storyboard, bundle: Bundle? = nil) {

@@ -8,9 +8,11 @@
 
 import UIKit
 
-class ImagesRootViewController: UIViewController, SegueHandlerType {
+class ImagesRootViewController: UIViewController {
     
     // MARK: - Public properties
+	
+	var contentType: ImagesCollectionViewController.ContentType!
 	
     var authenticationInformer: AuthenticationInformer? {
         didSet {
@@ -23,12 +25,8 @@ class ImagesRootViewController: UIViewController, SegueHandlerType {
 	private var imagesCollectionViewController: ImagesCollectionViewController?
     
     private var userData: AuthenticatedUserData? {
-        didSet {
-			imagesCollectionViewController?.dataSource = contentType == .photos ? createPhotosStore() : createPhotoCollectionStore()
-        }
-    }
-	
-	private var contentType: ContentType = .photos
+		didSet { updateDataSource() }
+	}
     
     // MARK: - Life cycle
     
@@ -39,36 +37,15 @@ class ImagesRootViewController: UIViewController, SegueHandlerType {
 	}
 	
 	// MARK: - Navigation
-    
-    enum SegueIdentifier: String {
-        case photos, photoCollections
-    }
 	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-		
 		imagesCollectionViewController = segue.destination as? ImagesCollectionViewController
-		
-		imagesCollectionViewController?.configurator = self
-		
-		guard authenticationInformer?.state != .isAuthenticating else { return }
-		
-		switch segueIdentifier(for: segue) {
-		case .photos:
-			contentType = .photos
-			imagesCollectionViewController?.dataSource = createPhotosStore()
-		case .photoCollections:
-			contentType = .photoCollections
-			imagesCollectionViewController?.dataSource = createPhotoCollectionStore()
-		}
+		updateDataSource()
 	}
 }
 
 // MARK: - Helpers
 private extension ImagesRootViewController {
-	
-	enum ContentType {
-		case photos, photoCollections
-	}
 	
 	func createPhotosStore() -> PhotoStore {
 		
@@ -96,6 +73,18 @@ private extension ImagesRootViewController {
 		return PhotoCollectionStore(networkService: NetworkService(),
 									photoCollectionsListRequest: photoCollectionListRequest)
 	}
+	
+	func updateDataSource() {
+		switch contentType! {
+		case .photos(_):
+			let dataSource = createPhotosStore()
+			imagesCollectionViewController?.contentType = .photos(dataSource)
+			
+		case .photoCollections(_):
+			let dataSource = createPhotoCollectionStore()
+			imagesCollectionViewController?.contentType = .photoCollections(dataSource)
+		}
+	}
 }
 
 // MARK: - AuthenticationObserver
@@ -106,34 +95,16 @@ extension ImagesRootViewController: AuthenticationObserver {
     }
     
     func authenticationDidStart() {
-        imagesCollectionViewController?.dataSource = nil
+		switch contentType! {
+		case .photos(_):
+			imagesCollectionViewController?.contentType = .photos(nil)
+			
+		case .photoCollections(_):
+			imagesCollectionViewController?.contentType = .photoCollections(nil)
+		}
     }
     
     func deauthenticationDidFinish() {
         userData = nil
     }
-}
-
-// MARK: - ChildViewControllersConfigurator
-extension ImagesRootViewController: ChildViewControllersConfigurator {
-	
-	func config(_ photoPageViewController: PhotoPageViewController) {
-		photoPageViewController.photoStore = imagesCollectionViewController?.dataSource as? PhotoStore
-		photoPageViewController.networkRequestPerformer = NetworkService()
-	}
-	
-	func config(_ imagesCollectionViewController: ImagesCollectionViewController,
-				forSelectedItemAt indexPath: IndexPath) {
-		
-		guard let dataSource = imagesCollectionViewController.dataSource as? PhotoCollectionStore,
-			let photoCollection = dataSource.photoCollectionAt(indexPath.item)
-		else { return }
-		
-		let request = PhotoListRequest(photosFromCollection: photoCollection)
-		
-		imagesCollectionViewController.title = photoCollection.title
-		imagesCollectionViewController.dataSource = PhotoStore(
-			networkService: NetworkService(), photoListRequest: request
-		)
-	}
 }

@@ -1,5 +1,5 @@
 //
-//  ImageCollectionViewDataSource.swift
+//  ImagesCollectionViewDataSource.swift
 //  Gallery
 //
 //  Created by Alexander Baraley on 7/24/19.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol ImageCollectionViewDataSource: UICollectionViewDataSource {
+protocol ImagesCollectionViewDataSource: UICollectionViewDataSource {
 	var selectedItemIndex: Int? { get set }
 	
 	var contentDidStartLoadingAction: (() -> Void)? { get set }

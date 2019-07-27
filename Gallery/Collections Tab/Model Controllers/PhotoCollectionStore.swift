@@ -121,7 +121,7 @@ extension PhotoCollectionStore: UICollectionViewDataSource {
 	}
 }
 
-extension PhotoCollectionStore: ImageCollectionViewDataSource {
+extension PhotoCollectionStore: ImagesCollectionViewDataSource {
 	var selectedItemIndex: Int? {
 		get { return selectedPhotoCollectionIndex }
 		set { selectedPhotoCollectionIndex = newValue }

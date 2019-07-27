@@ -11,19 +11,30 @@ import UIKit
 private let cellSizeWidthMultiplier: CGFloat = 0.9
 private let cellSizeHeightMultiplier: CGFloat = 0.25
 
-protocol ChildViewControllersConfigurator {
-	func config(_ photoPageViewController: PhotoPageViewController)
-	func config(_ imagesCollectionViewController: ImagesCollectionViewController,
-				forSelectedItemAt indexPath: IndexPath)
-}
-
 class ImagesCollectionViewController: UICollectionViewController, SegueHandlerType {
 	
-	var dataSource: ImageCollectionViewDataSource? { didSet { dataSourceDidChange() } }
-	var configurator: ChildViewControllersConfigurator?
+	// MARK: - Types
+	
+	enum ContentType {
+		case photos(PhotoStore?)
+		case photoCollections(PhotoCollectionStore?)
+	}
+	
+	// MARK: - Public properties
+	
+	var contentType: ContentType = .photos(nil) {
+		didSet {
+			switch contentType {
+			case .photos(let photoStore): 						dataSource = photoStore
+			case .photoCollections(let photoCollectionStore):	dataSource = photoCollectionStore
+			}
+			dataSourceDidChange()
+		}
+	}
 	
 	// MARK: - Private properties
 	
+	private var dataSource: ImagesCollectionViewDataSource?
 	private var errorMessageWasShown = false
     
     private weak var activityIndicatorView: UIActivityIndicatorView?
@@ -60,31 +71,33 @@ class ImagesCollectionViewController: UICollectionViewController, SegueHandlerTy
     // MARK: - Navigation
 	
 	enum SegueIdentifier: String {
-		case photoPageViewController, photosOfCollectionViewController
+		case photoPage, photosFromCollection
 	}
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		switch segueIdentifier(for: segue) {
-		case .photoPageViewController:
-			
+		case .photoPage:
+			guard case .photos(let dataSource) = contentType else { return }
 			let photoPageViewController = segue.destination as! PhotoPageViewController
-			configurator?.config(photoPageViewController)
+			photoPageViewController.photoStore = dataSource
+			photoPageViewController.networkRequestPerformer = NetworkService()
 			
-		case .photosOfCollectionViewController:
-
-			guard let indexPath = collectionView.indexPathsForSelectedItems?.first
+		case .photosFromCollection:
+			guard let indexPath = collectionView.indexPathsForSelectedItems?.first,
+				case .photoCollections(let photoCollectionsStore) = contentType,
+				let dataSource = photoCollectionsStore,
+				let photoCollection = dataSource.photoCollectionAt(indexPath.item)
 			else { return }
 
 			let imagesCollectionViewController = segue.destination as! ImagesCollectionViewController
-			configurator?.config(imagesCollectionViewController, forSelectedItemAt: indexPath)			
+			
+			let request = PhotoListRequest(photosFromCollection: photoCollection)
+			
+			imagesCollectionViewController.title = photoCollection.title
+			imagesCollectionViewController.contentType = .photos(PhotoStore(
+				networkService: NetworkService(), photoListRequest: request
+			))
 		}
-	}
-	
-	@objc private func refreshPhotos() {
-		if let layout = collectionView?.collectionViewLayout as? PinterestCollectionViewLayout {
-			layout.reset()
-		}
-		dataSource?.reloadContent(for: collectionView)
 	}
 }
 
@@ -94,13 +107,11 @@ private extension ImagesCollectionViewController {
 	func setup() {
 		collectionView?.refreshControl = refreshControl
 		
-		if (collectionViewLayout as? PinterestCollectionViewLayout) != nil {
-			let kind = UICollectionView.elementKindSectionFooter
-			let identifier = CollectionViewLoadingFooter.identifier
-			collectionView?.register(CollectionViewLoadingFooter.self,
-									 forSupplementaryViewOfKind: kind,
-									 withReuseIdentifier: identifier)
-		}
+		let kind = UICollectionView.elementKindSectionFooter
+		let identifier = CollectionViewLoadingFooter.identifier
+		collectionView?.register(CollectionViewLoadingFooter.self,
+								 forSupplementaryViewOfKind: kind,
+								 withReuseIdentifier: identifier)
 		
 		if let layout = collectionViewLayout as? UICollectionViewFlowLayout {
 			let width = UIScreen.main.bounds.size.width * cellSizeWidthMultiplier
@@ -130,6 +141,13 @@ private extension ImagesCollectionViewController {
 		
 		collectionView.dataSource = dataSource
 		collectionView?.reloadData()
+	}
+	
+	@objc private func refreshPhotos() {
+		if let layout = collectionView?.collectionViewLayout as? PinterestCollectionViewLayout {
+			layout.reset()
+		}
+		dataSource?.reloadContent(for: collectionView)
 	}
 	
 	func scrollToSelectedPhoto(animated: Bool) {

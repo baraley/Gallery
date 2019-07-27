@@ -43,7 +43,7 @@
         <!--Images Collection View Controller-->
         <scene sceneID="Xfm-9z-8Ja">
             <objects>
-                <collectionViewController storyboardIdentifier="PhotosCollectionViewController" id="zA0-3G-vFu" customClass="ImagesCollectionViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
+                <collectionViewController storyboardIdentifier="ImagesCollectionViewController" id="zA0-3G-vFu" customClass="ImagesCollectionViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" contentInsetAdjustmentBehavior="scrollableAxes" bouncesZoom="NO" dataMode="prototypes" id="Xtx-Ju-I7R">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -72,7 +72,7 @@
                                 <size key="customSize" width="369" height="255"/>
                                 <connections>
                                     <outlet property="imageView" destination="D5G-16-zLb" id="P5y-Ol-qdc"/>
-                                    <segue destination="NKp-gH-msW" kind="show" identifier="photoPageViewController" id="NIS-DL-PgY"/>
+                                    <segue destination="NKp-gH-msW" kind="show" identifier="photoPage" id="NIS-DL-PgY"/>
                                 </connections>
                             </collectionViewCell>
                         </cells>

@@ -42,7 +42,7 @@
         <!--Images Collection View Controller-->
         <scene sceneID="H2d-ja-5bL">
             <objects>
-                <collectionViewController storyboardIdentifier="PhotoCollectionsViewController" id="Uye-0A-DRa" customClass="ImagesCollectionViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
+                <collectionViewController storyboardIdentifier="ImagesCollectionViewController" id="Uye-0A-DRa" customClass="ImagesCollectionViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" dataMode="prototypes" id="578-G1-PtZ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -105,7 +105,7 @@
                                 <connections>
                                     <outlet property="imageView" destination="4pw-Fu-yZb" id="J7X-Uc-7vb"/>
                                     <outlet property="titleLabel" destination="7pW-08-OSx" id="y4F-oH-RQE"/>
-                                    <segue destination="d9D-Ki-tZA" kind="show" identifier="photosOfCollectionViewController" id="yV1-n7-nNn"/>
+                                    <segue destination="d9D-Ki-tZA" kind="show" identifier="photosFromCollection" id="yV1-n7-nNn"/>
                                 </connections>
                             </collectionViewCell>
                         </cells>
@@ -124,10 +124,10 @@
             </objects>
             <point key="canvasLocation" x="1413.5999999999999" y="1509.8950524737631"/>
         </scene>
-        <!--PhotosCollectionViewController-->
+        <!--ImagesCollectionViewController-->
         <scene sceneID="fbC-T2-sgM">
             <objects>
-                <viewControllerPlaceholder storyboardName="Photos" referencedIdentifier="PhotosCollectionViewController" id="d9D-Ki-tZA" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardName="Photos" referencedIdentifier="ImagesCollectionViewController" id="d9D-Ki-tZA" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hq5-WF-VN3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2190" y="1509"/>
