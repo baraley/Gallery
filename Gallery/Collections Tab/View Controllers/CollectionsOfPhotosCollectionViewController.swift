@@ -11,6 +11,10 @@ import UIKit
 private let cellSizeWidthMultiplier: CGFloat = 0.9
 private let cellSizeHeightMultiplier: CGFloat = 0.25
 
+protocol PhotoListRequestDataSource: ImagesCollectionViewDataSource {
+	func photoListRequestForPhoto(at index: Int) -> PhotoListRequest?
+}
+
 class CollectionsOfPhotosCollectionViewController: BaseImagesCollectionViewController, SegueHandlerType {
 	
 	// MARK: - Public properties
@@ -30,12 +34,11 @@ class CollectionsOfPhotosCollectionViewController: BaseImagesCollectionViewContr
 		guard case .photosFromCollection = segueIdentifier(for: segue) else { return }
 		
 		guard let indexPath = collectionView.indexPathsForSelectedItems?.first,
-			let photoCollection = paginalContentStore?.itemAt(indexPath.item)
+			let photoCollection = paginalContentStore?.itemAt(indexPath.item),
+			let request = paginalContentStore?.photoListRequestForPhoto(at: indexPath.item)
 			else { return }
 		
 		let imagesCollectionViewController = segue.destination as! PhotosCollectionViewController
-		
-		let request = PhotoListRequest(photosFromCollection: photoCollection)
 		
 		imagesCollectionViewController.title = photoCollection.title
 		imagesCollectionViewController.paginalContentStore = PaginalContentStore(

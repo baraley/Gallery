@@ -12,7 +12,7 @@
         <!--Collections-->
         <scene sceneID="nau-9z-Lp2">
             <objects>
-                <viewController storyboardIdentifier="PhotoCollectionRootViewController" id="VKk-Aj-Xfz" customClass="ImagesRootViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="CollectionOfPhotosRootViewController" id="VKk-Aj-Xfz" customClass="CollectionOfPhotosRootViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ZbN-XT-2r9">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -33,7 +33,24 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="bH7-xd-FN0"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Collections" id="0AS-mb-2nQ"/>
+                    <navigationItem key="navigationItem" title="Collections" id="0AS-mb-2nQ">
+                        <barButtonItem key="rightBarButtonItem" id="BAL-rI-s3a">
+                            <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="Nbs-CL-jbs">
+                                <rect key="frame" x="238" y="7.5" width="121" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <segments>
+                                    <segment title="New"/>
+                                    <segment title="Featured"/>
+                                </segments>
+                                <connections>
+                                    <action selector="toggleContentType:" destination="VKk-Aj-Xfz" eventType="valueChanged" id="iEu-VC-sBx"/>
+                                </connections>
+                            </segmentedControl>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="contentTypeToggler" destination="Nbs-CL-jbs" id="RLy-ZV-dsd"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="igI-gg-Vpg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

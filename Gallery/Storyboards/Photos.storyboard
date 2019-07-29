@@ -9,10 +9,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Gallery-->
+        <!--Photos-->
         <scene sceneID="8gf-yb-dNn">
             <objects>
-                <viewController id="KLX-ml-d0D" customClass="ImagesRootViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PhotoRootViewController" id="KLX-ml-d0D" customClass="PhotoRootViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="6dX-G0-hwV">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -34,7 +34,24 @@
                         <viewLayoutGuide key="safeArea" id="KAG-2J-Qvm"/>
                     </view>
                     <toolbarItems/>
-                    <navigationItem key="navigationItem" title="Gallery" id="DgS-4l-GhD"/>
+                    <navigationItem key="navigationItem" title="Photos" id="DgS-4l-GhD">
+                        <barButtonItem key="rightBarButtonItem" id="rf9-jn-FeJ">
+                            <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="mro-VC-LdJ">
+                                <rect key="frame" x="238" y="7.5" width="121" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <segments>
+                                    <segment title="New"/>
+                                    <segment title="Popular"/>
+                                </segments>
+                                <connections>
+                                    <action selector="toggleContentType:" destination="KLX-ml-d0D" eventType="valueChanged" id="jEq-e4-dqq"/>
+                                </connections>
+                            </segmentedControl>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="contentTypeToggler" destination="mro-VC-LdJ" id="SUJ-R8-GpV"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="foi-hZ-pDA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

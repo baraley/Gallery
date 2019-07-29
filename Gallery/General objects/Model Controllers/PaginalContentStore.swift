@@ -222,3 +222,13 @@ extension PaginalContentStore: PhotoPageDataSource where R == PhotoListRequest {
 		loadMoreContent()
 	}
 }
+
+// MARK: - PhotoListRequestDataSource
+extension PaginalContentStore: PhotoListRequestDataSource where R == PhotoCollectionListRequest {
+	
+	func photoListRequestForPhoto(at index: Int) -> PhotoListRequest? {
+		guard let photoCollection = itemAt(index) else { return nil }
+				
+		return PhotoListRequest(photosFromCollection: photoCollection, accessToken: accessToken)
+	}
+}

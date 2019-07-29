@@ -18,6 +18,14 @@ struct PhotoCollectionListRequest: UnsplashRequest, PaginalRequest {
 		
 		self.pageSize = pageSize
 		self.accessToken = accessToken
+		
+		endpoint = "/collections"
+	}
+	
+	init(featuredCollectionsWtithPageSize pageSize: UnsplashPageSize = .large, accessToken: String? = nil) {
+		
+		self.init(pageSize: pageSize, accessToken: accessToken)
+		endpoint = "/collections/curated"
 	}
 	
 	// MARK: - NetworkRequest
@@ -42,7 +50,7 @@ struct PhotoCollectionListRequest: UnsplashRequest, PaginalRequest {
 	private(set) var accessToken: String?
 	
 	private(set) var method = HTTPMethod.GET
-	private(set) var endpoint: String = "/collections"
+	private(set) var endpoint: String
 	
 	var queryItems: [URLQueryItem] {
 		var items = [URLQueryItem]()

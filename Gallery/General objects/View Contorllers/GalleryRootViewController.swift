@@ -1,5 +1,5 @@
 //
-//  RootViewController.swift
+//  GalleryRootViewController.swift
 //  Gallery
 //
 //  Created by Alexander Baraley on 7/3/19.
@@ -8,17 +8,17 @@
 
 import UIKit
 
-class RootViewController: UITabBarController {
+class GalleryRootViewController: UITabBarController {
     
 	private lazy var authenticationPerformer: AuthenticationPerformer = .init()
     
-    private var photosRootViewController: ImagesRootViewController? {
+    private var photosRootViewController: PhotosRootViewController? {
         didSet {
             photosRootViewController?.authenticationInformer = authenticationPerformer
         }
     }
 	
-	private var photoCollectionsRootViewController: ImagesRootViewController? {
+	private var photoCollectionsRootViewController: CollectionOfPhotosRootViewController? {
 		didSet {
 			photoCollectionsRootViewController?.authenticationInformer = authenticationPerformer
 		}
@@ -38,7 +38,7 @@ class RootViewController: UITabBarController {
 }
 
 // MARK: - Private
-private extension RootViewController {
+private extension GalleryRootViewController {
     
     func parseViewControllers() {
         guard let viewControllers = viewControllers else { return }
@@ -47,8 +47,8 @@ private extension RootViewController {
             let navVC = $0 as? UINavigationController
             return navVC?.viewControllers[0] ?? nil
         }
-		photosRootViewController = tabRootControllers[0] as? ImagesRootViewController
-        photoCollectionsRootViewController = tabRootControllers[1] as? ImagesRootViewController
+		photosRootViewController = tabRootControllers[0] as? PhotosRootViewController
+        photoCollectionsRootViewController = tabRootControllers[1] as? CollectionOfPhotosRootViewController
 		profileRootViewController = tabRootControllers[2] as? ProfileRootViewController
     }
 }
