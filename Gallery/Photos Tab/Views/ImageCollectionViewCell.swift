@@ -1,5 +1,5 @@
 //
-//  PhotoCollectionViewCell.swift
+//  ImageCollectionViewCell.swift
 //  Gallery
 //
 //  Created by Alexander Baraley on 12/17/17.
@@ -10,7 +10,7 @@ import UIKit
 
 private let cornerRadius: CGFloat = 10
 
-class PhotoCollectionViewCell: UICollectionViewCell {
+class ImageCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var imageView: UIImageView!
 	
@@ -45,4 +45,9 @@ class PhotoCollectionViewCell: UICollectionViewCell {
 		let rect = CGRect(origin: CGPoint.zero, size: size)
 		layer.shadowPath = UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius).cgPath
 	}
+}
+
+class PhotoCollectionViewCell: ImageCollectionViewCell, ConfigurableCell {
+	
+	func configure(_ item: Photo) { }
 }

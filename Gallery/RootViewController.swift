@@ -15,14 +15,12 @@ class RootViewController: UITabBarController {
     private var photosRootViewController: ImagesRootViewController? {
         didSet {
             photosRootViewController?.authenticationInformer = authenticationPerformer
-			photosRootViewController?.contentType = .photos(nil)
         }
     }
 	
 	private var photoCollectionsRootViewController: ImagesRootViewController? {
 		didSet {
 			photoCollectionsRootViewController?.authenticationInformer = authenticationPerformer
-			photoCollectionsRootViewController?.contentType = .photoCollections(nil)
 		}
 	}
     

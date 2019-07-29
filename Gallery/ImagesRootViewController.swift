@@ -8,11 +8,9 @@
 
 import UIKit
 
-class ImagesRootViewController: UIViewController {
+class ImagesRootViewController: UIViewController, SegueHandlerType {
     
     // MARK: - Public properties
-	
-	var contentType: ImagesCollectionViewController.ContentType!
 	
     var authenticationInformer: AuthenticationInformer? {
         didSet {
@@ -22,7 +20,8 @@ class ImagesRootViewController: UIViewController {
     
     // MARK: - Private properties
 	
-	private var imagesCollectionViewController: ImagesCollectionViewController?
+	private var photosCollectionVC: PhotosCollectionViewController?
+	private var collectionOfPhotosCollectionVC: CollectionsOfPhotosCollectionViewController?
     
     private var userData: AuthenticatedUserData? {
 		didSet { updateDataSource() }
@@ -38,29 +37,42 @@ class ImagesRootViewController: UIViewController {
 	
 	// MARK: - Navigation
 	
+	enum SegueIdentifier: String {
+		case photos, collections
+	}
+	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-		imagesCollectionViewController = segue.destination as? ImagesCollectionViewController
-		updateDataSource()
+		switch segueIdentifier(for: segue) {
+		case .photos:
+			photosCollectionVC = segue.destination as? PhotosCollectionViewController
+			
+			photosCollectionVC?.paginalContentStore = createPhotosStore()
+			
+		case .collections:
+			collectionOfPhotosCollectionVC = segue.destination as? CollectionsOfPhotosCollectionViewController
+			
+			collectionOfPhotosCollectionVC?.paginalContentStore = createPhotoCollectionStore()
+		}
 	}
 }
 
 // MARK: - Helpers
 private extension ImagesRootViewController {
 	
-	func createPhotosStore() -> PhotoStore {
+	func createPhotosStore() -> PaginalContentStore<PhotoListRequest, PhotoCollectionViewCell> {
 		
 		let photoListRequest: PhotoListRequest
-        
-        if let userData = userData {
-            photoListRequest = .init(accessToken: userData.accessToken)
-        } else {
-            photoListRequest = .init()
-        }
 		
-		return PhotoStore(networkService: NetworkService(), photoListRequest: photoListRequest)
+		if let userData = userData {
+			photoListRequest = .init(accessToken: userData.accessToken)
+		} else {
+			photoListRequest = .init()
+		}
+		
+		return PaginalContentStore(networkService: NetworkService(), paginalRequest: photoListRequest)
 	}
 	
-	func createPhotoCollectionStore() -> PhotoCollectionStore {
+	func createPhotoCollectionStore() -> PaginalContentStore<PhotoCollectionListRequest, CollectionsOfPhotosCollectionViewCell> {
 		
 		let photoCollectionListRequest: PhotoCollectionListRequest
 		
@@ -70,20 +82,12 @@ private extension ImagesRootViewController {
 			photoCollectionListRequest = .init()
 		}
 		
-		return PhotoCollectionStore(networkService: NetworkService(),
-									photoCollectionsListRequest: photoCollectionListRequest)
+		return PaginalContentStore(networkService: NetworkService(), paginalRequest: photoCollectionListRequest)
 	}
 	
 	func updateDataSource() {
-		switch contentType! {
-		case .photos(_):
-			let dataSource = createPhotosStore()
-			imagesCollectionViewController?.contentType = .photos(dataSource)
-			
-		case .photoCollections(_):
-			let dataSource = createPhotoCollectionStore()
-			imagesCollectionViewController?.contentType = .photoCollections(dataSource)
-		}
+		photosCollectionVC?.paginalContentStore = createPhotosStore()
+		collectionOfPhotosCollectionVC?.paginalContentStore = createPhotoCollectionStore()
 	}
 }
 
@@ -95,13 +99,8 @@ extension ImagesRootViewController: AuthenticationObserver {
     }
     
     func authenticationDidStart() {
-		switch contentType! {
-		case .photos(_):
-			imagesCollectionViewController?.contentType = .photos(nil)
-			
-		case .photoCollections(_):
-			imagesCollectionViewController?.contentType = .photoCollections(nil)
-		}
+		photosCollectionVC?.paginalContentStore = nil
+		collectionOfPhotosCollectionVC?.paginalContentStore = nil
     }
     
     func deauthenticationDidFinish() {

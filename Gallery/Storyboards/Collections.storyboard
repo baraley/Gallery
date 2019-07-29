@@ -20,7 +20,7 @@
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cll-CT-dKy">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <connections>
-                                    <segue destination="Uye-0A-DRa" kind="embed" identifier="photoCollections" id="KAz-DG-zXn"/>
+                                    <segue destination="Uye-0A-DRa" kind="embed" identifier="collections" id="KAz-DG-zXn"/>
                                 </connections>
                             </containerView>
                         </subviews>
@@ -39,10 +39,10 @@
             </objects>
             <point key="canvasLocation" x="468" y="1509.8950524737631"/>
         </scene>
-        <!--Images Collection View Controller-->
+        <!--Collections Of Photos Collection View Controller-->
         <scene sceneID="H2d-ja-5bL">
             <objects>
-                <collectionViewController storyboardIdentifier="ImagesCollectionViewController" id="Uye-0A-DRa" customClass="ImagesCollectionViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
+                <collectionViewController storyboardIdentifier="CollectionsOfPhotoCollectionVC" id="Uye-0A-DRa" customClass="CollectionsOfPhotosCollectionViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" dataMode="prototypes" id="578-G1-PtZ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -54,7 +54,7 @@
                             <inset key="sectionInset" minX="0.0" minY="15" maxX="0.0" maxY="15"/>
                         </collectionViewFlowLayout>
                         <cells>
-                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PhotoCollectionCollectionViewCell" id="A6S-mL-CPZ" customClass="PhotoCollectionCollectionViewCell" customModule="Gallery" customModuleProvider="target">
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="CollectionsOfPhotosCollectionViewCell" id="A6S-mL-CPZ" customClass="CollectionsOfPhotosCollectionViewCell" customModule="Gallery" customModuleProvider="target">
                                 <rect key="frame" x="16" y="15" width="343" height="185"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
@@ -124,10 +124,10 @@
             </objects>
             <point key="canvasLocation" x="1413.5999999999999" y="1509.8950524737631"/>
         </scene>
-        <!--ImagesCollectionViewController-->
+        <!--PhotosCollectionVC-->
         <scene sceneID="fbC-T2-sgM">
             <objects>
-                <viewControllerPlaceholder storyboardName="Photos" referencedIdentifier="ImagesCollectionViewController" id="d9D-Ki-tZA" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardName="Photos" referencedIdentifier="PhotosCollectionVC" id="d9D-Ki-tZA" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hq5-WF-VN3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2190" y="1509"/>

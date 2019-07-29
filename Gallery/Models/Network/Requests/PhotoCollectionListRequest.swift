@@ -9,6 +9,7 @@
 import Foundation
 
 struct PhotoCollectionListRequest: UnsplashRequest, PaginalRequest {
+	typealias ContentModel = PhotoCollection
 	
 	var page: Int = 1
 	private(set) var pageSize: UnsplashPageSize

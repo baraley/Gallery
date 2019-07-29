@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct PhotoCollection: Decodable {
+struct PhotoCollection: Decodable, ThumbURLHolder {
 	
 	let id: Int
 	let title: String

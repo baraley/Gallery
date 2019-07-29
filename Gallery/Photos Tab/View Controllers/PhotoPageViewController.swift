@@ -8,11 +8,27 @@
 
 import UIKit
 
-class PhotoPageViewController: UIPageViewController {
-    
-    var photoStore: PhotoStore!
+protocol PhotoPageDataSource {
+	var selectedPhotoIndex: Int? { get set }
+	var numberOfPhotos: Int { get }
 	
-	var networkRequestPerformer: NetworkService?
+	func photoAt(_ index: Int) -> Photo?
+	func indexOf(_ photo: Photo) -> Int?
+	func loadMorePhoto()
+}
+
+protocol PhotoLikesToggler {
+	var isLikeTogglingAvailable: Bool { get }
+	
+	func toggleLikeOfPhoto(
+		at index: Int, with completionHandler: @escaping (Result<Photo, RequestError>) -> Void
+	)
+}
+
+class PhotoPageViewController: UIPageViewController {
+	
+    var photoPageDataSource: (PhotoPageDataSource & PhotoLikesToggler)!
+	var networkRequestPerformer: NetworkService!
 	
 	// MARK: - Outlets -
 	
@@ -62,11 +78,11 @@ class PhotoPageViewController: UIPageViewController {
 private extension PhotoPageViewController {
 	
 	func setupFirstViewController() {
-		guard let selectedPhotoIndex = photoStore.selectedPhotoIndex,
-			let photo = photoStore.photoAt(selectedPhotoIndex) else { return }
+		guard let selectedPhotoIndex = photoPageDataSource.selectedPhotoIndex,
+			let photo = photoPageDataSource.photoAt(selectedPhotoIndex) else { return }
 		
-		if selectedPhotoIndex > photoStore.numberOfPhotos - 5 {
-			photoStore.loadPhotos()
+		if selectedPhotoIndex > photoPageDataSource.numberOfPhotos - 5 {
+			photoPageDataSource.loadMorePhoto()
 		}
 		
 		setViewControllers([photoViewControllerWith(photo)],
@@ -85,9 +101,9 @@ private extension PhotoPageViewController {
 	}
     
     func updateLikeButton() {
-        guard photoStore.isLikeTogglingAvailable,
-            let selectedPhotoIndex = photoStore.selectedPhotoIndex,
-            let photo = photoStore.photoAt(selectedPhotoIndex)
+        guard photoPageDataSource.isLikeTogglingAvailable,
+            let selectedPhotoIndex = photoPageDataSource.selectedPhotoIndex,
+            let photo = photoPageDataSource.photoAt(selectedPhotoIndex)
             else { return }
         
         
@@ -97,12 +113,12 @@ private extension PhotoPageViewController {
 	
 	func toggleLikeOfPhoto() {
 		
-		guard let selectedPhotoIndex = photoStore.selectedPhotoIndex else { return }
+		guard let selectedPhotoIndex = photoPageDataSource.selectedPhotoIndex else { return }
 		
 		toolbarItems?.removeLast()
 		toolbarItems?.append(UIBarButtonItem.loadingBarButtonItem)
 		
-		photoStore.toggleLikeOfPhoto(at: selectedPhotoIndex) { [weak self] (result) in
+		photoPageDataSource.toggleLikeOfPhoto(at: selectedPhotoIndex) { [weak self] (result) in
 			guard let self = self else { return }
 			
 			switch result {
@@ -140,8 +156,8 @@ extension PhotoPageViewController: UIPageViewControllerDataSource {
     func pageViewController(_ pageViewController: UIPageViewController,
                             viewControllerBefore viewController: UIViewController) -> UIViewController? {
         
-        guard let selectedPhotoIndex = photoStore.selectedPhotoIndex,
-			let photo = photoStore.photoAt(selectedPhotoIndex - 1)
+        guard let selectedPhotoIndex = photoPageDataSource.selectedPhotoIndex,
+			let photo = photoPageDataSource.photoAt(selectedPhotoIndex - 1)
 		else { return nil }
 		
         
@@ -151,12 +167,12 @@ extension PhotoPageViewController: UIPageViewControllerDataSource {
     func pageViewController(_ pageViewController: UIPageViewController,
                             viewControllerAfter viewController: UIViewController) -> UIViewController? {
 		
-		guard let selectedPhotoIndex = photoStore.selectedPhotoIndex,
-		let photo = photoStore.photoAt(selectedPhotoIndex + 1)
+		guard let selectedPhotoIndex = photoPageDataSource.selectedPhotoIndex,
+		let photo = photoPageDataSource.photoAt(selectedPhotoIndex + 1)
 		else { return nil }
 		
-		if selectedPhotoIndex == photoStore.numberOfPhotos - 5 {
-			photoStore.loadPhotos()
+		if selectedPhotoIndex == photoPageDataSource.numberOfPhotos - 5 {
+			photoPageDataSource.loadMorePhoto()
 		}
 		
         return photoViewControllerWith(photo)
@@ -175,8 +191,8 @@ extension PhotoPageViewController: UIPageViewControllerDelegate {
             let viewController = viewControllers?.first as? PhotoViewContorller
         else { return }
 		
-		if let index = photoStore.indexOf(viewController.photo) {
-			photoStore.selectedPhotoIndex = index
+		if let index = photoPageDataSource.indexOf(viewController.photo) {
+			photoPageDataSource.selectedPhotoIndex = index
 		}
 		
 		updateLikeButton()

@@ -8,7 +8,9 @@
 
 import Foundation
 
-protocol PaginalRequest: UnsplashRequest {
+protocol PaginalRequest: UnsplashRequest where Self.ResultModel == Array<ContentModel> {
+	associatedtype ContentModel: Equatable
+	
 	var page: Int { get set }
 	var pageSize: UnsplashPageSize { get }
 }
