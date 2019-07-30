@@ -59,6 +59,13 @@ class CollectionOfPhotosRootViewController: BaseImagesRootViewController, SegueH
 			resultsController.paginalContentStore = createPhotoCollectionStore(with: query)
 		}
 	}
+	
+	override func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+		super.searchBarCancelButtonClicked(searchBar)
+		if let vc = searchResultsController as? CollectionsOfPhotosCollectionViewController {
+			vc.paginalContentStore = nil
+		}
+	}
 }
 
 // MARK: - Helpers

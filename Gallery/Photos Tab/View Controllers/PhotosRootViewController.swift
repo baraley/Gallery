@@ -59,6 +59,13 @@ class PhotosRootViewController: BaseImagesRootViewController, SegueHandlerType {
 			resultsController.paginalContentStore = createContentStore(with: query)
 		}
 	}
+	
+	override func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+		super.searchBarCancelButtonClicked(searchBar)
+		if let vc = searchResultsController as? PhotosCollectionViewController {
+			vc.paginalContentStore = nil
+		}
+	}
 }
 
 // MARK: - Helpers

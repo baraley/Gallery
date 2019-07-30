@@ -125,7 +125,10 @@ private extension ProfileTableViewController {
 		
         networkService?.performRequest(ImageRequest(url: user.profileImageURL)) { [weak self] result in
 			guard let image = try? result.get() else { return }
-			DispatchQueue.main.async { self?.imageView.image = image }
+			DispatchQueue.main.async {
+				self?.imageView.image = image
+				self?.tableView.reloadData()
+			}
         }
 		
 		likesRow.detailTextLabel?.text = String(user.totalLikes)

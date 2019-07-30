@@ -18,9 +18,7 @@ class BaseImagesRootViewController: UIViewController, UISearchBarDelegate {
         }
     }
 	
-	private(set) lazy var searchController = UISearchController(
-		searchResultsController: searchResultsController
-	)
+	private(set) lazy var searchController = UISearchController(searchResultsController: nil)
 	
 	lazy var searchResultsController = initializeSearchResultsController()
 	
@@ -71,6 +69,18 @@ class BaseImagesRootViewController: UIViewController, UISearchBarDelegate {
 	func configureSearchResultsController() {
 		searchResultsController?.collectionView.refreshControl = nil
 		searchResultsController?.collectionView.keyboardDismissMode = .onDrag
+	}
+	
+	// MARK: - UISearchBarDelegate
+	
+	func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+		if let vc = searchResultsController {
+			add(vc)
+		}
+	}
+	
+	func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+		searchResultsController?.remove()
 	}
 }
 

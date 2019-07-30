@@ -32,7 +32,7 @@ class GalleryRootViewController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-//        selectedViewController = viewControllers?[2]
+        selectedViewController = viewControllers?[2]
         parseViewControllers()
     }
 }
