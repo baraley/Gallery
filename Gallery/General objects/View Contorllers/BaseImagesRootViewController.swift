@@ -8,7 +8,7 @@
 
 import UIKit
 
-class BaseImagesRootViewController: UIViewController {
+class BaseImagesRootViewController: UIViewController, UISearchBarDelegate {
     
     // MARK: - Public properties
 	
@@ -17,7 +17,13 @@ class BaseImagesRootViewController: UIViewController {
             authenticationInformer?.addObserve(self)
         }
     }
-    
+	
+	private(set) lazy var searchController = UISearchController(
+		searchResultsController: searchResultsController
+	)
+	
+	lazy var searchResultsController = initializeSearchResultsController()
+	
     // MARK: - Private properties
 	
     private(set) var userData: AuthenticatedUserData? {
@@ -39,10 +45,33 @@ class BaseImagesRootViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 		
+		definesPresentationContext = true
 		navigationController?.view.backgroundColor = .white
+		setupSearchController()
 	}
 	
 	func updateChildControllerDataSource() { }
+	
+	func initializeSearchResultsController() -> BaseImagesCollectionViewController? {
+		return nil
+	}
+	
+	func setupSearchController() {
+		searchController.obscuresBackgroundDuringPresentation = false
+		searchController.hidesNavigationBarDuringPresentation = true
+		searchController.searchBar.autocorrectionType = .yes
+		
+		searchController.searchBar.delegate = self
+		
+		configureSearchResultsController()
+		
+		navigationItem.searchController = searchController
+	}
+	
+	func configureSearchResultsController() {
+		searchResultsController?.collectionView.refreshControl = nil
+		searchResultsController?.collectionView.keyboardDismissMode = .onDrag
+	}
 }
 
 // MARK: - AuthenticationObserver

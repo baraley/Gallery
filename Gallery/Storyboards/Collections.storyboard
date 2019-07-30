@@ -36,7 +36,7 @@
                     <navigationItem key="navigationItem" title="Collections" id="0AS-mb-2nQ">
                         <barButtonItem key="rightBarButtonItem" id="BAL-rI-s3a">
                             <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="Nbs-CL-jbs">
-                                <rect key="frame" x="238" y="7.5" width="121" height="30"/>
+                                <rect key="frame" x="222" y="7" width="137" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <segments>
                                     <segment title="New"/>
@@ -59,7 +59,7 @@
         <!--Collections Of Photos Collection View Controller-->
         <scene sceneID="H2d-ja-5bL">
             <objects>
-                <collectionViewController storyboardIdentifier="CollectionsOfPhotoCollectionVC" id="Uye-0A-DRa" customClass="CollectionsOfPhotosCollectionViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
+                <collectionViewController storyboardIdentifier="CollectionsOfPhotosCollectionViewController" id="Uye-0A-DRa" customClass="CollectionsOfPhotosCollectionViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" dataMode="prototypes" id="578-G1-PtZ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -141,10 +141,10 @@
             </objects>
             <point key="canvasLocation" x="1413.5999999999999" y="1509.8950524737631"/>
         </scene>
-        <!--PhotosCollectionVC-->
+        <!--PhotosCollectionViewController-->
         <scene sceneID="fbC-T2-sgM">
             <objects>
-                <viewControllerPlaceholder storyboardName="Photos" referencedIdentifier="PhotosCollectionVC" id="d9D-Ki-tZA" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardName="Photos" referencedIdentifier="PhotosCollectionViewController" id="d9D-Ki-tZA" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hq5-WF-VN3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2190" y="1509"/>

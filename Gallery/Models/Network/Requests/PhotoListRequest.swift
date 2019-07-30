@@ -14,6 +14,7 @@ struct PhotoListRequest: UnsplashRequest, Equatable, PaginalRequest {
     var page: Int = 1
     private(set) var pageSize: UnsplashPageSize
     private let order: UnsplashPhotoListOrder
+	private var searchQuery: String = ""
 	
 	init(pageSize: UnsplashPageSize = .large,
          order: UnsplashPhotoListOrder = .latest,
@@ -46,17 +47,32 @@ struct PhotoListRequest: UnsplashRequest, Equatable, PaginalRequest {
 		endpoint = "/collections/\(photoCollection.id)/photos"
 	}
 	
+	init(searchQuery: String,
+		 pageSize: UnsplashPageSize = .large,
+		 order: UnsplashPhotoListOrder = .latest,
+		 accessToken: String? = nil) {
+		
+		self.init(pageSize: pageSize, order: order, accessToken: accessToken)
+		
+		self.searchQuery = searchQuery
+		endpoint = "/search/photos"
+	}
+	
     // MARK: - NetworkRequest
 	
 	func decode(
 		_ data: Data?, response: URLResponse?, error: Error?
 		) -> Result<[Photo], RequestError> {
-				
-		let decoder = JSONDecoder()
-		decoder.dateDecodingStrategy = .iso8601
 		
-		if let data = data, let photos = try? decoder.decode([Photo].self, from: data) {
-			return .success(photos)
+		if let data = data {
+			let decoder = JSONDecoder()
+			decoder.dateDecodingStrategy = .iso8601
+			
+			if searchQuery.isEmpty, let photos = try? decoder.decode([Photo].self, from: data) {
+				return .success(photos)
+			} else if let searchResults = try? decoder.decode(SerchPhotosResult.self, from: data) {
+				return .success(searchResults.results)
+			}
 		}
 		
 		let error =	parseError(data, response: response, error: error)
@@ -72,9 +88,12 @@ struct PhotoListRequest: UnsplashRequest, Equatable, PaginalRequest {
     
     var queryItems: [URLQueryItem] {
         var items = [URLQueryItem]()
-        items.append(URLQueryItem(name: UnsplashParameterName.Pagination.page, value: "\(page)"))
-        items.append(URLQueryItem(name: UnsplashParameterName.Pagination.perPage, value: "\(pageSize.rawValue)"))
-        items.append(URLQueryItem(name: UnsplashParameterName.Pagination.orderedBy, value: order.rawValue))
+		if !searchQuery.isEmpty {
+			items.append(URLQueryItem(name: UnsplashParameterName.ListRequest.query, value: searchQuery))
+		}
+        items.append(URLQueryItem(name: UnsplashParameterName.ListRequest.page, value: "\(page)"))
+        items.append(URLQueryItem(name: UnsplashParameterName.ListRequest.perPage, value: "\(pageSize.rawValue)"))
+        items.append(URLQueryItem(name: UnsplashParameterName.ListRequest.orderedBy, value: order.rawValue))
         return items
     }
 }

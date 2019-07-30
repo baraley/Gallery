@@ -26,28 +26,61 @@ class CollectionOfPhotosRootViewController: BaseImagesRootViewController, SegueH
 		updateChildControllerDataSource()
 	}
 	
+	// MARK: - Overriden
+	
+	override func initializeSearchResultsController() -> BaseImagesCollectionViewController? {
+		let viewController = UIStoryboard.storyboard(storyboard: .collections)
+			.instantiateViewController() as CollectionsOfPhotosCollectionViewController
+		return viewController
+	}
+	
+	override func setupSearchController() {
+		super.setupSearchController()
+		searchController.searchBar.placeholder = "Search Collections"
+	}
+	
 	override func updateChildControllerDataSource() {
 		collectionOfPhotosCollectionVC?.paginalContentStore = createPhotoCollectionStore()
 	}
 	
+	// MARK: - AuthenticationObserver
+	
 	func authenticationDidStart() {
 		collectionOfPhotosCollectionVC?.paginalContentStore = nil
+	}
+	
+	// MARK: - UISearchBarDelegate
+	
+	func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+		if let resultsController = searchResultsController as? CollectionsOfPhotosCollectionViewController,
+			let query = searchBar.text,
+			!query.isEmpty {
+			
+			resultsController.paginalContentStore = createPhotoCollectionStore(with: query)
+		}
 	}
 }
 
 // MARK: - Helpers
 private extension CollectionOfPhotosRootViewController {
 	
-	func createPhotoCollectionStore() -> PaginalContentStore<PhotoCollectionListRequest, CollectionsOfPhotosCollectionViewCell> {
-		
+	func createPhotoCollectionStore(with searchQuery: String? = nil) -> PaginalContentStore<
+		PhotoCollectionListRequest, CollectionsOfPhotosCollectionViewCell
+		> {
+			
 		let photoCollectionListRequest: PhotoCollectionListRequest
 		
-		if contentTypeToggler.selectedSegmentIndex == 0 {
-			photoCollectionListRequest = .init(pageSize: .large,
-											   accessToken: userData?.accessToken)
+		if let query = searchQuery {
+			photoCollectionListRequest = PhotoCollectionListRequest
+				.init(searchQuery: query, pageSize: .large, accessToken: userData?.accessToken)
+			
+		} else if contentTypeToggler.selectedSegmentIndex == 0 {
+			photoCollectionListRequest = PhotoCollectionListRequest
+				.init(pageSize: .large, accessToken: userData?.accessToken)
+			
 		} else {
-			photoCollectionListRequest = .init(featuredCollectionsWtithPageSize: .large,
-											   accessToken: userData?.accessToken)
+			photoCollectionListRequest = PhotoCollectionListRequest
+				.init(featuredCollectionsWtithPageSize: .large, accessToken: userData?.accessToken)
 		}
 		
 		return PaginalContentStore(networkService: NetworkService(), paginalRequest: photoCollectionListRequest)

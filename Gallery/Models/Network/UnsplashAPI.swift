@@ -67,10 +67,11 @@ enum UnsplashParameterName {
 		static let grantType = "grant_type"
 	}
 	
-	enum Pagination {
+	enum ListRequest {
 		static let page = "page"
 		static let perPage = "per_page"
 		static let orderedBy = "order_by"
+		static let query = "query"
 	}
 	
 	enum User {

@@ -39,7 +39,7 @@ struct PagesNumberRequest: UnsplashRequest {
 	
 	var queryItems: [URLQueryItem] {
 		var items = [URLQueryItem]()
-		items.append(URLQueryItem(name: UnsplashParameterName.Pagination.perPage, value: "\(pageSize.rawValue)"))
+		items.append(URLQueryItem(name: UnsplashParameterName.ListRequest.perPage, value: "\(pageSize.rawValue)"))
 		return items
 	}
 	

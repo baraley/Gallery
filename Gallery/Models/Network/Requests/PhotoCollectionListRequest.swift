@@ -13,6 +13,7 @@ struct PhotoCollectionListRequest: UnsplashRequest, PaginalRequest {
 	
 	var page: Int = 1
 	private(set) var pageSize: UnsplashPageSize
+	private var searchQuery: String = ""
 	
 	init(pageSize: UnsplashPageSize = .large, accessToken: String? = nil) {
 		
@@ -28,17 +29,33 @@ struct PhotoCollectionListRequest: UnsplashRequest, PaginalRequest {
 		endpoint = "/collections/curated"
 	}
 	
+	init(searchQuery: String,
+		 pageSize: UnsplashPageSize = .large,
+		 accessToken: String? = nil) {
+		
+		self.init(pageSize: pageSize, accessToken: accessToken)
+		
+		self.searchQuery = searchQuery
+		endpoint = "/search/collections"
+	}
+	
 	// MARK: - NetworkRequest
 	
 	func decode(
 		_ data: Data?, response: URLResponse?, error: Error?
 		) -> Result<[PhotoCollection], RequestError> {
 		
-		
-		let decoder = JSONDecoder()
-		
-		if let data = data, let photoCollections = try? decoder.decode([PhotoCollection].self, from: data) {
-			return .success(photoCollections)
+		if let data = data {
+			let decoder = JSONDecoder()
+			
+			if searchQuery.isEmpty, let photoCollections = try? decoder.decode([PhotoCollection].self,
+																			   from: data) {
+				return .success(photoCollections)
+				
+			} else if let searchResults = try? decoder.decode(SerchPhotoCollectionsResult.self,
+															  from: data) {
+				return .success(searchResults.results)
+			}
 		}
 		
 		let error =	parseError(data, response: response, error: error)
@@ -54,8 +71,11 @@ struct PhotoCollectionListRequest: UnsplashRequest, PaginalRequest {
 	
 	var queryItems: [URLQueryItem] {
 		var items = [URLQueryItem]()
-		items.append(URLQueryItem(name: UnsplashParameterName.Pagination.page, value: "\(page)"))
-		items.append(URLQueryItem(name: UnsplashParameterName.Pagination.perPage, value: "\(pageSize.rawValue)"))
+		if !searchQuery.isEmpty {
+			items.append(URLQueryItem(name: UnsplashParameterName.ListRequest.query, value: searchQuery))
+		}
+		items.append(URLQueryItem(name: UnsplashParameterName.ListRequest.page, value: "\(page)"))
+		items.append(URLQueryItem(name: UnsplashParameterName.ListRequest.perPage, value: "\(pageSize.rawValue)"))
 		return items
 	}
 }

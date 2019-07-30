@@ -12,7 +12,7 @@
         <!--Photos-->
         <scene sceneID="8gf-yb-dNn">
             <objects>
-                <viewController storyboardIdentifier="PhotoRootViewController" id="KLX-ml-d0D" customClass="PhotoRootViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PhotosRootViewController" id="KLX-ml-d0D" customClass="PhotosRootViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="6dX-G0-hwV">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -37,7 +37,7 @@
                     <navigationItem key="navigationItem" title="Photos" id="DgS-4l-GhD">
                         <barButtonItem key="rightBarButtonItem" id="rf9-jn-FeJ">
                             <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="mro-VC-LdJ">
-                                <rect key="frame" x="238" y="7.5" width="121" height="30"/>
+                                <rect key="frame" x="236" y="7" width="123" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <segments>
                                     <segment title="New"/>
@@ -60,7 +60,7 @@
         <!--Photos Collection View Controller-->
         <scene sceneID="Xfm-9z-8Ja">
             <objects>
-                <collectionViewController storyboardIdentifier="PhotosCollectionVC" id="zA0-3G-vFu" customClass="PhotosCollectionViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
+                <collectionViewController storyboardIdentifier="PhotosCollectionViewController" id="zA0-3G-vFu" customClass="PhotosCollectionViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" contentInsetAdjustmentBehavior="scrollableAxes" bouncesZoom="NO" dataMode="prototypes" id="Xtx-Ju-I7R">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
