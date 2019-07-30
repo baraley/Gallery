@@ -22,6 +22,10 @@ class PhotoViewContorller: UIViewController {
 	
 	private var lastZoomLocation: CGPoint?
 	
+	private var photoBackground: PhotoBackground = .light {
+		didSet { photoBackgroundDidChange() }
+	}
+	
 	// MARK: - Life cycle -
 	
 	override func viewDidLoad() {
@@ -36,7 +40,7 @@ class PhotoViewContorller: UIViewController {
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		
-		updateBackgroundColors()
+		photoBackgroundDidChange()
 		loadPhoto()
 	}
 	
@@ -60,6 +64,14 @@ class PhotoViewContorller: UIViewController {
 
 // MARK: - Helpers
 private extension PhotoViewContorller {
+	
+	enum PhotoBackground: Equatable {
+		case light, dark
+		
+		mutating func toggle() {
+			self = self == .light ? .dark : .light
+		}
+	}
 	
 	// MARK: - Image loading -
 	
@@ -100,21 +112,25 @@ private extension PhotoViewContorller {
             
             navigationController?.setNavigationBarHidden(!navBarIsHidden, animated: true)
             navigationController?.setToolbarHidden(!toolBarIsHidden, animated: true)
-            
+			
+			photoBackground.toggle()
+			
 			UIView.animate(withDuration: 0.35) {
-				self.updateBackgroundColors()
+				self.photoBackgroundDidChange()
 			}
             setNeedsStatusBarAppearanceUpdate()
         }
     }
 	
-	func updateBackgroundColors() {
-		if navigationController?.isNavigationBarHidden == true {
-			parent?.view.backgroundColor = .black
-			imageLoadingView.color = .white
-		} else {
-			parent?.view.backgroundColor = .white
+	func photoBackgroundDidChange() {
+		switch photoBackground {
+		case .light:
+			view.backgroundColor = .white
 			imageLoadingView.color = .black
+			
+		case .dark:
+			view.backgroundColor = .black
+			imageLoadingView.color = .white
 		}
     }
 	
