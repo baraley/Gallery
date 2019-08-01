@@ -22,8 +22,13 @@ class PhotoViewContorller: UIViewController {
 	
 	private var lastZoomLocation: CGPoint?
 	
-	private var photoBackground: PhotoBackground = .light {
-		didSet { photoBackgroundDidChange() }
+	private var photoBackground: PhotoBackground {
+		if navigationController?.isNavigationBarHidden == true,
+			navigationController?.isToolbarHidden == true,
+			tabBarController?.tabBar.isHidden == true {
+			return .dark
+		}
+		return .light
 	}
 	
 	// MARK: - Life cycle -
@@ -67,10 +72,6 @@ private extension PhotoViewContorller {
 	
 	enum PhotoBackground: Equatable {
 		case light, dark
-		
-		mutating func toggle() {
-			self = self == .light ? .dark : .light
-		}
 	}
 	
 	// MARK: - Image loading -
@@ -113,8 +114,6 @@ private extension PhotoViewContorller {
             navigationController?.setNavigationBarHidden(!navBarIsHidden, animated: true)
             navigationController?.setToolbarHidden(!toolBarIsHidden, animated: true)
 			
-			photoBackground.toggle()
-			
 			UIView.animate(withDuration: 0.35) {
 				self.photoBackgroundDidChange()
 			}
@@ -125,14 +124,14 @@ private extension PhotoViewContorller {
 	func photoBackgroundDidChange() {
 		switch photoBackground {
 		case .light:
-			view.backgroundColor = .white
+			parent?.view.backgroundColor = .white
 			imageLoadingView.color = .black
 			
 		case .dark:
-			view.backgroundColor = .black
+			parent?.view.backgroundColor = .black
 			imageLoadingView.color = .white
 		}
-    }
+	}
 	
 	// MARK: - Scroll view layout -
 	

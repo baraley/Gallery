@@ -75,7 +75,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="369" height="255"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" insetsLayoutMarginsFromSafeArea="NO" image="Placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="D5G-16-zLb">
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" insetsLayoutMarginsFromSafeArea="NO" image="image placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="D5G-16-zLb">
                                             <rect key="frame" x="0.0" y="0.0" width="369" height="255"/>
                                         </imageView>
                                     </subviews>
@@ -183,7 +183,6 @@
                                 <color key="color" cocoaTouchSystemColor="darkTextColor"/>
                             </activityIndicatorView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <gestureRecognizers/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="q9u-rD-b4S" secondAttribute="trailing" id="01D-8C-z5q"/>
@@ -236,7 +235,7 @@
     </scenes>
     <resources>
         <image name="Photos" width="25" height="25"/>
-        <image name="Placeholder" width="280" height="200"/>
+        <image name="image placeholder" width="840" height="600"/>
         <image name="like" width="28" height="27"/>
     </resources>
 </document>

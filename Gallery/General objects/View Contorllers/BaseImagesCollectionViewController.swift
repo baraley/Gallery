@@ -30,6 +30,8 @@ class BaseImagesCollectionViewController: UICollectionViewController {
 	
 	weak var dataSource: ImagesCollectionViewDataSource? { didSet { dataSourceDidChange() } }
 	
+	var isRefreshable: Bool = false
+	
 	// MARK: - Private properties
 	
 	private var isLoading: Bool = false { didSet { loadingStateDidChange() } }
@@ -70,7 +72,9 @@ class BaseImagesCollectionViewController: UICollectionViewController {
 	// MARK: - Overrideble
 	
 	func setup() {
-		collectionView?.refreshControl = refreshControl
+		if isRefreshable {
+			collectionView?.refreshControl = refreshControl
+		}
 		
 		let kind = UICollectionView.elementKindSectionFooter
 		let identifier = CollectionViewLoadingFooter.identifier
@@ -94,6 +98,8 @@ class BaseImagesCollectionViewController: UICollectionViewController {
 		
 		collectionView.dataSource = dataSource
 		collectionView?.reloadData()
+		
+		collectionView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 1, height: 1), animated: false)
 	}
 	
 	func loadingStateDidChange() {

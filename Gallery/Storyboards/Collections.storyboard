@@ -35,7 +35,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="Collections" id="0AS-mb-2nQ">
                         <barButtonItem key="rightBarButtonItem" id="BAL-rI-s3a">
-                            <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="Nbs-CL-jbs">
+                            <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="Nbs-CL-jbs">
                                 <rect key="frame" x="222" y="7" width="137" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <segments>
@@ -81,7 +81,7 @@
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dIs-wv-Fqg" userLabel="Content View">
                                             <rect key="frame" x="0.0" y="0.0" width="343" height="185"/>
                                             <subviews>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="4pw-Fu-yZb">
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="image placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="4pw-Fu-yZb">
                                                     <rect key="frame" x="0.0" y="0.0" width="343" height="185"/>
                                                 </imageView>
                                                 <view opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" alpha="0.29999999999999999" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PKR-kU-aNs">
@@ -170,7 +170,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Placeholder" width="280" height="200"/>
         <image name="collections" width="25" height="25"/>
+        <image name="image placeholder" width="840" height="600"/>
     </resources>
 </document>

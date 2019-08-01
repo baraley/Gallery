@@ -87,6 +87,7 @@ class ProfileTableViewController: UITableViewController, SegueHandlerType {
 		case .logOut:	logOutAction?()
 		default: 		break
 		}
+		tableView.deselectRow(at: indexPath, animated: true)
 	}
 }
 
@@ -127,6 +128,7 @@ private extension ProfileTableViewController {
 			guard let image = try? result.get() else { return }
 			DispatchQueue.main.async {
 				self?.imageView.image = image
+				self?.imageView.layer.cornerRadius = image.size.width / 2
 				self?.tableView.reloadData()
 			}
         }

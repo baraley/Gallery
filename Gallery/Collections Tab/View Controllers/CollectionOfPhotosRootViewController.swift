@@ -23,6 +23,8 @@ class CollectionOfPhotosRootViewController: BaseImagesRootViewController, SegueH
 		
 		collectionOfPhotosCollectionVC = segue.destination as? CollectionsOfPhotosCollectionViewController
 		
+		collectionOfPhotosCollectionVC?.isRefreshable = true
+		
 		updateChildControllerDataSource()
 	}
 	

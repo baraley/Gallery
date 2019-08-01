@@ -129,12 +129,14 @@ private extension AuthenticationPerformer {
 	
 	func requestAuthorizationCode() {
 		let handler: ASWebAuthenticationSession.CompletionHandler = { [weak self] (callBack, error) in
-			guard let successURL = callBack else { return }
-			
-			let queryItems = URLComponents(string: successURL.absoluteString)?.queryItems
-			
-			if let code = queryItems?.filter({$0.name == "code"}).first?.value {
-				self?.requestAccessToken(with: code)
+			if let successURL = callBack {
+				let queryItems = URLComponents(string: successURL.absoluteString)?.queryItems
+				
+				if let code = queryItems?.filter({$0.name == "code"}).first?.value {
+					self?.requestAccessToken(with: code)
+				}
+			} else {
+				print(error?.localizedDescription ?? "Error with authentication")
 			}
 		}
 		
