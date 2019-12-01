@@ -10,4 +10,4 @@ Client for [Unsplash](https://unsplash.com). Written to learn how to work with R
 * Custom layout
 * Sharing
 
-![](screenshots.jpeg)
+![](screenshots.jpg)

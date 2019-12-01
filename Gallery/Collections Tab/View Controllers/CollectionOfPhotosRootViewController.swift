@@ -83,13 +83,13 @@ private extension CollectionOfPhotosRootViewController {
 			photoCollectionListRequest = PhotoCollectionListRequest
 				.init(searchQuery: query, pageSize: .large, accessToken: userData?.accessToken)
 			
-		} else if contentTypeToggler.selectedSegmentIndex == 0 {
+		} else if contentTypeToggle.selectedSegmentIndex == 0 {
 			photoCollectionListRequest = PhotoCollectionListRequest
 				.init(pageSize: .large, accessToken: userData?.accessToken)
 			
 		} else {
 			photoCollectionListRequest = PhotoCollectionListRequest
-				.init(featuredCollectionsWtithPageSize: .large, accessToken: userData?.accessToken)
+				.init(featuredCollectionsWithPageSize: .large, accessToken: userData?.accessToken)
 		}
 		
 		return PaginalContentStore(networkService: NetworkService(), paginalRequest: photoCollectionListRequest)

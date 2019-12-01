@@ -1,5 +1,5 @@
 //
-//  SerchPhotoCollectionsResult.swift
+//  SearchPhotoCollectionsResult.swift
 //  Gallery
 //
 //  Created by Alexander Baraley on 7/29/19.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct SerchPhotoCollectionsResult: Decodable {
+struct SearchPhotoCollectionsResult: Decodable {
 	
 	let total: Int
 	let totalPages: Int

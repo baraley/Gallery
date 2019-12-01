@@ -37,7 +37,7 @@ enum UnsplashAPI {
 	}
 	
 	private static var authorizationQueryParameters: [URLQueryItem] {
-		let scopeValues: [UnsplashPermitionScope] = [
+		let scopeValues: [UnsplashPermissionScope] = [
 			.readPublicData, .readUserData, .readUserPhotos, .readUserCollections,
 			.writeUserData, .writeUserLikes
 		]
@@ -86,14 +86,14 @@ enum UnsplashParameterName {
 	}
 }
 
-enum UnsplashPermitionScope: String {
+enum UnsplashPermissionScope: String {
 	case readPublicData = "public"					// Default. Read public data.
 	case readUserData = "read_user"					// Access user’s private data.
 	case writeUserData = "write_user"				// Update the user’s profile.
 	case readUserPhotos = "read_photos"				// Read private data from the user’s photos.
 	case writeUserPhotos = "write_photos"			// Update photos on the user’s behalf.
 	case writeUserLikes = "write_likes"				// Like or unlike a photo on the user’s behalf.
-	case writeUserSubscritions = "write_followers"	// Follow or unfollow a user on the user’s behalf.
+	case writeUserSubscriptions = "write_followers"	// Follow or unfollow a user on the user’s behalf.
 	case readUserCollections = "read_collections" 	// View a user’s private collections.
 	case writeUserCollections = "write_collections"	// Create and update a user’s collections.
 }

@@ -1,5 +1,5 @@
 //
-//  PhotoViewContorller.swift
+//  PhotoViewController.swift
 //  Gallery
 //
 //  Created by Alexander Baraley on 12/25/17.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class PhotoViewContorller: UIViewController {
+class PhotoViewController: UIViewController {
 	
     @IBOutlet var photoScrollView: ImageScrollView!
 	@IBOutlet private var imageLoadingView: UIActivityIndicatorView!
@@ -68,7 +68,7 @@ class PhotoViewContorller: UIViewController {
 }
 
 // MARK: - Helpers
-private extension PhotoViewContorller {
+private extension PhotoViewController {
 	
 	enum PhotoBackground: Equatable {
 		case light, dark
@@ -176,7 +176,7 @@ private extension PhotoViewContorller {
 	}
 }
 
-extension PhotoViewContorller: ImageScrollViewGesturesHandler {
+extension PhotoViewController: ImageScrollViewGesturesHandler {
     
 	func imageScrollView(_ imageScrollView: ImageScrollView, singleTapDidHappenIn location: CGPoint) {
 		updateBars()

@@ -6,7 +6,7 @@
 //  Copyright © 2018 Alexander Baraley. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
 class NetworkService {
 	

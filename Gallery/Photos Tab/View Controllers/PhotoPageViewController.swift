@@ -17,7 +17,7 @@ protocol PhotoPageDataSource {
 	func loadMorePhoto()
 }
 
-protocol PhotoLikesToggler {
+protocol PhotoLikesToggle {
 	var isLikeTogglingAvailable: Bool { get }
 	
 	func toggleLikeOfPhoto(
@@ -27,7 +27,7 @@ protocol PhotoLikesToggler {
 
 class PhotoPageViewController: UIPageViewController {
 	
-    var photoPageDataSource: (PhotoPageDataSource & PhotoLikesToggler)!
+    var photoPageDataSource: (PhotoPageDataSource & PhotoLikesToggle)!
 	var networkRequestPerformer: NetworkService!
 	
 	// MARK: - Outlets -
@@ -89,10 +89,10 @@ private extension PhotoPageViewController {
 						   direction: .forward, animated: false, completion: nil)
 	}
 	
-	func photoViewControllerWith(_ photo: Photo) -> PhotoViewContorller {
+	func photoViewControllerWith(_ photo: Photo) -> PhotoViewController {
 		
 		let photoViewController = storyboard?
-			.instantiateViewController(withIdentifier: "PhotoViewContorller") as! PhotoViewContorller
+			.instantiateViewController(withIdentifier: "PhotoViewController") as! PhotoViewController
 		
 		photoViewController.photo = photo
 		photoViewController.networkRequestPerformer = networkRequestPerformer
@@ -139,7 +139,7 @@ private extension PhotoPageViewController {
 	}
     
     func sharePhoto() {
-        guard let photoController = viewControllers?.first as? PhotoViewContorller,
+        guard let photoController = viewControllers?.first as? PhotoViewController,
             let image = photoController.photoScrollView.image?.jpegData(compressionQuality: 1.0)
         else { return }
         
@@ -188,7 +188,7 @@ extension PhotoPageViewController: UIPageViewControllerDelegate {
                             transitionCompleted completed: Bool) {
         
         guard completed,
-            let viewController = viewControllers?.first as? PhotoViewContorller
+            let viewController = viewControllers?.first as? PhotoViewController
         else { return }
 		
 		if let index = photoPageDataSource.indexOf(viewController.photo) {

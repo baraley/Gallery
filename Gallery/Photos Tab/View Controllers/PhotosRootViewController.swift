@@ -75,7 +75,7 @@ private extension PhotosRootViewController {
 	
 	func createContentStore(with searchQuery: String? = nil) -> PaginalContentStore<PhotoListRequest, PhotoCollectionViewCell> {
 		
-		let order: UnsplashPhotoListOrder = contentTypeToggler.selectedSegmentIndex == 0
+		let order: UnsplashPhotoListOrder = contentTypeToggle.selectedSegmentIndex == 0
 			? .latest : .popular
 		
 		let photoListRequest: PhotoListRequest

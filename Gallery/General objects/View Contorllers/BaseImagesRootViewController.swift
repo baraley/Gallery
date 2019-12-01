@@ -30,7 +30,7 @@ class BaseImagesRootViewController: UIViewController, UISearchBarDelegate {
 	
 	// MARK: - Outlets -
 	
-	@IBOutlet private(set) var contentTypeToggler: UISegmentedControl!
+	@IBOutlet private(set) var contentTypeToggle: UISegmentedControl!
 	
 	// MARK: - Actions -
 	

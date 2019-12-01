@@ -23,10 +23,10 @@ struct PhotoCollectionListRequest: UnsplashRequest, PaginalRequest {
 		endpoint = "/collections"
 	}
 	
-	init(featuredCollectionsWtithPageSize pageSize: UnsplashPageSize = .large, accessToken: String? = nil) {
+	init(featuredCollectionsWithPageSize pageSize: UnsplashPageSize = .large, accessToken: String? = nil) {
 		
 		self.init(pageSize: pageSize, accessToken: accessToken)
-		endpoint = "/collections/curated"
+		endpoint = "/collections/featured"
 	}
 	
 	init(searchQuery: String,
@@ -52,7 +52,7 @@ struct PhotoCollectionListRequest: UnsplashRequest, PaginalRequest {
 																			   from: data) {
 				return .success(photoCollections)
 				
-			} else if let searchResults = try? decoder.decode(SerchPhotoCollectionsResult.self,
+			} else if let searchResults = try? decoder.decode(SearchPhotoCollectionsResult.self,
 															  from: data) {
 				return .success(searchResults.results)
 			}

@@ -176,8 +176,8 @@ extension PaginalContentStore: PinterestCollectionViewLayoutDataSource where R =
 	}
 }
 
-// MARK: - PhotoLikesToggler -
-extension PaginalContentStore: PhotoLikesToggler where R == PhotoListRequest {
+// MARK: - PhotoLikesToggle -
+extension PaginalContentStore: PhotoLikesToggle where R == PhotoListRequest {
 	
 	var isLikeTogglingAvailable: Bool {
 		return accessToken != nil
