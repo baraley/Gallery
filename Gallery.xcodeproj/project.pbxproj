@@ -14,6 +14,7 @@
 		110BF2FB22E5FAB600CD66C5 /* CollectionsOfPhotosCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110BF2FA22E5FAB600CD66C5 /* CollectionsOfPhotosCollectionViewCell.swift */; };
 		110E389122CE01A7007C0933 /* Photos.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 110E389022CE01A7007C0933 /* Photos.storyboard */; };
 		110E389422CF1E4D007C0933 /* ProfileTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110E389322CF1E4D007C0933 /* ProfileTableViewController.swift */; };
+		11364EE723956E7400A0C334 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 11364EE623956E7400A0C334 /* README.md */; };
 		113E9FCD22ED679D00AF3AA7 /* BaseImagesCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113E9FCC22ED679D00AF3AA7 /* BaseImagesCollectionViewController.swift */; };
 		113E9FCF22ED6A2900AF3AA7 /* PhotosCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113E9FCE22ED6A2900AF3AA7 /* PhotosCollectionViewController.swift */; };
 		113E9FD122ED6A4500AF3AA7 /* CollectionsOfPhotosCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113E9FD022ED6A4500AF3AA7 /* CollectionsOfPhotosCollectionViewController.swift */; };
@@ -79,6 +80,7 @@
 		110BF2FA22E5FAB600CD66C5 /* CollectionsOfPhotosCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionsOfPhotosCollectionViewCell.swift; sourceTree = "<group>"; };
 		110E389022CE01A7007C0933 /* Photos.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Photos.storyboard; sourceTree = "<group>"; };
 		110E389322CF1E4D007C0933 /* ProfileTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTableViewController.swift; sourceTree = "<group>"; };
+		11364EE623956E7400A0C334 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		113E9FCC22ED679D00AF3AA7 /* BaseImagesCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseImagesCollectionViewController.swift; sourceTree = "<group>"; };
 		113E9FCE22ED6A2900AF3AA7 /* PhotosCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosCollectionViewController.swift; sourceTree = "<group>"; };
 		113E9FD022ED6A4500AF3AA7 /* CollectionsOfPhotosCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionsOfPhotosCollectionViewController.swift; sourceTree = "<group>"; };
@@ -320,6 +322,7 @@
 		3D772C5A20B8E93F00F3DC48 = {
 			isa = PBXGroup;
 			children = (
+				11364EE623956E7400A0C334 /* README.md */,
 				3D772C6520B8E93F00F3DC48 /* Gallery */,
 				3D772C6420B8E93F00F3DC48 /* Products */,
 				0B42F1D375DCA68C9091BD65 /* Pods */,
@@ -495,6 +498,7 @@
 				11790A6622F3803A00ACC060 /* Profile.storyboard in Resources */,
 				3D772C9F20B8EA1000F3DC48 /* Main.storyboard in Resources */,
 				3D772C7120B8E94200F3DC48 /* LaunchScreen.storyboard in Resources */,
+				11364EE723956E7400A0C334 /* README.md in Resources */,
 				110BF2F922E5F85900CD66C5 /* Collections.storyboard in Resources */,
 				110E389122CE01A7007C0933 /* Photos.storyboard in Resources */,
 				3D772C6E20B8E94200F3DC48 /* Assets.xcassets in Resources */,
@@ -668,7 +672,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -722,7 +726,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;

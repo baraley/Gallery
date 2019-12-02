@@ -143,6 +143,10 @@ private extension AuthenticationPerformer {
 		webAuthSession = ASWebAuthenticationSession.init(
 			url: UnsplashAPI.logInURL, callbackURLScheme: nil, completionHandler: handler
 		)
+
+		if #available(iOS 13.0, *) {
+			webAuthSession?.presentationContextProvider = self
+		}
 		
 		webAuthSession?.start()
 	}
@@ -193,5 +197,12 @@ private extension AuthenticationPerformer {
 	func cleanAuthorizationData() {
 		KeychainWrapper.standard.removeObject(forKey: UnsplashAPI.accessTokenKey)
 		state = .unauthenticated
+	}
+}
+
+extension AuthenticationPerformer: ASWebAuthenticationPresentationContextProviding {
+
+	func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+		UIApplication.shared.keyWindow!
 	}
 }

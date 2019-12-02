@@ -9,7 +9,16 @@ Client for [Unsplash](https://unsplash.com). Written to learn how to work with R
 * Edit logged-in user data
 * Like/Unlike photos
 * Portrait/Landscape orientation
-* Custom layout
 * Sharing
+
+
+## Used
+
+* Collection view with  custom layout
+* Scroll view
+* Page view controller
+* JSON parsing
+* Static table view
+
 
 ![](screenshots.jpg)

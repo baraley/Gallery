@@ -132,7 +132,7 @@ private extension ProfileRootViewController {
         )
         
         alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
-            UIPasteboard.general.string = "jimlikokno@desoz.com"
+            UIPasteboard.general.string = "dulmayarku@enayu.com"
             self.authenticationPerformer?.performLogIn()
         })
         
