@@ -29,8 +29,7 @@ class AuthenticationPerformer: NSObject, AuthenticationInformer {
     // MARK: - AuthorizationInformer
     
     private var observations = [ObjectIdentifier : Observation]()
-    
-    
+
     func addObserve(_ observer: AuthenticationObserver) {
         let id = ObjectIdentifier(observer)
         observations[id] = Observation(observer: observer)

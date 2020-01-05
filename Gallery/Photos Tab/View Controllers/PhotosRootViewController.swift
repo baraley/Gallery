@@ -28,10 +28,10 @@ class PhotosRootViewController: BaseImagesRootViewController, SegueHandlerType {
 		updateChildControllerDataSource()
 	}
 	
-	// MARK: - Overriden
+	// MARK: - Overridden
 	
 	override func initializeSearchResultsController() -> BaseImagesCollectionViewController? {
-		let viewController = UIStoryboard.storyboard(storyboard: .photos)
+		let viewController = UIStoryboard.storyboard(storyboard: .main)
 			.instantiateViewController() as PhotosCollectionViewController
 		return viewController
 	}

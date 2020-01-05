@@ -10,7 +10,7 @@ import UIKit
 
 class CollectionOfPhotosRootViewController: BaseImagesRootViewController, SegueHandlerType {
 	
-	private var collectionOfPhotosCollectionVC: CollectionsOfPhotosCollectionViewController?
+	private var collectionOfPhotosCollectionVC: CollectionsOfPhotosViewController?
 	
 	// MARK: - Navigation
 	
@@ -21,18 +21,18 @@ class CollectionOfPhotosRootViewController: BaseImagesRootViewController, SegueH
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		guard case .collections = segueIdentifier(for: segue) else { return }
 		
-		collectionOfPhotosCollectionVC = segue.destination as? CollectionsOfPhotosCollectionViewController
+		collectionOfPhotosCollectionVC = segue.destination as? CollectionsOfPhotosViewController
 		
 		collectionOfPhotosCollectionVC?.isRefreshable = true
 		
 		updateChildControllerDataSource()
 	}
 	
-	// MARK: - Overriden
+	// MARK: - Overridden
 	
 	override func initializeSearchResultsController() -> BaseImagesCollectionViewController? {
-		let viewController = UIStoryboard.storyboard(storyboard: .collections)
-			.instantiateViewController() as CollectionsOfPhotosCollectionViewController
+		let viewController = UIStoryboard.storyboard(storyboard: .main)
+			.instantiateViewController() as CollectionsOfPhotosViewController
 		return viewController
 	}
 	
@@ -54,7 +54,7 @@ class CollectionOfPhotosRootViewController: BaseImagesRootViewController, SegueH
 	// MARK: - UISearchBarDelegate
 	
 	func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-		if let resultsController = searchResultsController as? CollectionsOfPhotosCollectionViewController,
+		if let resultsController = searchResultsController as? CollectionsOfPhotosViewController,
 			let query = searchBar.text,
 			!query.isEmpty {
 			
@@ -64,7 +64,7 @@ class CollectionOfPhotosRootViewController: BaseImagesRootViewController, SegueH
 	
 	override func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
 		super.searchBarCancelButtonClicked(searchBar)
-		if let vc = searchResultsController as? CollectionsOfPhotosCollectionViewController {
+		if let vc = searchResultsController as? CollectionsOfPhotosViewController {
 			vc.paginalContentStore = nil
 		}
 	}

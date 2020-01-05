@@ -69,7 +69,7 @@ class BaseImagesCollectionViewController: UICollectionViewController {
 		})
 	}
 	
-	// MARK: - Overrideble
+	// MARK: - Overridable
 	
 	func setup() {
 		if isRefreshable {

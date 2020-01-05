@@ -1,5 +1,5 @@
 //
-//  CollectionsOfPhotosCollectionViewController.swift
+//  CollectionsOfPhotosViewController.swift
 //  Gallery
 //
 //  Created by Alexander Baraley on 7/28/19.
@@ -15,7 +15,7 @@ protocol PhotoListRequestDataSource: ImagesCollectionViewDataSource {
 	func photoListRequestForPhoto(at index: Int) -> PhotoListRequest?
 }
 
-class CollectionsOfPhotosCollectionViewController: BaseImagesCollectionViewController, SegueHandlerType {
+class CollectionsOfPhotosViewController: BaseImagesCollectionViewController, SegueHandlerType {
 	
 	// MARK: - Public properties
 	
@@ -46,7 +46,7 @@ class CollectionsOfPhotosCollectionViewController: BaseImagesCollectionViewContr
 		)
 	}
 	
-	// MARK: - Overriden
+	// MARK: - Overridden
 	
 	override func setup() {
 		super.setup()

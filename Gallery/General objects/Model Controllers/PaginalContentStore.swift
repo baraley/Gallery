@@ -20,12 +20,8 @@ protocol ConfigurableCell: UICollectionViewCell {
 	func configure(_ item: Model)
 }
 
-class PaginalContentStore<R: PaginalRequest, C: ConfigurableCell>:
-NSObject,
-ImagesCollectionViewDataSource
-where 	R.ContentModel == C.Model,
-		R.ResultError == RequestError,
-		R.ContentModel: ThumbURLHolder {
+class PaginalContentStore<R: PaginalRequest, C: ConfigurableCell>: NSObject, ImagesCollectionViewDataSource
+	where R.ContentModel == C.Model, R.ResultError == RequestError, R.ContentModel: ThumbURLHolder {
 	
 	typealias Model = R.ContentModel
 	

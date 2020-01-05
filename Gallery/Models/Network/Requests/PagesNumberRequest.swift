@@ -22,10 +22,7 @@ struct PagesNumberRequest: UnsplashRequest {
 	
 	// MARK: - NetworkRequest
 	
-	func decode(
-		_ data: Data?, response: URLResponse?, error: Error?
-		) -> Result<Int, RequestError> {
-		
+	func decode(_ data: Data?, response: URLResponse?, error: Error?) -> Result<Int, RequestError> {
 		let totalPages = parseTotalPages(from: response)
 
 		return .success(totalPages)

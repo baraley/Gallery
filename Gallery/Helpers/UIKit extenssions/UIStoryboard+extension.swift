@@ -12,9 +12,6 @@ extension UIStoryboard {
 	
 	enum Storyboard: String {
 		case main				= "Main"
-		case photos				= "Photos"
-		case collections		= "Collections"
-		case profile			= "Profile"
 	}
 	
 	convenience init(storyboard: Storyboard, bundle: Bundle? = nil) {
@@ -26,9 +23,9 @@ extension UIStoryboard {
 	}
 
 	func instantiateViewController<T: UIViewController>() -> T {
-		let idenrifier = T.identifier
-		guard let viewController = instantiateViewController(withIdentifier: idenrifier) as? T else {
-			fatalError("Could not find view controller with name \(idenrifier)")
+		let identifier = T.identifier
+		guard let viewController = instantiateViewController(withIdentifier: identifier) as? T else {
+			fatalError("Could not find view controller with name \(identifier)")
 		}
 		return viewController
 	}
