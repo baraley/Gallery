@@ -64,7 +64,7 @@ class ProfileRootViewController: UIViewController, SegueHandlerType {
 			
 		case .editUserData:
 			let navVC = segue.destination as! UINavigationController
-			let editProfileViewController = navVC.viewControllers[0] as! EditProfileTableViewController
+			let editProfileViewController = navVC.viewControllers[0] as! EditProfileViewController
 			
 			if let state = authenticationController?.state, case .authenticated(let userData) = state {
 				editProfileViewController.userData = EditableUserData(user: userData.user)
@@ -73,7 +73,7 @@ class ProfileRootViewController: UIViewController, SegueHandlerType {
 	}
 	
 	@IBAction private func unwindFromEditProfileController(_ segue: UIStoryboardSegue) {
-		if let editProfileController = segue.source as? EditProfileTableViewController,
+		if let editProfileController = segue.source as? EditProfileViewController,
 			let userData = editProfileController.userData {
 
 			authenticationController?.editCurrentUserData(with: userData)

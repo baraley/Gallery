@@ -1,5 +1,5 @@
 //
-//  EditProfileTableViewController.swift
+//  EditProfileViewController.swift
 //  Gallery
 //
 //  Created by Alexander Baraley on 7/15/19.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class EditProfileTableViewController: UITableViewController {
+class EditProfileViewController: UITableViewController {
 	
 	// MARK: - Public properties
 	
@@ -21,6 +21,7 @@ class EditProfileTableViewController: UITableViewController {
 	// MARK: - Private properties
 	
 	private var currentTextView: UITextView?
+	private var userDataWasEdited: Bool = false
 	
 	// MARK: - Outlets
 	
@@ -28,11 +29,17 @@ class EditProfileTableViewController: UITableViewController {
 	
 	// MARK: - Actions
 	
-	@IBAction private func cancelAction(_ sender: UIBarButtonItem) {
+	@IBAction private func cancelAction(_ sender: UIBarButtonItem?) {
 		dismiss(animated: true)
 	}
 	
 	// MARK: - Life cycle
+
+	override func viewDidLoad() {
+		super.viewDidLoad()
+
+		navigationController?.presentationController?.delegate = self
+	}
 	
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
@@ -64,7 +71,7 @@ class EditProfileTableViewController: UITableViewController {
 }
 
 // MARK: - Private
-private extension EditProfileTableViewController {
+private extension EditProfileViewController {
 	
 	func editableText(for indexPath: IndexPath) -> String {
 		let text: String?
@@ -88,6 +95,7 @@ private extension EditProfileTableViewController {
 		case .biography:	 userData?.biography = text
 		case .location:		 userData?.location = text
 		}
+		userDataWasEdited = true
 	}
 	
 	func validateUserData() {
@@ -101,10 +109,26 @@ private extension EditProfileTableViewController {
 			saveButton.isEnabled = true
 		}
 	}
+
+	func showDismissAlert() {
+		let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+
+		alert.addAction(UIAlertAction(title: "Discard Changes", style: .destructive) { (_) in
+			self.cancelAction(nil)
+		})
+		alert.addAction(UIAlertAction(title: "Save Changes", style: .default) { (_) in
+			self.performSegue(withIdentifier: "saveUnwindSegue", sender: nil)
+		})
+		alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { (_) in
+			self.currentTextView?.becomeFirstResponder()
+		})
+
+		present(alert, animated: true)
+	}
 }
 
 // MARK: - UITextViewDelegate
-extension EditProfileTableViewController: UITextViewDelegate {
+extension EditProfileViewController: UITextViewDelegate {
 
 	func textViewDidBeginEditing(_ textView: UITextView) {
 		currentTextView = textView
@@ -125,7 +149,7 @@ extension EditProfileTableViewController: UITextViewDelegate {
 }
 
 // MARK: - Types
-private extension EditProfileTableViewController {
+private extension EditProfileViewController {
 	
 	enum Section: String, CaseIterable {
 		case firstName = "First name"
@@ -141,5 +165,18 @@ private extension EditProfileTableViewController {
 		init(_ section: Int) {
 			self = Section.allCases[section]
 		}
+	}
+}
+
+// MARK: - UIAdaptivePresentationControllerDelegate
+extension EditProfileViewController: UIAdaptivePresentationControllerDelegate {
+
+	func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+		return !userDataWasEdited
+	}
+
+	func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
+		currentTextView?.resignFirstResponder()
+		showDismissAlert()
 	}
 }

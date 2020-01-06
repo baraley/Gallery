@@ -30,7 +30,7 @@
 		11AA01E722EF44DA003E5B49 /* SearchPhotoCollectionsResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11AA01E622EF44DA003E5B49 /* SearchPhotoCollectionsResult.swift */; };
 		11B0AF0A22EF10D400D5E6E1 /* PhotosRootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B0AF0922EF10D400D5E6E1 /* PhotosRootViewController.swift */; };
 		11B0AF0C22EF117D00D5E6E1 /* CollectionOfPhotosRootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B0AF0B22EF117D00D5E6E1 /* CollectionOfPhotosRootViewController.swift */; };
-		11FD5CC622DCE4C400840D01 /* EditProfileTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11FD5CC522DCE4C400840D01 /* EditProfileTableViewController.swift */; };
+		11FD5CC622DCE4C400840D01 /* EditProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11FD5CC522DCE4C400840D01 /* EditProfileViewController.swift */; };
 		11FD5CC822DCEBC600840D01 /* UITableView+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11FD5CC722DCEBC600840D01 /* UITableView+extension.swift */; };
 		11FD5CCA22DDB02600840D01 /* EditProfileTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11FD5CC922DDB02600840D01 /* EditProfileTableViewCell.swift */; };
 		11FD5CCC22DDDF5800840D01 /* EditableUserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11FD5CCB22DDDF5800840D01 /* EditableUserData.swift */; };
@@ -93,7 +93,7 @@
 		11AA01E622EF44DA003E5B49 /* SearchPhotoCollectionsResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchPhotoCollectionsResult.swift; sourceTree = "<group>"; };
 		11B0AF0922EF10D400D5E6E1 /* PhotosRootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosRootViewController.swift; sourceTree = "<group>"; };
 		11B0AF0B22EF117D00D5E6E1 /* CollectionOfPhotosRootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionOfPhotosRootViewController.swift; sourceTree = "<group>"; };
-		11FD5CC522DCE4C400840D01 /* EditProfileTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileTableViewController.swift; sourceTree = "<group>"; };
+		11FD5CC522DCE4C400840D01 /* EditProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileViewController.swift; sourceTree = "<group>"; };
 		11FD5CC722DCEBC600840D01 /* UITableView+extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UITableView+extension.swift"; sourceTree = "<group>"; };
 		11FD5CC922DDB02600840D01 /* EditProfileTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileTableViewCell.swift; sourceTree = "<group>"; };
 		11FD5CCB22DDDF5800840D01 /* EditableUserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableUserData.swift; sourceTree = "<group>"; };
@@ -305,7 +305,7 @@
 			children = (
 				1100DBD022CCE9020022E653 /* ProfileRootViewController.swift */,
 				110E389322CF1E4D007C0933 /* ProfileTableViewController.swift */,
-				11FD5CC522DCE4C400840D01 /* EditProfileTableViewController.swift */,
+				11FD5CC522DCE4C400840D01 /* EditProfileViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -544,7 +544,7 @@
 				3D772CAD20B8EA3A00F3DC48 /* Photo.swift in Sources */,
 				3D2EE30B21F0775200E7AB52 /* ImageScrollView.swift in Sources */,
 				1100DBD322CCF06F0022E653 /* GalleryRootViewController.swift in Sources */,
-				11FD5CC622DCE4C400840D01 /* EditProfileTableViewController.swift in Sources */,
+				11FD5CC622DCE4C400840D01 /* EditProfileViewController.swift in Sources */,
 				110E389422CF1E4D007C0933 /* ProfileTableViewController.swift in Sources */,
 				118C0E2522E11FB600395509 /* PhotoCollectionListRequest.swift in Sources */,
 				1100DBD122CCE9020022E653 /* ProfileRootViewController.swift in Sources */,
