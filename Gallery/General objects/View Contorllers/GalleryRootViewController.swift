@@ -10,23 +10,27 @@ import UIKit
 
 class GalleryRootViewController: UITabBarController {
     
-	private lazy var authenticationPerformer: AuthenticationPerformer = .init()
+	private lazy var authenticationController: AuthenticationController = {
+		let controller = AuthenticationController()
+		controller.loadUserDataIfAvailable()
+		return controller
+	}()
     
     private var photosRootViewController: PhotosRootViewController? {
         didSet {
-            photosRootViewController?.authenticationInformer = authenticationPerformer
+            photosRootViewController?.authenticationInformer = authenticationController
         }
     }
 	
 	private var photoCollectionsRootViewController: CollectionOfPhotosRootViewController? {
 		didSet {
-			photoCollectionsRootViewController?.authenticationInformer = authenticationPerformer
+			photoCollectionsRootViewController?.authenticationInformer = authenticationController
 		}
 	}
     
     private var profileRootViewController: ProfileRootViewController?{
         didSet {
-            profileRootViewController?.authenticationPerformer = authenticationPerformer
+            profileRootViewController?.authenticationController = authenticationController
         }
     }
 

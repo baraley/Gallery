@@ -9,48 +9,46 @@
 import UIKit
 
 class ProfileRootViewController: UIViewController, SegueHandlerType {
-    
-    // MARK: - Public properties
-    
-    var authenticationPerformer: AuthenticationPerformer? {
-        didSet { authenticationPerformer?.addObserve(self) }
-    }
+
+	typealias ProfileActions = ProfileTableViewController.ActionsHandlers
+
+	// MARK: - Public properties
+
+	var authenticationController: AuthenticationController?
 	
-    // MARK: - Private propertiesv
-    
-	private var profileTableViewController: ProfileTableViewController? {
-		didSet { setupProfileTableViewController() }
-	}
+	// MARK: - Private properties
+
+	private var profileTableViewController: ProfileTableViewController?
+
+	private lazy var profileActions = ProfileActions.init(
+		updateUserData: { [weak self] in
+			self?.authenticationController?.loadUserDataIfAvailable()
+		}, editProfile: { [weak self] in
+			self?.performSegue(withIdentifier: .editUserData, sender: nil)
+		}, logOut: { [weak self] in
+			self?.authenticationController?.performLogOut()
+		}
+	)
 	
-    // MARK: - Outlets
+	// MARK: - Outlets
 	
 	@IBOutlet private var loadingView: UIActivityIndicatorView?
-    @IBOutlet private var authorizationButton: UIButton?
+	@IBOutlet private var authorizationButton: UIButton?
 	
-    // MARK: - Actions
-    
-    @IBAction private func authorizationButtonAction(_ sender: UIButton) {
-        showAuthenticationAlert()
-    }
-	
-	override func setEditing(_ editing: Bool, animated: Bool) {
-		super.setEditing(editing, animated: animated)
+	// MARK: - Actions
+
+	@IBAction private func authorizationButtonAction(_ sender: UIButton) {
+		showAuthenticationAlert()
 	}
 	
 	// MARK: - Life cycle
-	
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		
-	}
-	
-	override func viewWillAppear(_ animated: Bool) {
-		super.viewWillAppear(animated)
-		
-		authenticationStateDidChange()
+
+		authenticationController?.addObserve(self)
 	}
 
-	
 	// MARK: - Navigation
 	
 	enum SegueIdentifier: String {
@@ -61,13 +59,14 @@ class ProfileRootViewController: UIViewController, SegueHandlerType {
 		switch segueIdentifier(for: segue) {
 		case .profile:
 			profileTableViewController = segue.destination as? ProfileTableViewController
-			profileTableViewController?.view.isHidden = true
+			profileTableViewController?.networkService = NetworkService()
+			profileTableViewController?.actionHandlers = profileActions
 			
 		case .editUserData:
 			let navVC = segue.destination as! UINavigationController
 			let editProfileViewController = navVC.viewControllers[0] as! EditProfileTableViewController
 			
-			if let state = authenticationPerformer?.state, case .authenticated(let userData) = state {
+			if let state = authenticationController?.state, case .authenticated(let userData) = state {
 				editProfileViewController.userData = EditableUserData(user: userData.user)
 			}
 		}
@@ -76,7 +75,8 @@ class ProfileRootViewController: UIViewController, SegueHandlerType {
 	@IBAction private func unwindFromEditProfileController(_ segue: UIStoryboardSegue) {
 		if let editProfileController = segue.source as? EditProfileTableViewController,
 			let userData = editProfileController.userData {
-			authenticationPerformer?.updateUserData(with: userData)
+
+			authenticationController?.editCurrentUserData(with: userData)
 		}
 	}
 }
@@ -84,60 +84,26 @@ class ProfileRootViewController: UIViewController, SegueHandlerType {
 // MARK: - Private
 private extension ProfileRootViewController {
 	
-	func setupProfileTableViewController() {
-		guard let profileVC = profileTableViewController else { return }
-		
-		profileVC.updateUserDataAction = { [weak self] in
-			self?.authenticationPerformer?.updateUserData()
-		}
-		profileVC.editProfileAction = { [weak self] in
-			self?.performSegue(withIdentifier: .editUserData, sender: nil)
-		}
-		profileVC.logOutAction = { [weak self] in
-			self?.authenticationPerformer?.performLogOut()
-		}
-	}
-	
-	func authenticationStateDidChange() {
+	func initialConfiguration() {
 		loadingView?.stopAnimating()
+		authorizationButton?.isHidden = true
 		profileTableViewController?.view.isHidden = true
-		
-		guard let state = authenticationPerformer?.state else { return }
-		
-		switch state {
-		case .authenticated(let userData):
-			authorizationButton?.isHidden = true
-			profileTableViewController?.networkService = NetworkService()
-			profileTableViewController?.userData = userData
-			profileTableViewController?.view.isHidden = false
-			
-		case .unauthenticated:
-			authorizationButton?.isHidden = false
-			
-		case .isAuthenticating:
-			loadingView?.startAnimating()
-			authorizationButton?.isHidden = true
-			
-		case .authenticationFailed(let error):
-			authorizationButton?.isHidden = true
-			show(error)
-		}
 	}
-    
-    func showAuthenticationAlert() {
-        let message = "Login alredy in the pastboard.\nPassword(8): 11111111"
-		
-        let alert = UIAlertController(
-            title: "Sample accaunt", message: message, preferredStyle: .alert
-        )
-        
-        alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
-            UIPasteboard.general.string = "dulmayarku@enayu.com"
-            self.authenticationPerformer?.performLogIn()
-        })
-        
-        present(alert, animated: true)
-    }
+
+	func showAuthenticationAlert() {
+		let alert = UIAlertController(
+			title: "Sample account",
+			message: "Login already in the pasteboard.\nPassword(8): 11111111",
+			preferredStyle: .alert
+		)
+
+		alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
+			UIPasteboard.general.string = "dulmayarku@enayu.com"
+			self.authenticationController?.performLogIn()
+		})
+
+		present(alert, animated: true)
+	}
 	
 	func show(_ error: RequestError) {
 		switch error {
@@ -151,20 +117,29 @@ private extension ProfileRootViewController {
 
 // MARK: - AuthenticationObserver
 extension ProfileRootViewController: AuthenticationObserver {
-    
-    func authenticationDidStart() {
-        authenticationStateDidChange()
-    }
-    
-    func authenticationDidFinish(with userData: AuthenticatedUserData) {
-        authenticationStateDidChange()
-    }
-    
-    func deauthenticationDidFinish() {
-       authenticationStateDidChange()
-    }
-    
-    func authorizationDidFail(with error: RequestError) {
-		authenticationStateDidChange()
-    }
+
+	func authenticationDidStart() {
+		initialConfiguration()
+
+		loadingView?.startAnimating()
+	}
+
+	func authenticationDidFinish(with userData: AuthenticatedUserData) {
+		initialConfiguration()
+
+		profileTableViewController?.userData = userData
+		profileTableViewController?.view.isHidden = false
+	}
+
+	func deauthenticationDidFinish() {
+		initialConfiguration()
+
+		authorizationButton?.isHidden = false
+	}
+
+	func authorizationDidFail(with error: RequestError) {
+		initialConfiguration()
+
+		show(error)
+	}
 }

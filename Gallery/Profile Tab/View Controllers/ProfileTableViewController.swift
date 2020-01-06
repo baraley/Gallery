@@ -9,27 +9,34 @@
 import UIKit
 
 class ProfileTableViewController: UITableViewController, SegueHandlerType {
+
+	// MARK: - Types
+
+	struct ActionsHandlers {
+		var updateUserData: (() -> ())
+		var editProfile: (() -> ())
+		var logOut: (() -> ())
+	}
+
+	// MARK: - Public properties
 	
 	var networkService: NetworkService!
-        
+	var actionHandlers: ActionsHandlers!
     var userData: AuthenticatedUserData? {
-        didSet { if isViewLoaded { userDataDidChange() } }
+        didSet {
+			if isViewLoaded {
+				userDataDidChange()
+			}
+		}
     }
-	
-	var updateUserDataAction: (() -> ())?
-	var editProfileAction: (() -> ())?
-	var logOutAction: (() -> ())?
 	
 	// MARK: - Outlets
     
     @IBOutlet private var imageView: UIImageView!
     @IBOutlet private var nameLabel: UILabel!
 	@IBOutlet private var nickName: UILabel!
-	
     @IBOutlet private var biographyLabel: UILabel!
-	
 	@IBOutlet private var locationLabel: UILabel!
-	
 	@IBOutlet private var likesRow: UITableViewCell!
 	
 	// MARK: - Life cycle
@@ -37,17 +44,13 @@ class ProfileTableViewController: UITableViewController, SegueHandlerType {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		initialConfiguretion()
+		initialConfiguration()
 	}
 	
 	// MARK: - Navigation
 	
 	enum SegueIdentifier: String {
-		case uploadedPhotos, likedPhotos, collections
-	}
-	
-	override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
-		return SegueIdentifier(rawValue: identifier) == .likedPhotos
+		case likedPhotos
 	}
 	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -64,9 +67,6 @@ class ProfileTableViewController: UITableViewController, SegueHandlerType {
 			vc.paginalContentStore = PaginalContentStore(
 				networkService: NetworkService(), paginalRequest: request
 			)
-			
-		default:
-			break
 		}
 	}
 	
@@ -76,18 +76,24 @@ class ProfileTableViewController: UITableViewController, SegueHandlerType {
 							shouldHighlightRowAt indexPath: IndexPath) -> Bool {
 		
 		switch Section(rawValue: indexPath.section)! {
-		case .name, .biography, .location:	return false
-		case .content, .edit, .logOut:		return true
+		case .name, .biography, .location:
+			return false
+		case .content, .edit, .logOut:
+			return true
 		}
 	}
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		switch Section(rawValue: indexPath.section)! {
-		case .edit:		editProfileAction?()
-		case .logOut:	logOutAction?()
-		default: 		break
-		}
 		tableView.deselectRow(at: indexPath, animated: true)
+
+		switch Section(rawValue: indexPath.section)! {
+		case .edit:
+			actionHandlers.editProfile()
+		case .logOut:
+			actionHandlers.logOut()
+		default:
+			break
+		}
 	}
 }
 
@@ -98,20 +104,18 @@ private extension ProfileTableViewController {
 		case name, biography, location, content, edit, logOut
 	}
 	
-	func initialConfiguretion() {
+	func initialConfiguration() {
 		let refreshControl = UIRefreshControl()
 		refreshControl.tintColor = .darkGray
 		refreshControl.addTarget(self, action: #selector(updateUserData), for: .valueChanged)
 		
 		self.refreshControl = refreshControl
 		
-		if userData != nil {
-			userDataDidChange()
-		}
+		userDataDidChange()
 	}
 	
 	@objc func updateUserData() {
-		updateUserDataAction?()
+		actionHandlers.updateUserData()
 	}
     
     func userDataDidChange() {

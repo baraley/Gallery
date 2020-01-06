@@ -1,5 +1,5 @@
 //
-//  UpdateUserRequest.swift
+//  EditUserRequest.swift
 //  Gallery
 //
 //  Created by Alexander Baraley on 7/12/19.
@@ -8,13 +8,13 @@
 
 import Foundation
 
-struct UpdateUserRequest: UnsplashRequest {
+struct EditUserRequest: UnsplashRequest {
 	
 	private let editableUserData: EditableUserData
 	
-	init(userDataToUpdate: EditableUserData, accessToken: String) {
+	init(userData: EditableUserData, accessToken: String) {
 		self.accessToken = accessToken
-		self.editableUserData = userDataToUpdate
+		self.editableUserData = userData
 	}
 	
 	// MARK: - NetworkRequest

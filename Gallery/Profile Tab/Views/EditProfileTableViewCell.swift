@@ -11,7 +11,7 @@ import UIKit
 class EditProfileTableViewCell: UITableViewCell {
 	
 	@IBOutlet private var textView: UITextView!
-	
+
 	var editableText: String {
 		get { return textView.text ?? "" }
 		set { textView.text = newValue }

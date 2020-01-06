@@ -81,7 +81,7 @@
             <objects>
                 <collectionViewController storyboardIdentifier="PhotosCollectionViewController" id="3D4-uO-Lea" customClass="PhotosCollectionViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" contentInsetAdjustmentBehavior="scrollableAxes" bouncesZoom="NO" dataMode="prototypes" id="yzT-YK-6jp">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="aLD-tO-cgD"/>
@@ -95,7 +95,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" insetsLayoutMarginsFromSafeArea="NO" image="image placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="f2w-GD-lIH">
-                                            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="369" height="255"/>
                                         </imageView>
                                     </subviews>
                                 </view>
@@ -130,7 +130,7 @@
         <!--Photo Page View Controller-->
         <scene sceneID="XoJ-q7-uTq">
             <objects>
-                <pageViewController autoresizesArchivedViewToFullSize="NO" automaticallyAdjustsScrollViewInsets="NO" hidesBottomBarWhenPushed="YES" transitionStyle="scroll" pageSpacing="30" navigationOrientation="horizontal" spineLocation="none" id="2n3-Rq-uRX" customClass="PhotoPageViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
+                <pageViewController automaticallyAdjustsScrollViewInsets="NO" hidesBottomBarWhenPushed="YES" transitionStyle="scroll" pageSpacing="30" navigationOrientation="horizontal" spineLocation="none" id="2n3-Rq-uRX" customClass="PhotoPageViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems>
                         <barButtonItem systemItem="action" id="tjV-51-tD0">
                             <connections>
@@ -675,7 +675,7 @@
         <scene sceneID="DcY-UJ-E3A">
             <objects>
                 <tableViewController id="n19-P1-mHQ" customClass="EditProfileTableViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="oYu-bk-5vv">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="prototypes" style="grouped" separatorStyle="default" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="oYu-bk-5vv">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
@@ -755,6 +755,69 @@
             </objects>
             <point key="canvasLocation" x="476" y="3287"/>
         </scene>
+        <!--Tab Bar Controller-->
+        <scene sceneID="xIl-XE-7ON">
+            <objects>
+                <tabBarController id="kIA-UY-WYY" sceneMemberID="viewController">
+                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="cUa-qs-1Uq">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="49"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="V8f-OZ-23H" kind="relationship" relationship="viewControllers" id="k6T-Es-a1q"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="EhT-m5-2pR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1990" y="-470"/>
+        </scene>
+        <!--Profile-->
+        <scene sceneID="wbi-Fr-cfq">
+            <objects>
+                <tableViewController id="67w-BB-bVD" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="XMU-08-fUa">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="vZS-eh-4vT">
+                                <rect key="frame" x="0.0" y="28" width="375" height="43.5"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="vZS-eh-4vT" id="ryl-fl-TJO">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="67w-BB-bVD" id="xpJ-tg-4Wj"/>
+                            <outlet property="delegate" destination="67w-BB-bVD" id="z0m-pH-Q2w"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Profile" largeTitleDisplayMode="always" id="8ah-sN-5ZS"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Zdh-VY-YeT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-68" y="-470"/>
+        </scene>
+        <!--Item-->
+        <scene sceneID="eMa-R0-3zf">
+            <objects>
+                <navigationController id="V8f-OZ-23H" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Item" id="RCr-On-Asm"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="u6m-dn-ukH">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="96"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="67w-BB-bVD" kind="relationship" relationship="rootViewController" id="xBc-UD-C7E"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fjY-gl-MPY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1020" y="-470"/>
+        </scene>
     </scenes>
     <resources>
         <image name="Photos" width="25" height="25"/>
@@ -765,6 +828,6 @@
         <image name="profileIcon" width="22" height="25"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="IyF-3O-FDw"/>
+        <segue reference="no6-ki-TWZ"/>
     </inferredMetricsTieBreakers>
 </document>

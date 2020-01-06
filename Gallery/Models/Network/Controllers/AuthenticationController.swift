@@ -1,5 +1,5 @@
 //
-//  AuthenticationPerformer.swift
+//  AuthenticationController.swift
 //  Gallery
 //
 //  Created by Alexander Baraley on 1/14/18.
@@ -10,29 +10,36 @@ import Foundation
 import AuthenticationServices
 import SwiftKeychainWrapper
 
-class AuthenticationPerformer: NSObject, AuthenticationInformer {
+class AuthenticationController: NSObject, AuthenticationInformer {
     
     // MARK: - Private properties
     
     private let networkService: NetworkService
 	private var webAuthSession: ASWebAuthenticationSession?
     
-    private(set) var state: AuthenticationState { didSet { authenticationStateDidChange() } }
+    private(set) var state: AuthenticationState = .unauthenticated {
+		didSet {
+			authenticationStateDidChange()
+		}
+	}
     
     init(networkService: NetworkService = NetworkService()) {		
         self.networkService = networkService
-        state = .unauthenticated
 		super.init()
-		loadUserDataIfAvailable()
     }
     
     // MARK: - AuthorizationInformer
+
+    private struct Observation {
+        weak var observer: AuthenticationObserver?
+    }
     
     private var observations = [ObjectIdentifier : Observation]()
 
     func addObserve(_ observer: AuthenticationObserver) {
         let id = ObjectIdentifier(observer)
         observations[id] = Observation(observer: observer)
+		notifyObserver(observer)
     }
     
     func removeObserver(_ observer: AuthenticationObserver) {
@@ -42,18 +49,20 @@ class AuthenticationPerformer: NSObject, AuthenticationInformer {
 }
 
 // MARK: - Public methods
-extension AuthenticationPerformer {
-	
-	func updateUserData() {
-		loadUserDataIfAvailable()
+extension AuthenticationController {
+
+	func loadUserDataIfAvailable() {
+		guard let accessToken = KeychainWrapper.standard.string(forKey: UnsplashAPI.accessTokenKey) else {
+			return
+		}
+
+		loadAuthorizedUser(with: accessToken)
 	}
 	
-	func updateUserData(with userDataToUpdate: EditableUserData) {
+	func editCurrentUserData(with editableUserData: EditableUserData) {
 		guard case .authenticated(let userData) = state else { return }
 		
-		let updateUserRequest = UpdateUserRequest(
-			userDataToUpdate: userDataToUpdate, accessToken: userData.accessToken
-		)
+		let updateUserRequest = EditUserRequest(userData: editableUserData, accessToken: userData.accessToken)
 		
 		state = .isAuthenticating
 		
@@ -93,11 +102,7 @@ extension AuthenticationPerformer {
 }
 
 // MARK: - Helpers
-private extension AuthenticationPerformer {
-    
-    struct Observation {
-        weak var observer: AuthenticationObserver?
-    }
+private extension AuthenticationController {
     
     func authenticationStateDidChange() {
         observations.forEach { (key, observation) in
@@ -105,25 +110,22 @@ private extension AuthenticationPerformer {
                 observations.removeValue(forKey: key)
                 return
             }
-            
-            switch state {
-            case .isAuthenticating:
-                observer.authenticationDidStart()
-            case .authenticated(let userData):
-                observer.authenticationDidFinish(with: userData)
-            case .unauthenticated:
-                observer.deauthenticationDidFinish()
-            case .authenticationFailed(let error):
-                observer.authorizationDidFail(with: error)
-            }
+
+			notifyObserver(observer)
         }
     }
-	
-	func loadUserDataIfAvailable() {
-		guard let accessToken = KeychainWrapper.standard.string(forKey: UnsplashAPI.accessTokenKey)
-		else { return }
-		
-		loadAuthorizedUser(with: accessToken)
+
+	func notifyObserver(_ observer: AuthenticationObserver) {
+		switch state {
+		case .isAuthenticating:
+			observer.authenticationDidStart()
+		case .authenticated(let userData):
+			observer.authenticationDidFinish(with: userData)
+		case .unauthenticated:
+			observer.deauthenticationDidFinish()
+		case .authenticationFailed(let error):
+			observer.authorizationDidFail(with: error)
+		}
 	}
 	
 	func requestAuthorizationCode() {
@@ -199,7 +201,7 @@ private extension AuthenticationPerformer {
 	}
 }
 
-extension AuthenticationPerformer: ASWebAuthenticationPresentationContextProviding {
+extension AuthenticationController: ASWebAuthenticationPresentationContextProviding {
 
 	func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
 		UIApplication.shared.keyWindow!

@@ -103,7 +103,9 @@ private extension EditProfileTableViewController {
 	}
 }
 
+// MARK: - UITextViewDelegate
 extension EditProfileTableViewController: UITextViewDelegate {
+
 	func textViewDidBeginEditing(_ textView: UITextView) {
 		currentTextView = textView
 	}
@@ -113,7 +115,8 @@ extension EditProfileTableViewController: UITextViewDelegate {
 		if let indexPath = tableView.indexPathForRow(with: textView) {
 			saveText(textView.text, at: indexPath)
 		}
-		
+
+		//Needs for proper updating of cell's size
 		DispatchQueue.main.async {
 			self.tableView.beginUpdates()
 			self.tableView.endUpdates()
@@ -137,14 +140,6 @@ private extension EditProfileTableViewController {
 		
 		init(_ section: Int) {
 			self = Section.allCases[section]
-		}
-		
-		var requaredFields: [Section] {
-			return [.firstName, .userName]
-		}
-		
-		var optionalFields: [Section] {
-			return [.lastName, .biography, .location]
 		}
 	}
 }
