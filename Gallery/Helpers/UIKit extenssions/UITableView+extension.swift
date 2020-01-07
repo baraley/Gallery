@@ -15,9 +15,9 @@ extension UITableView {
 	}
 	
 	func dequeueCell<T: UITableViewCell>(indexPath: IndexPath) -> T {
-		let idenrifier = T.identifier
-		guard let cell = dequeueReusableCell(withIdentifier: idenrifier, for: indexPath) as? T else {
-			fatalError("Could not dequeue cell with \(idenrifier)")
+		let identifier = T.identifier
+		guard let cell = dequeueReusableCell(withIdentifier: identifier, for: indexPath) as? T else {
+			fatalError("Could not dequeue cell with \(identifier)")
 		}
 		return cell
 	}

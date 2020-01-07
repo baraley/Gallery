@@ -14,7 +14,7 @@ class EditProfileViewController: UITableViewController {
 	
 	var userData: EditableUserData? {
 		didSet {
-			validateUserData()
+			updateSaveButton()
 		}
 	}
 	
@@ -22,6 +22,9 @@ class EditProfileViewController: UITableViewController {
 	
 	private var currentTextView: UITextView?
 	private var userDataWasEdited: Bool = false
+	private var isUserDataValid: Bool {
+		userData?.firstName.isEmpty == false && userData?.userName.isEmpty == false
+	}
 	
 	// MARK: - Outlets
 	
@@ -98,16 +101,8 @@ private extension EditProfileViewController {
 		userDataWasEdited = true
 	}
 	
-	func validateUserData() {
-		guard let userData = userData else { return }
-		
-		if userData.firstName.count == 0 ||
-			userData.userName.count == 0 {
-			
-			saveButton.isEnabled = false
-		} else {
-			saveButton.isEnabled = true
-		}
+	func updateSaveButton() {
+		saveButton.isEnabled = isUserDataValid
 	}
 
 	func showDismissAlert() {
@@ -116,9 +111,11 @@ private extension EditProfileViewController {
 		alert.addAction(UIAlertAction(title: "Discard Changes", style: .destructive) { (_) in
 			self.cancelAction(nil)
 		})
-		alert.addAction(UIAlertAction(title: "Save Changes", style: .default) { (_) in
-			self.performSegue(withIdentifier: "saveUnwindSegue", sender: nil)
-		})
+		if isUserDataValid {
+			alert.addAction(UIAlertAction(title: "Save Changes", style: .default) { (_) in
+				self.performSegue(withIdentifier: "saveUnwindSegue", sender: nil)
+			})
+		}
 		alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { (_) in
 			self.currentTextView?.becomeFirstResponder()
 		})
