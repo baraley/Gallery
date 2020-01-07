@@ -10,14 +10,14 @@ import UIKit
 
 class PhotoViewController: UIViewController {
 	
-    @IBOutlet var photoScrollView: ImageScrollView!
-	@IBOutlet private var imageLoadingView: UIActivityIndicatorView!
+    @IBOutlet var imageScrollView: ImageScrollView!
+	@IBOutlet private var loadingView: UIActivityIndicatorView!
 	
     var photo: Photo!
-	var networkRequestPerformer: NetworkService?
+	var networkService: NetworkService?
 	
 	private var photoImage: UIImage? {
-		didSet{ photoScrollView.image = photoImage }
+		didSet{ imageScrollView.image = photoImage }
 	}
 	
 	private var lastZoomLocation: CGPoint?
@@ -36,10 +36,7 @@ class PhotoViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		photoScrollView.tapGesturesHandler = self
-		photoScrollView.singleTapGestureRecognizer.require(
-			toFail: photoScrollView.doubleTapGestureRecognizer
-		)
+		imageScrollView.tapGesturesDelegate = self
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -52,7 +49,7 @@ class PhotoViewController: UIViewController {
 	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
 		
-		networkRequestPerformer?.cancel(ImageRequest(url: photo.imageURL))
+		networkService?.cancel(ImageRequest(url: photo.imageURL))
 	}
 	
 	override func viewWillTransition(to size: CGSize,
@@ -77,14 +74,14 @@ private extension PhotoViewController {
 	// MARK: - Image loading -
 	
 	func loadPhoto() {
-		imageLoadingView?.isHidden = false
+		loadingView?.isHidden = false
 		
 		let request = ImageRequest(url: photo.imageURL)
 		
-		networkRequestPerformer?.performRequest(request) { [weak self]  (result) in
+		networkService?.performRequest(request) { [weak self]  (result) in
 			DispatchQueue.main.async {
 				self?.handleLoadingResult(result)
-				self?.imageLoadingView?.isHidden = true
+				self?.loadingView?.isHidden = true
 			}
 		}
 	}
@@ -125,11 +122,11 @@ private extension PhotoViewController {
 		switch photoBackground {
 		case .light:
 			parent?.view.backgroundColor = .white
-			imageLoadingView.color = .black
+			loadingView.color = .black
 			
 		case .dark:
 			parent?.view.backgroundColor = .black
-			imageLoadingView.color = .white
+			loadingView.color = .white
 		}
 	}
 	
@@ -137,10 +134,10 @@ private extension PhotoViewController {
 	
 	func layoutScrollViewContent(for size: CGSize) {
 		setupMinZoomScale(for: size)
-		photoScrollView.updateConstraints(for: size)
+		imageScrollView.updateConstraints(for: size)
 		
 		if let zoomLocation = lastZoomLocation {
-			photoScrollView.zoom(to: rectToZoom(in: zoomLocation), animated: false)
+			imageScrollView.zoom(to: rectToZoom(in: zoomLocation), animated: false)
 		}
 	}
 	
@@ -152,14 +149,14 @@ private extension PhotoViewController {
 		
 		let minScale = min(xScale, yScale)
 		
-		photoScrollView.minimumZoomScale = minScale
-		photoScrollView.zoomScale = minScale
+		imageScrollView.minimumZoomScale = minScale
+		imageScrollView.zoomScale = minScale
 	}
 	
 	func rectToZoom(in zoomLocation: CGPoint) -> CGRect {
 		let viewSize = view.frame.size
 		
-		let photoImageInsets = photoScrollView.constraintsInsets
+		let photoImageInsets = imageScrollView.constraintsInsets
 		
 		let xOrigin = zoomLocation.x - (viewSize.width / 2) - photoImageInsets.left
 		let yOrigin = zoomLocation.y - (viewSize.height / 2) - photoImageInsets.top
@@ -168,26 +165,26 @@ private extension PhotoViewController {
 	}
 	
 	func saveLastZoomLocation() {
-		if photoScrollView.zoomScale != photoScrollView.minimumZoomScale {
-			lastZoomLocation = photoScrollView.currentZoomCenter
+		if imageScrollView.zoomScale != imageScrollView.minimumZoomScale {
+			lastZoomLocation = imageScrollView.currentZoomCenter
 		} else {
 			lastZoomLocation = nil
 		}
 	}
 }
 
-extension PhotoViewController: ImageScrollViewGesturesHandler {
+extension PhotoViewController: ImageScrollViewGesturesDelegate {
     
-	func imageScrollView(_ imageScrollView: ImageScrollView, singleTapDidHappenIn location: CGPoint) {
+	func imageScrollView(_ imageScrollView: ImageScrollView, singleTapDidHappenAt point: CGPoint) {
 		updateBars()
 	}
 	
-	func imageScrollView(_ imageScrollView: ImageScrollView, doubleTapDidHappenIn location: CGPoint) {
+	func imageScrollView(_ imageScrollView: ImageScrollView, doubleTapDidHappenAt point: CGPoint) {
 		
-		if photoScrollView.zoomScale == photoScrollView.minimumZoomScale {
-			photoScrollView.zoom(to: rectToZoom(in: location), animated: true)
+		if imageScrollView.zoomScale == imageScrollView.minimumZoomScale {
+			imageScrollView.zoom(to: rectToZoom(in: point), animated: true)
 		} else {
-			photoScrollView.setZoomScale(photoScrollView.minimumZoomScale, animated: true)
+			imageScrollView.setZoomScale(imageScrollView.minimumZoomScale, animated: true)
 		}
 	}
 }

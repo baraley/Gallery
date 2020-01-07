@@ -81,7 +81,7 @@
             <objects>
                 <collectionViewController storyboardIdentifier="PhotosCollectionViewController" id="3D4-uO-Lea" customClass="PhotosCollectionViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" contentInsetAdjustmentBehavior="scrollableAxes" bouncesZoom="NO" dataMode="prototypes" id="yzT-YK-6jp">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="aLD-tO-cgD"/>
@@ -95,7 +95,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" insetsLayoutMarginsFromSafeArea="NO" image="image placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="f2w-GD-lIH">
-                                            <rect key="frame" x="0.0" y="0.0" width="369" height="255"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                         </imageView>
                                     </subviews>
                                 </view>
@@ -175,9 +175,6 @@
                                     <imageView verifyAmbiguity="off" clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Pnr-gM-UmS">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                         <gestureRecognizers/>
-                                        <connections>
-                                            <outletCollection property="gestureRecognizers" destination="GU9-IY-Poe" appends="YES" id="vJn-6a-CBp"/>
-                                        </connections>
                                     </imageView>
                                 </subviews>
                                 <gestureRecognizers/>
@@ -189,13 +186,10 @@
                                 </constraints>
                                 <connections>
                                     <outlet property="bottomConstraint" destination="276-TT-UVn" id="5tD-f7-ciI"/>
-                                    <outlet property="doubleTapGestureRecognizer" destination="GU9-IY-Poe" id="wjp-sp-ZHR"/>
                                     <outlet property="imageView" destination="Pnr-gM-UmS" id="I8S-Pi-dJF"/>
                                     <outlet property="leadingConstraint" destination="vqD-EX-69V" id="adn-ra-jbk"/>
-                                    <outlet property="singleTapGestureRecognizer" destination="ziJ-gr-xKl" id="BDf-ef-c0A"/>
                                     <outlet property="topConstraint" destination="6Yh-O9-oS9" id="UCR-7b-uKM"/>
-                                    <outlet property="traillingConstraint" destination="5Dv-GE-q4C" id="iZG-W3-jye"/>
-                                    <outletCollection property="gestureRecognizers" destination="ziJ-gr-xKl" appends="YES" id="c3j-xF-IVM"/>
+                                    <outlet property="trailingConstraint" destination="5Dv-GE-q4C" id="iZG-W3-jye"/>
                                 </connections>
                             </scrollView>
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="3gQ-sZ-5ze">
@@ -215,21 +209,11 @@
                         <viewLayoutGuide key="safeArea" id="eF9-P1-i3f"/>
                     </view>
                     <connections>
-                        <outlet property="imageLoadingView" destination="3gQ-sZ-5ze" id="ygj-mV-PT6"/>
-                        <outlet property="photoScrollView" destination="ecP-do-lce" id="mGg-4c-NCw"/>
+                        <outlet property="imageScrollView" destination="ecP-do-lce" id="mGg-4c-NCw"/>
+                        <outlet property="loadingView" destination="3gQ-sZ-5ze" id="ygj-mV-PT6"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wuJ-9a-bbH" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tapGestureRecognizer id="ziJ-gr-xKl" userLabel="Single Tap">
-                    <connections>
-                        <action selector="singleTapAction:" destination="ecP-do-lce" id="Iqk-lN-x6B"/>
-                    </connections>
-                </tapGestureRecognizer>
-                <tapGestureRecognizer numberOfTapsRequired="2" id="GU9-IY-Poe" userLabel="Double Tap">
-                    <connections>
-                        <action selector="doubleTapAction:" destination="ecP-do-lce" id="ADo-jW-4HC"/>
-                    </connections>
-                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="4086" y="1529"/>
         </scene>
@@ -474,7 +458,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" alignment="center" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="oxm-aD-3I3">
-                                                    <rect key="frame" x="20" y="11" width="374" height="71"/>
+                                                    <rect key="frame" x="16" y="11" width="343" height="71"/>
                                                     <subviews>
                                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="profile placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="vZn-nS-LQj">
                                                             <rect key="frame" x="0.0" y="0.0" width="71" height="71"/>
@@ -486,16 +470,16 @@
                                                             </userDefinedRuntimeAttributes>
                                                         </imageView>
                                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="gHg-xh-BI6">
-                                                            <rect key="frame" x="79" y="11" width="295" height="49"/>
+                                                            <rect key="frame" x="79" y="11" width="264" height="49"/>
                                                             <subviews>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Full Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7ye-bF-yIk">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="295" height="20.5"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="264" height="20.5"/>
                                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                                     <nil key="textColor"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="@nickname" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="K9Q-0t-wla">
-                                                                    <rect key="frame" x="0.0" y="28.5" width="295" height="20.5"/>
+                                                                    <rect key="frame" x="0.0" y="28.5" width="264" height="20.5"/>
                                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                                     <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                     <nil key="highlightedColor"/>
@@ -828,6 +812,6 @@
         <image name="profileIcon" width="22" height="25"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="no6-ki-TWZ"/>
+        <segue reference="IyF-3O-FDw"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -8,50 +8,49 @@
 
 import UIKit
 
-protocol ImageScrollViewGesturesHandler: AnyObject {
-	func imageScrollView(_ imageScrollView: ImageScrollView, singleTapDidHappenIn location: CGPoint)
-	func imageScrollView(_ imageScrollView: ImageScrollView, doubleTapDidHappenIn location: CGPoint)
+protocol ImageScrollViewGesturesDelegate: AnyObject {
+	func imageScrollView(_ imageScrollView: ImageScrollView, singleTapDidHappenAt point: CGPoint)
+	func imageScrollView(_ imageScrollView: ImageScrollView, doubleTapDidHappenAt point: CGPoint)
 }
 
 class ImageScrollView: UIScrollView {
-	
-	var image: UIImage? {
-		didSet{ imageView.image = image }
+
+	required init?(coder: NSCoder) {
+		super.init(coder: coder)
+		delegate = self
+		configureTapGestures()
 	}
 	
-	weak var tapGesturesHandler: ImageScrollViewGesturesHandler?
+	var image: UIImage? {
+		didSet{
+			imageView.image = image
+		}
+	}
 	
-	@IBOutlet var singleTapGestureRecognizer: UITapGestureRecognizer!
-	@IBOutlet var doubleTapGestureRecognizer: UITapGestureRecognizer!
+	weak var tapGesturesDelegate: ImageScrollViewGesturesDelegate?
 	
 	@IBOutlet private var imageView: UIImageView!
 	
-	@IBOutlet private var traillingConstraint: NSLayoutConstraint!
+	@IBOutlet private var trailingConstraint: NSLayoutConstraint!
 	@IBOutlet private var bottomConstraint: NSLayoutConstraint!
 	@IBOutlet private var leadingConstraint: NSLayoutConstraint!
 	@IBOutlet private var topConstraint: NSLayoutConstraint!
 	
-	@IBAction private func singleTapAction(_ sender: UITapGestureRecognizer) {
+	@objc private func singleTapAction(_ sender: UITapGestureRecognizer) {
 		guard sender.state == UIGestureRecognizer.State.ended else { return }
 		
-		tapGesturesHandler?.imageScrollView(self, singleTapDidHappenIn: sender.location(in: self))
+		tapGesturesDelegate?.imageScrollView(self, singleTapDidHappenAt: sender.location(in: self))
 	}
 	
-	@IBAction private func doubleTapAction(_ sender: UITapGestureRecognizer) {
+	@objc private func doubleTapAction(_ sender: UITapGestureRecognizer) {
 		guard sender.state == UIGestureRecognizer.State.ended else { return }
 		
-		tapGesturesHandler?.imageScrollView(self, doubleTapDidHappenIn: sender.location(in: imageView))
-	}
-	
-	required init?(coder aDecoder: NSCoder) {
-		super.init(coder: aDecoder)
-		
-		delegate = self
+		tapGesturesDelegate?.imageScrollView(self, doubleTapDidHappenAt: sender.location(in: imageView))
 	}
 	
 	var constraintsInsets: UIEdgeInsets {
 		return UIEdgeInsets(top: topConstraint.constant, left: leadingConstraint.constant,
-							bottom: bottomConstraint.constant, right: traillingConstraint.constant)
+							bottom: bottomConstraint.constant, right: trailingConstraint.constant)
 	}
 	
 	var currentZoomCenter: CGPoint {
@@ -65,9 +64,20 @@ class ImageScrollView: UIScrollView {
 		
 		let xOffset = max(0, (size.width - imageView.frame.width) / 2)
 		leadingConstraint.constant = xOffset
-		traillingConstraint.constant = xOffset
+		trailingConstraint.constant = xOffset
 		
 		layoutIfNeeded()
+	}
+
+	private func configureTapGestures() {
+		let singleTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(singleTapAction(_:)))
+		let doubleTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(doubleTapAction(_:)))
+
+		doubleTapGestureRecognizer.numberOfTapsRequired = 2
+		singleTapGestureRecognizer.require(toFail: doubleTapGestureRecognizer)
+
+		addGestureRecognizer(singleTapGestureRecognizer)
+		addGestureRecognizer(doubleTapGestureRecognizer)
 	}
 }
 

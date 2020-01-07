@@ -55,23 +55,19 @@ class PhotoPageViewController: UIPageViewController {
 		
 		setupFirstViewController()
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        navigationController?.isToolbarHidden = false
-    }
+
+	override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
+
+		navigationController?.setToolbarHidden(false, animated: true)
+		updateLikeButton()
+	}
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        navigationController?.isToolbarHidden = true
+        navigationController?.setToolbarHidden(true, animated: false)
     }
-	
-	override func viewDidAppear(_ animated: Bool) {
-		super.viewDidAppear(animated)
-		updateLikeButton()
-	}
 }
 
 // MARK: - Helpers
@@ -95,7 +91,7 @@ private extension PhotoPageViewController {
 			.instantiateViewController(withIdentifier: "PhotoViewController") as! PhotoViewController
 		
 		photoViewController.photo = photo
-		photoViewController.networkRequestPerformer = networkRequestPerformer
+		photoViewController.networkService = networkRequestPerformer
 		
 		return photoViewController
 	}
@@ -140,7 +136,7 @@ private extension PhotoPageViewController {
     
     func sharePhoto() {
         guard let photoController = viewControllers?.first as? PhotoViewController,
-            let image = photoController.photoScrollView.image?.jpegData(compressionQuality: 1.0)
+            let image = photoController.imageScrollView.image?.jpegData(compressionQuality: 1.0)
         else { return }
         
         let vc = UIActivityViewController(activityItems: [image], applicationActivities: [])
