@@ -34,6 +34,6 @@ class CollectionViewLoadingFooter: UICollectionReusableView {
 		NSLayoutConstraint.activate([
 			activityIndicator.centerXAnchor.constraint(equalTo: centerXAnchor),
 			activityIndicator.centerYAnchor.constraint(equalTo: centerYAnchor)
-			])
+		])
 	}
 }

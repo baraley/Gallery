@@ -73,9 +73,9 @@ class CollectionOfPhotosRootViewController: BaseImagesRootViewController, SegueH
 // MARK: - Helpers
 private extension CollectionOfPhotosRootViewController {
 	
-	func createPhotoCollectionStore(with searchQuery: String? = nil) -> PaginalContentStore<
-		PhotoCollectionListRequest, CollectionsOfPhotosCollectionViewCell
-		> {
+	func createPhotoCollectionStore(
+		with searchQuery: String? = nil
+	) -> PaginalContentStore<PhotoCollectionListRequest, CollectionsOfPhotosCollectionViewCell> {
 			
 		let photoCollectionListRequest: PhotoCollectionListRequest
 		

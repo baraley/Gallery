@@ -9,11 +9,16 @@
 import Foundation
 
 class PaginalContentLoader<Request: PaginalRequest> {
+
+	typealias Handler = (Result<Request.ResultModel, Request.ResultError>) -> Void
+
+	// MARK: - Initialization
 	
 	private let networkService: NetworkService
 	private var request: Request
 	
 	init(networkService: NetworkService, request: Request) {
+
 		self.networkService = networkService
 		self.request = request
 		
@@ -24,6 +29,8 @@ class PaginalContentLoader<Request: PaginalRequest> {
 			}
 		}
 	}
+
+	// MARK: - Private
 	
 	private var totalPages = 1
 	
@@ -37,6 +44,10 @@ class PaginalContentLoader<Request: PaginalRequest> {
 			request.page += 1
 		}
 	}
+
+	// MARK: - Public
+
+	var contentDidLoadHandler: Handler?
 	
 	var hasContentToLoad: Bool {
 		return currentPage <= totalPages
@@ -46,16 +57,14 @@ class PaginalContentLoader<Request: PaginalRequest> {
 		currentPage = 1
 	}
 	
-	func loadContent(
-		_ completionHandler: @escaping (Result<Request.ResultModel, Request.ResultError>) -> Void
-		) {
+	func loadContent() {
 		
 		setupRequestForNextPage()
 		
 		guard hasContentToLoad else { return }
 		
-		networkService.performRequest(request) { (result) in
-			completionHandler(result)
+		networkService.performRequest(request) { [weak self] (result) in
+			self?.contentDidLoadHandler?(result)
 		}
 	}
 }

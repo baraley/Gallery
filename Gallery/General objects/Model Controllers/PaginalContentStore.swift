@@ -33,9 +33,24 @@ class PaginalContentStore<R: PaginalRequest, C: ConfigurableCell>: NSObject, Ima
 	
 	init(networkService: NetworkService, paginalRequest: R) {
 		self.networkService = networkService
-		self.paginalContentLoader = PaginalContentLoader(networkService: networkService,
-														 request: paginalRequest)
+		self.paginalContentLoader = PaginalContentLoader(networkService: networkService, request: paginalRequest)
 		accessToken = paginalRequest.accessToken
+
+		super.init()
+
+		paginalContentLoader.contentDidLoadHandler = { [weak self] (result) in
+			guard let self = self else { return }
+
+			DispatchQueue.main.async {
+				switch result {
+				case .success(let newItems):
+					self.insertNewItems(newItems)
+
+				case .failure(let error):
+					self.contentLoadingWasFailedAction?(error)
+				}
+			}
+		}
 	}
 	
 	private var items: Array<Model> = [] { didSet { numberOfItems = items.count } }
@@ -55,9 +70,7 @@ class PaginalContentStore<R: PaginalRequest, C: ConfigurableCell>: NSObject, Ima
 	var selectedItemIndex: Int?
 	
 	var contentDidStartLoadingAction: (() -> Void)?
-	
 	var newContentDidLoadAction: ((_ numberOfItems: Int, _ index: Int) -> Void)?
-	
 	var contentLoadingWasFailedAction: ((_ error: RequestError) -> Void)?
 	
 	func reloadContent() {
@@ -71,19 +84,7 @@ class PaginalContentStore<R: PaginalRequest, C: ConfigurableCell>: NSObject, Ima
 		
 		contentDidStartLoadingAction?()
 		
-		paginalContentLoader.loadContent { [weak self] (result) in
-			guard let self = self else { return }
-			
-			DispatchQueue.main.async {
-				switch result {
-				case .success(let newItems):
-					self.insertNewItems(newItems)
-					
-				case .failure(let error):
-					self.contentLoadingWasFailedAction?(error)
-				}
-			}
-		}
+		paginalContentLoader.loadContent()
 	}
 	
 	private func insertNewItems(_ newItems: [Model]) {

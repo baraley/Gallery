@@ -48,6 +48,6 @@ class ImageCollectionViewCell: UICollectionViewCell {
 }
 
 class PhotoCollectionViewCell: ImageCollectionViewCell, ConfigurableCell {
-	
+
 	func configure(_ item: Photo) { }
 }
