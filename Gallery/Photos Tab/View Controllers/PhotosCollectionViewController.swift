@@ -28,9 +28,10 @@ class PhotosCollectionViewController: BaseImagesCollectionViewController, SegueH
 		let photoPageViewController = segue.destination as! PhotoPageViewController
 		photoPageViewController.photoPageDataSource = paginalContentStore
 		photoPageViewController.networkRequestPerformer = NetworkService()
+		photoPageViewController.authenticationStateProvider = auth
 	}
 	
-	// MARK: - Overriden
+	// MARK: - Overridden
 	
 	override func dataSourceDidChange() {
 		if let layout = collectionView?.collectionViewLayout as? PinterestCollectionViewLayout{

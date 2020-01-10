@@ -9,17 +9,30 @@
 import UIKit
 
 class PhotoViewController: UIViewController {
-	
-    @IBOutlet var imageScrollView: ImageScrollView!
+
+	var photo: Photo!
+	var networkService: NetworkService!
+	var authenticationStateProvider: AuthenticationStateProvider!
+
+	// MARK: - Outlets -
+
+    @IBOutlet private var imageScrollView: ImageScrollView!
 	@IBOutlet private var loadingView: UIActivityIndicatorView!
-	
-    var photo: Photo!
-	var networkService: NetworkService?
-	
-	private var photoImage: UIImage? {
-		didSet{ imageScrollView.image = photoImage }
+
+	@IBOutlet private var photoToolBar: UIToolbar!
+	@IBOutlet private var sharePhotoButton: UIBarButtonItem!
+	@IBOutlet private var likePhotoButton: UIBarButtonItem!
+
+	// MARK: - Actions
+
+	@IBAction private func likePhotoAction(_ sender: UIBarButtonItem) {
+		toggleLikeOfPhoto()
 	}
-	
+
+	@IBAction private func sharePhotoAction(_ sender: UIBarButtonItem) {
+		sharePhoto()
+	}
+
 	// MARK: - Life cycle -
 	
 	override func viewDidLoad() {
@@ -30,13 +43,13 @@ class PhotoViewController: UIViewController {
 	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		
+
 		updatePhotoBackgroundColor()
-		loadPhoto()
+		loadImage()
 	}
 
 	override func viewDidDisappear(_ animated: Bool) {
-		super.viewDidDisappear(animated)
+		super.viewWillDisappear(animated)
 
 		networkService?.cancel(ImageRequest(url: photo.imageURL))
 	}
@@ -53,7 +66,7 @@ class PhotoViewController: UIViewController {
 
 // MARK: - Helpers
 private extension PhotoViewController {
-	
+
 	func updatePhotoBackgroundColor() {
 		guard let navigationController = navigationController else { return }
 
@@ -63,17 +76,46 @@ private extension PhotoViewController {
 		loadingView.color = barsAreHidden ? .white : .black
 	}
 
-	// MARK: - Image loading -
+	func showError(_ error: RequestError) {
+		switch error {
+		case .noInternet, .limitExceeded:
+			self.showAlertWith(error.localizedDescription)
+		default:
+			print(error.localizedDescription)
+		}
+	}
 
-	func loadPhoto() {
-		loadingView?.isHidden = false
+	// MARK: - Tool bar
+
+	func updateToolBar() {
+		likePhotoButton.isEnabled = authenticationStateProvider.isAuthenticated
+		likePhotoButton.image = photo.isLiked ? #imageLiteral(resourceName: "unlike") : #imageLiteral(resourceName: "like")
+
+		sharePhotoButton.isEnabled = imageScrollView.image != nil
+	}
+
+	func sharePhoto() {
+		guard let image = imageScrollView.image?.jpegData(compressionQuality: 1.0) else { return }
+
+		let vc = UIActivityViewController(activityItems: [image], applicationActivities: [])
+		vc.popoverPresentationController?.barButtonItem = sharePhotoButton
+
+		present(vc, animated: true, completion: nil)
+	}
+
+	// MARK: - Image loading
+
+	func loadImage() {
+		guard imageScrollView.image == nil else { return }
+
+		loadingView?.startAnimating()
 
 		let request = ImageRequest(url: photo.imageURL)
 
 		networkService?.performRequest(request) { [weak self]  (result) in
 			DispatchQueue.main.async {
 				self?.handleLoadingResult(result)
-				self?.loadingView?.isHidden = true
+				self?.loadingView?.stopAnimating()
 			}
 		}
 	}
@@ -81,15 +123,39 @@ private extension PhotoViewController {
 	func handleLoadingResult(_ result: Result<UIImage, RequestError>) {
 		switch result {
 		case .success(let image):
-			photoImage = image
+			imageScrollView.image = image
 			imageScrollView.layoutContent(for: view.frame.size)
+			updateToolBar()
 
 		case .failure(let error):
-			switch error {
-			case .noInternet, .limitExceeded:
-				showAlertWith(error.localizedDescription)
-			default:
-				print(error.localizedDescription)
+			self.showError(error)
+		}
+	}
+
+	// MARK: - Toggle Like
+
+	func toggleLikeOfPhoto() {
+
+		guard let accessToken = authenticationStateProvider.accessToken else { return }
+
+		let toggleRequest = TogglePhotoLikeRequest(photo: photo, accessToken: accessToken)
+
+		photoToolBar.items?.removeLast()
+		photoToolBar.items?.append(UIBarButtonItem.loadingBarButtonItem)
+
+		networkService.performRequest(toggleRequest) { [weak self] (result) in
+			guard let self = self else { return }
+			DispatchQueue.main.async {
+				switch result {
+				case .success(let photo):
+					self.toolbarItems?.removeLast()
+					self.toolbarItems?.append(self.likePhotoButton)
+					self.photo = photo
+					self.updateToolBar()
+
+				case .failure(let error):
+					self.showError(error)
+				}
 			}
 		}
 	}

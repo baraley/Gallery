@@ -141,6 +141,5 @@ extension ImageScrollView: UIScrollViewDelegate {
 extension ImageScrollViewGesturesDelegate {
 
 	func imageScrollViewSingleTapDidHappen(_ imageScrollView: ImageScrollView) {}
-
 	func imageScrollViewDoubleTapDidHappen(_ imageScrollView: ImageScrollView) {}
 }

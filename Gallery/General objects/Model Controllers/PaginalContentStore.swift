@@ -173,33 +173,6 @@ extension PaginalContentStore: PinterestCollectionViewLayoutDataSource where R =
 	}
 }
 
-// MARK: - PhotoLikesToggle -
-extension PaginalContentStore: PhotoLikesToggle where R == PhotoListRequest {
-	
-	var isLikeTogglingAvailable: Bool {
-		return accessToken != nil
-	}
-	
-	func toggleLikeOfPhoto(
-		at index: Int, with completionHandler: @escaping (Result<Photo, RequestError>) -> Void
-		) {
-		
-		guard let photo = itemAt(index), let accessToken = accessToken else { return }
-		
-		let toggleRequest = TogglePhotoLikeRequest(photo: photo, accessToken: accessToken)
-		
-		networkService.performRequest(toggleRequest) { [weak self] (result) in
-			guard let self = self else { return }
-			DispatchQueue.main.async {
-				if let toggledPhoto = try? result.get() {
-					self.items[index] = toggledPhoto
-				}
-				completionHandler(result)
-			}
-		}
-	}
-}
-
 // MARK: - PhotoPageDataSource -
 extension PaginalContentStore: PhotoPageDataSource where R == PhotoListRequest {
 	var selectedPhotoIndex: Int? {

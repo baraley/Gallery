@@ -12,9 +12,9 @@ class BaseImagesRootViewController: UIViewController, UISearchBarDelegate {
     
     // MARK: - Public properties
 	
-    var authenticationInformer: AuthenticationInformer? {
+    var authenticationStateProvider: AuthenticationStateProvider? {
         didSet {
-            authenticationInformer?.addObserve(self)
+            authenticationStateProvider?.addObserve(self)
         }
     }
 	

@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol PhotoPageDataSource {
+protocol PhotoPageDataSource: AnyObject {
 	var selectedPhotoIndex: Int? { get set }
 	var numberOfPhotos: Int { get }
 	
@@ -17,33 +17,27 @@ protocol PhotoPageDataSource {
 	func loadMorePhoto()
 }
 
-protocol PhotoLikesToggle {
-	var isLikeTogglingAvailable: Bool { get }
-	
-	func toggleLikeOfPhoto(
-		at index: Int, with completionHandler: @escaping (Result<Photo, RequestError>) -> Void
-	)
+extension PhotoPageDataSource {
+
+	var selectedPhoto: Photo? {
+		guard let index = selectedPhotoIndex else { return nil }
+		return photoAt(index)
+	}
+
+	func selectPhoto(_ photo: Photo) {
+		let index = indexOf(photo)
+
+		selectedPhotoIndex = index
+	}
 }
 
 class PhotoPageViewController: UIPageViewController {
 	
-    var photoPageDataSource: (PhotoPageDataSource & PhotoLikesToggle)!
+    var photoPageDataSource: PhotoPageDataSource!
 	var networkRequestPerformer: NetworkService!
-	
-	// MARK: - Outlets -
-	
-	@IBOutlet private var sharePhotoButton: UIBarButtonItem!
-	@IBOutlet private var likePhotoButton: UIBarButtonItem!
-	
-	// MARK: - Actions
-		
-	@IBAction private func likePhotoAction(_ sender: UIBarButtonItem) {
-        toggleLikeOfPhoto()
-	}
-    
-    @IBAction private func sharePhotoAction(_ sender: UIBarButtonItem) {
-        sharePhoto()
-    }
+	var authenticationStateProvider: AuthenticationStateProvider!
+
+	private var lastUsedPhotoIndex: Int = 0
 		
 	// MARK: - Life cycle
     
@@ -55,95 +49,52 @@ class PhotoPageViewController: UIPageViewController {
 		
 		setupFirstViewController()
     }
-
-	override func viewDidAppear(_ animated: Bool) {
-		super.viewDidAppear(animated)
-
-		navigationController?.setToolbarHidden(false, animated: true)
-		updateLikeButton()
-	}
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        navigationController?.setToolbarHidden(true, animated: false)
-    }
 }
 
 // MARK: - Helpers
 private extension PhotoPageViewController {
+
+	var currentPhotoIndex: Int {
+		get {
+			photoPageDataSource.selectedPhotoIndex ?? 0
+		}
+		set {
+			photoPageDataSource.selectedPhotoIndex = newValue
+		}
+	}
+
+	var nextPhotoIndex: Int? {
+		let expectedIndex = currentPhotoIndex + 1
+		return expectedIndex < photoPageDataSource.numberOfPhotos ? expectedIndex : nil
+	}
+
+	var previousPhotoIndex: Int? {
+		let expectedIndex = currentPhotoIndex - 1
+		return expectedIndex < 0 ? nil : expectedIndex
+	}
 	
 	func setupFirstViewController() {
-		guard let selectedPhotoIndex = photoPageDataSource.selectedPhotoIndex,
-			let photo = photoPageDataSource.photoAt(selectedPhotoIndex) else { return }
-		
-		if selectedPhotoIndex > photoPageDataSource.numberOfPhotos - 5 {
+		guard let photo = photoPageDataSource.photoAt(currentPhotoIndex) else {
+			return
+		}
+
+		if currentPhotoIndex >= photoPageDataSource.numberOfPhotos - 5 {
 			photoPageDataSource.loadMorePhoto()
 		}
-		
-		setViewControllers([photoViewControllerWith(photo)],
-						   direction: .forward, animated: false, completion: nil)
+
+		setViewControllers([photoViewControllerWith(photo)], direction: .forward, animated: false, completion: nil)
 	}
-	
+
 	func photoViewControllerWith(_ photo: Photo) -> PhotoViewController {
-		
-		let photoViewController = storyboard?
-			.instantiateViewController(withIdentifier: "PhotoViewController") as! PhotoViewController
-		
+
+		let photoViewController = UIStoryboard(storyboard: .main).instantiateViewController() as PhotoViewController
+
 		photoViewController.photo = photo
 		photoViewController.networkService = networkRequestPerformer
-		
+		photoViewController.authenticationStateProvider = authenticationStateProvider
+
 		return photoViewController
 	}
-    
-    func updateLikeButton() {
-        guard photoPageDataSource.isLikeTogglingAvailable,
-            let selectedPhotoIndex = photoPageDataSource.selectedPhotoIndex,
-            let photo = photoPageDataSource.photoAt(selectedPhotoIndex)
-            else { return }
-        
-        
-        likePhotoButton.isEnabled = true
-        likePhotoButton.image = photo.isLiked ? #imageLiteral(resourceName: "unlike") : #imageLiteral(resourceName: "like")
-    }
-	
-	func toggleLikeOfPhoto() {
-		
-		guard let selectedPhotoIndex = photoPageDataSource.selectedPhotoIndex else { return }
-		
-		toolbarItems?.removeLast()
-		toolbarItems?.append(UIBarButtonItem.loadingBarButtonItem)
-		
-		photoPageDataSource.toggleLikeOfPhoto(at: selectedPhotoIndex) { [weak self] (result) in
-			guard let self = self else { return }
-			
-			switch result {
-			case .success(_):
-				self.toolbarItems?.removeLast()
-				self.toolbarItems?.append(self.likePhotoButton)
-				self.updateLikeButton()
-				
-			case .failure(let error):
-				switch error {
-				case .noInternet, .limitExceeded:
-					self.showAlertWith(error.localizedDescription)
-				default:
-					print(error.localizedDescription)
-				}
-			}
-		}
-	}
-    
-    func sharePhoto() {
-        guard let photoController = viewControllers?.first as? PhotoViewController,
-            let image = photoController.imageScrollView.image?.jpegData(compressionQuality: 1.0)
-        else { return }
-        
-        let vc = UIActivityViewController(activityItems: [image], applicationActivities: [])
-        vc.popoverPresentationController?.barButtonItem = sharePhotoButton
-        
-        present(vc, animated: true, completion: nil)
-    }
 }
 
 // MARK: - UIPageViewControllerDataSource
@@ -152,25 +103,24 @@ extension PhotoPageViewController: UIPageViewControllerDataSource {
     func pageViewController(_ pageViewController: UIPageViewController,
                             viewControllerBefore viewController: UIViewController) -> UIViewController? {
         
-        guard let selectedPhotoIndex = photoPageDataSource.selectedPhotoIndex,
-			let photo = photoPageDataSource.photoAt(selectedPhotoIndex - 1)
-		else { return nil }
-		
-        
+        guard let index = previousPhotoIndex, let photo = photoPageDataSource.photoAt(index) else {
+			return nil
+		}
+        lastUsedPhotoIndex = index
         return photoViewControllerWith(photo)
     }
     
     func pageViewController(_ pageViewController: UIPageViewController,
                             viewControllerAfter viewController: UIViewController) -> UIViewController? {
 		
-		guard let selectedPhotoIndex = photoPageDataSource.selectedPhotoIndex,
-		let photo = photoPageDataSource.photoAt(selectedPhotoIndex + 1)
-		else { return nil }
-		
-		if selectedPhotoIndex == photoPageDataSource.numberOfPhotos - 5 {
+		guard let index = nextPhotoIndex, let photo = photoPageDataSource.photoAt(index) else {
+			return nil
+		}
+
+		if index == photoPageDataSource.numberOfPhotos - 5 {
 			photoPageDataSource.loadMorePhoto()
 		}
-		
+		lastUsedPhotoIndex = index
         return photoViewControllerWith(photo)
     }
 }
@@ -182,16 +132,9 @@ extension PhotoPageViewController: UIPageViewControllerDelegate {
                             didFinishAnimating finished: Bool,
                             previousViewControllers: [UIViewController],
                             transitionCompleted completed: Bool) {
-        
-        guard completed,
-            let viewController = viewControllers?.first as? PhotoViewController
-        else { return }
+        guard completed else { return }
 		
-		if let index = photoPageDataSource.indexOf(viewController.photo) {
-			photoPageDataSource.selectedPhotoIndex = index
-		}
-		
-		updateLikeButton()
+		photoPageDataSource.selectedPhotoIndex = lastUsedPhotoIndex
     }
 }
 
@@ -201,3 +144,4 @@ extension PhotoPageViewController {
         return navigationController?.isNavigationBarHidden ?? false
     }
 }
+

@@ -25,7 +25,7 @@ class PhotosRootViewController: BaseImagesRootViewController, SegueHandlerType {
 		
 		photosCollectionVC?.isRefreshable = true
 
-		if authenticationInformer?.state != .isAuthenticating {
+		if authenticationStateProvider?.state != .isAuthenticating {
 			updateChildControllerDataSource()
 		}
 	}

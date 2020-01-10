@@ -18,13 +18,13 @@ class GalleryRootViewController: UITabBarController {
     
     private var photosRootViewController: PhotosRootViewController? {
         didSet {
-            photosRootViewController?.authenticationInformer = authenticationController
+            photosRootViewController?.authenticationStateProvider = authenticationController
         }
     }
 	
 	private var photoCollectionsRootViewController: CollectionOfPhotosRootViewController? {
 		didSet {
-			photoCollectionsRootViewController?.authenticationInformer = authenticationController
+			photoCollectionsRootViewController?.authenticationStateProvider = authenticationController
 		}
 	}
     

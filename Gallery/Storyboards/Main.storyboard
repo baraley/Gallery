@@ -131,26 +131,10 @@
         <scene sceneID="XoJ-q7-uTq">
             <objects>
                 <pageViewController automaticallyAdjustsScrollViewInsets="NO" hidesBottomBarWhenPushed="YES" transitionStyle="scroll" pageSpacing="30" navigationOrientation="horizontal" spineLocation="none" id="2n3-Rq-uRX" customClass="PhotoPageViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
-                    <toolbarItems>
-                        <barButtonItem systemItem="action" id="tjV-51-tD0">
-                            <connections>
-                                <action selector="sharePhotoAction:" destination="2n3-Rq-uRX" id="HKZ-Pw-vbj"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem systemItem="flexibleSpace" id="bwH-Fv-are"/>
-                        <barButtonItem enabled="NO" title="Like" image="like" id="STT-bS-AqD">
-                            <connections>
-                                <action selector="likePhotoAction:" destination="2n3-Rq-uRX" id="NeS-8b-md8"/>
-                            </connections>
-                        </barButtonItem>
-                    </toolbarItems>
+                    <toolbarItems/>
                     <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="B7W-ze-B3S"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
-                    <connections>
-                        <outlet property="likePhotoButton" destination="STT-bS-AqD" id="18u-Pt-ymQ"/>
-                        <outlet property="sharePhotoButton" destination="tjV-51-tD0" id="mhF-KB-mi6"/>
-                    </connections>
                 </pageViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Lel-Ca-X5C" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="fBp-oe-LHn">
@@ -192,25 +176,48 @@
                                     <outlet property="trailingConstraint" destination="5Dv-GE-q4C" id="iZG-W3-jye"/>
                                 </connections>
                             </scrollView>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="3gQ-sZ-5ze">
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="3gQ-sZ-5ze">
                                 <rect key="frame" x="169" y="315" width="37" height="37"/>
                                 <color key="color" cocoaTouchSystemColor="darkTextColor"/>
                             </activityIndicatorView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4L1-Qr-1db">
+                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                                <items>
+                                    <barButtonItem enabled="NO" systemItem="action" id="G7f-do-I5r">
+                                        <connections>
+                                            <action selector="sharePhotoAction:" destination="fyS-G6-iOz" id="tOL-rw-GyX"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem systemItem="flexibleSpace" id="6wZ-zp-vbm"/>
+                                    <barButtonItem enabled="NO" title="Like" image="like" id="Ymd-u3-gD6">
+                                        <connections>
+                                            <action selector="likePhotoAction:" destination="fyS-G6-iOz" id="FJh-DO-l6x"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                            </toolbar>
                         </subviews>
                         <gestureRecognizers/>
                         <constraints>
+                            <constraint firstItem="4L1-Qr-1db" firstAttribute="trailing" secondItem="eF9-P1-i3f" secondAttribute="trailing" id="3ER-XT-xj6"/>
                             <constraint firstItem="ecP-do-lce" firstAttribute="leading" secondItem="JnE-uc-x5m" secondAttribute="leading" id="M0Y-rY-RAp"/>
                             <constraint firstAttribute="bottom" secondItem="ecP-do-lce" secondAttribute="bottom" id="NlT-xs-0nv"/>
+                            <constraint firstItem="4L1-Qr-1db" firstAttribute="leading" secondItem="eF9-P1-i3f" secondAttribute="leading" id="TDn-0M-b5U"/>
                             <constraint firstAttribute="trailing" secondItem="ecP-do-lce" secondAttribute="trailing" id="URR-6k-PDA"/>
                             <constraint firstAttribute="top" secondItem="ecP-do-lce" secondAttribute="top" id="et2-dI-Owi"/>
                             <constraint firstItem="3gQ-sZ-5ze" firstAttribute="centerY" secondItem="JnE-uc-x5m" secondAttribute="centerY" id="kjn-mh-8Fh"/>
+                            <constraint firstItem="eF9-P1-i3f" firstAttribute="bottom" secondItem="4L1-Qr-1db" secondAttribute="bottom" id="u07-rb-KVJ"/>
                             <constraint firstItem="3gQ-sZ-5ze" firstAttribute="centerX" secondItem="JnE-uc-x5m" secondAttribute="centerX" id="xpU-IM-Ui5"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="eF9-P1-i3f"/>
                     </view>
+                    <toolbarItems/>
                     <connections>
                         <outlet property="imageScrollView" destination="ecP-do-lce" id="mGg-4c-NCw"/>
+                        <outlet property="likePhotoButton" destination="Ymd-u3-gD6" id="PvN-ex-Oyo"/>
                         <outlet property="loadingView" destination="3gQ-sZ-5ze" id="ygj-mV-PT6"/>
+                        <outlet property="photoToolBar" destination="4L1-Qr-1db" id="1di-yW-5De"/>
+                        <outlet property="sharePhotoButton" destination="G7f-do-I5r" id="zFz-fa-pfr"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wuJ-9a-bbH" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -738,69 +745,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dZq-UU-dMi" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="476" y="3287"/>
-        </scene>
-        <!--Tab Bar Controller-->
-        <scene sceneID="xIl-XE-7ON">
-            <objects>
-                <tabBarController id="kIA-UY-WYY" sceneMemberID="viewController">
-                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="cUa-qs-1Uq">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="49"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                    </tabBar>
-                    <connections>
-                        <segue destination="V8f-OZ-23H" kind="relationship" relationship="viewControllers" id="k6T-Es-a1q"/>
-                    </connections>
-                </tabBarController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="EhT-m5-2pR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-1990" y="-470"/>
-        </scene>
-        <!--Profile-->
-        <scene sceneID="wbi-Fr-cfq">
-            <objects>
-                <tableViewController id="67w-BB-bVD" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="XMU-08-fUa">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="vZS-eh-4vT">
-                                <rect key="frame" x="0.0" y="28" width="375" height="43.5"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="vZS-eh-4vT" id="ryl-fl-TJO">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="67w-BB-bVD" id="xpJ-tg-4Wj"/>
-                            <outlet property="delegate" destination="67w-BB-bVD" id="z0m-pH-Q2w"/>
-                        </connections>
-                    </tableView>
-                    <navigationItem key="navigationItem" title="Profile" largeTitleDisplayMode="always" id="8ah-sN-5ZS"/>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Zdh-VY-YeT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-68" y="-470"/>
-        </scene>
-        <!--Item-->
-        <scene sceneID="eMa-R0-3zf">
-            <objects>
-                <navigationController id="V8f-OZ-23H" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="RCr-On-Asm"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" largeTitles="YES" id="u6m-dn-ukH">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="96"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <connections>
-                        <segue destination="67w-BB-bVD" kind="relationship" relationship="rootViewController" id="xBc-UD-C7E"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="fjY-gl-MPY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-1020" y="-470"/>
         </scene>
     </scenes>
     <resources>

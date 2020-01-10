@@ -1,5 +1,5 @@
 //
-//  AuthenticationInformer.swift
+//  AuthenticationStateProvider.swift
 //  Gallery
 //
 //  Created by Alexander Baraley on 7/12/19.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol AuthenticationInformer {
+protocol AuthenticationStateProvider {
 	
 	var state: AuthenticationState { get }
 	
@@ -21,4 +21,23 @@ enum AuthenticationState: Equatable {
 	case unauthenticated
 	case isAuthenticating
 	case authenticationFailed(RequestError)
+}
+
+extension AuthenticationStateProvider {
+
+	var isAuthenticated: Bool {
+		if case .authenticated(_) = state {
+			return true
+		} else {
+			return false
+		}
+	}
+
+	var accessToken: String? {
+		if case .authenticated(let token) = state {
+			return token.accessToken
+		} else {
+			return nil
+		}
+	}
 }

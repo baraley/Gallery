@@ -10,7 +10,7 @@ import Foundation
 import AuthenticationServices
 import SwiftKeychainWrapper
 
-class AuthenticationController: NSObject, AuthenticationInformer {
+class AuthenticationController: NSObject, AuthenticationStateProvider {
     
     // MARK: - Private properties
     
