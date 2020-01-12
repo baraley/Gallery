@@ -58,15 +58,15 @@ class ProfileTableViewController: UITableViewController, SegueHandlerType {
 		case .likedPhotos:
 			guard let accessToken = userData?.accessToken, let userName = userData?.user.userName
 			else { return }
-			
-			let vc = segue.destination as! PhotosCollectionViewController
-			
-			let request = PhotoListRequest(likedPhotosOfUser: userName, accessToken: accessToken)
-			
-			vc.title = "Liked photos"
-			vc.paginalContentStore = PaginalContentStore(
-				networkService: NetworkService(), paginalRequest: request
-			)
+//			
+//			let vc = segue.destination as! PhotosCollectionViewController
+//			
+//			let request = PhotoListRequest(likedPhotosOfUser: userName, accessToken: accessToken)
+//			
+//			vc.title = "Liked photos"
+//			vc.paginalContentStore = PaginalContentStore(
+//				networkService: NetworkService(), paginalRequest: request
+//			)
 		}
 	}
 	

@@ -70,7 +70,7 @@ struct PhotoListRequest: UnsplashRequest, Equatable, PaginalRequest {
 			
 			if searchQuery.isEmpty, let photos = try? decoder.decode([Photo].self, from: data) {
 				return .success(photos)
-			} else if let searchResults = try? decoder.decode(SerchPhotosResult.self, from: data) {
+			} else if let searchResults = try? decoder.decode(SearchPhotosResult.self, from: data) {
 				return .success(searchResults.results)
 			}
 		}

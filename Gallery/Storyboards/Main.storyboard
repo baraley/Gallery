@@ -95,7 +95,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" insetsLayoutMarginsFromSafeArea="NO" image="image placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="f2w-GD-lIH">
-                                            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="369" height="255"/>
                                         </imageView>
                                     </subviews>
                                 </view>
@@ -131,17 +131,28 @@
         <scene sceneID="XoJ-q7-uTq">
             <objects>
                 <pageViewController automaticallyAdjustsScrollViewInsets="NO" hidesBottomBarWhenPushed="YES" transitionStyle="scroll" pageSpacing="30" navigationOrientation="horizontal" spineLocation="none" id="2n3-Rq-uRX" customClass="PhotoPageViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
-                    <toolbarItems/>
+                    <toolbarItems>
+                        <barButtonItem enabled="NO" systemItem="action" id="G7f-do-I5r">
+                            <connections>
+                                <action selector="sharePhotoAction:" destination="2n3-Rq-uRX" id="yEg-QB-ANy"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem systemItem="flexibleSpace" id="6wZ-zp-vbm"/>
+                        <barButtonItem enabled="NO" title="Like" image="like" id="Ymd-u3-gD6">
+                            <connections>
+                                <action selector="likePhotoAction:" destination="2n3-Rq-uRX" id="cgL-f3-e8P"/>
+                            </connections>
+                        </barButtonItem>
+                    </toolbarItems>
                     <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="B7W-ze-B3S"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="likePhotoButton" destination="Ymd-u3-gD6" id="vo3-Y2-tjq"/>
+                        <outlet property="sharePhotoButton" destination="G7f-do-I5r" id="P4o-El-R6b"/>
+                    </connections>
                 </pageViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Lel-Ca-X5C" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="fBp-oe-LHn">
-                    <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                    <items/>
-                </toolbar>
             </objects>
             <point key="canvasLocation" x="3214" y="1529"/>
         </scene>
@@ -182,19 +193,7 @@
                             </activityIndicatorView>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4L1-Qr-1db">
                                 <rect key="frame" x="0.0" y="623" width="375" height="44"/>
-                                <items>
-                                    <barButtonItem enabled="NO" systemItem="action" id="G7f-do-I5r">
-                                        <connections>
-                                            <action selector="sharePhotoAction:" destination="fyS-G6-iOz" id="tOL-rw-GyX"/>
-                                        </connections>
-                                    </barButtonItem>
-                                    <barButtonItem systemItem="flexibleSpace" id="6wZ-zp-vbm"/>
-                                    <barButtonItem enabled="NO" title="Like" image="like" id="Ymd-u3-gD6">
-                                        <connections>
-                                            <action selector="likePhotoAction:" destination="fyS-G6-iOz" id="FJh-DO-l6x"/>
-                                        </connections>
-                                    </barButtonItem>
-                                </items>
+                                <items/>
                             </toolbar>
                         </subviews>
                         <gestureRecognizers/>
@@ -214,10 +213,9 @@
                     <toolbarItems/>
                     <connections>
                         <outlet property="imageScrollView" destination="ecP-do-lce" id="mGg-4c-NCw"/>
-                        <outlet property="likePhotoButton" destination="Ymd-u3-gD6" id="PvN-ex-Oyo"/>
                         <outlet property="loadingView" destination="3gQ-sZ-5ze" id="ygj-mV-PT6"/>
                         <outlet property="photoToolBar" destination="4L1-Qr-1db" id="1di-yW-5De"/>
-                        <outlet property="sharePhotoButton" destination="G7f-do-I5r" id="zFz-fa-pfr"/>
+                        <outlet property="photoToolBarBottomConstraint" destination="u07-rb-KVJ" id="OdJ-gf-sHU"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wuJ-9a-bbH" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -397,7 +395,7 @@
         <!--Profile-->
         <scene sceneID="B9f-VF-fY7">
             <objects>
-                <viewController id="C1W-ui-fk5" customClass="ProfileRootViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ProfileRootViewController" id="C1W-ui-fk5" customClass="ProfileRootViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="G4U-i9-Ygs">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -434,7 +432,9 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="OrX-2G-dVN"/>
                     </view>
+                    <tabBarItem key="tabBarItem" title="Profile" image="profileIcon" id="KSe-ji-ouu"/>
                     <navigationItem key="navigationItem" title="Profile" id="i4o-2o-xMb"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="authorizationButton" destination="QYU-on-mic" id="uz4-6n-Xme"/>
                         <outlet property="loadingView" destination="34i-cw-HPc" id="KdI-7J-hNw"/>

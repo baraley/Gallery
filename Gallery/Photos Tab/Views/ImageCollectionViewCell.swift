@@ -12,19 +12,41 @@ private let cornerRadius: CGFloat = 10
 
 class ImageCollectionViewCell: UICollectionViewCell {
     
-    @IBOutlet weak var imageView: UIImageView!
-	
-	override func awakeFromNib() {
-		super.awakeFromNib()
-		
+	var imageView = UIImageView(image: #imageLiteral(resourceName: "image placeholder"))
+
+	override init(frame: CGRect) {
+		super.init(frame: frame)
+
+
+		setupImageView()
 		setupCorners()
 		setupShadows()
 	}
-	
+
+	required init?(coder: NSCoder) {
+		fatalError("init(coder:) has not been implemented")
+	}
+
     override func prepareForReuse() {
 		super.prepareForReuse()
 		
         imageView.image = #imageLiteral(resourceName: "image placeholder")
+	}
+
+	private func setupImageView() {
+
+		imageView.contentMode = .scaleAspectFill
+
+		imageView.translatesAutoresizingMaskIntoConstraints = false
+
+		contentView.addSubview(imageView)
+		
+		NSLayoutConstraint.activate([
+			imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
+			imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+			imageView.leftAnchor.constraint(equalTo: contentView.leftAnchor),
+			imageView.rightAnchor.constraint(equalTo: contentView.rightAnchor)
+		])
 	}
 	
 	private func setupCorners() {
@@ -45,9 +67,4 @@ class ImageCollectionViewCell: UICollectionViewCell {
 		let rect = CGRect(origin: CGPoint.zero, size: size)
 		layer.shadowPath = UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius).cgPath
 	}
-}
-
-class PhotoCollectionViewCell: ImageCollectionViewCell, ConfigurableCell {
-
-	func configure(_ item: Photo) { }
 }

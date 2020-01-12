@@ -104,15 +104,6 @@ private extension ProfileRootViewController {
 
 		present(alert, animated: true)
 	}
-	
-	func show(_ error: RequestError) {
-		switch error {
-		case .noInternet, .limitExceeded:
-			showAlertWith(error.localizedDescription)
-		default:
-			print(error.localizedDescription)
-		}
-	}
 }
 
 // MARK: - AuthenticationObserver
@@ -140,6 +131,6 @@ extension ProfileRootViewController: AuthenticationObserver {
 	func authorizationDidFail(with error: RequestError) {
 		initialConfiguration()
 
-		show(error)
+		showError(error)
 	}
 }

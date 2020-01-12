@@ -15,7 +15,7 @@ enum UnsplashSizeOfCrop: CGFloat {
 	case thumb = 200
 }
 
-struct Photo: Decodable, ThumbURLHolder {
+struct Photo: Decodable {
     
     let id: String
     let dataCreated: Date

@@ -1,5 +1,5 @@
 //
-//  UIViewController+extention.swift
+//  UIViewController+extensions.swift
 //  Gallery
 //
 //  Created by Alexander Baraley on 8/20/18.
@@ -33,5 +33,14 @@ extension UIViewController {
 		alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
 		
 		self.present(alert, animated: true, completion: nil)
+	}
+
+	func showError(_ error: RequestError) {
+		switch error {
+		case .noInternet, .limitExceeded:
+			showAlertWith(error.localizedDescription)
+		default:
+			print(error.localizedDescription)
+		}
 	}
 }
