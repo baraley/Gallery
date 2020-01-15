@@ -46,13 +46,11 @@ class FullScreenPhotosViewController: UICollectionViewController {
 	private lazy var sharePhotoButton = UIBarButtonItem(
 		barButtonSystemItem: .action, target: self, action: #selector(sharePhoto)
 	)
-	private lazy var likePhotoButton = UIBarButtonItem(image: #imageLiteral(resourceName: "like"), style: .plain, target: self, action: #selector(likePhoto))
+	private lazy var likePhotoButton = UIBarButtonItem(
+		image: #imageLiteral(resourceName: "like"), style: .plain, target: self, action: #selector(likePhoto)
+	)
 
-	private var currentCell: FullScreenCollectionViewCell? {
-		didSet {
-			currentCellDidChange()
-		}
-	}
+	private var currentCell: FullScreenCollectionViewCell? { didSet { currentCellDidChange() } }
 
 	// MARK: - Life cycle
 
@@ -91,10 +89,20 @@ private extension FullScreenPhotosViewController {
 		navigationItem.largeTitleDisplayMode = .never
 		
 		collectionView.backgroundColor = .white
-		collectionView.isPagingEnabled = true
+		collectionView.decelerationRate = .fast
 		collectionView.showsHorizontalScrollIndicator = false
 
 		collectionView.register(FullScreenCollectionViewCell.self)
+	}
+
+	// MARK: - Changes
+
+	func currentCellDidChange() {
+		if let cell = currentCell, let indexPath = collectionView.indexPath(for: cell) {
+			dataSource?.selectedPhotoIndex = indexPath.item
+		}
+
+		updateToolBar()
 	}
 
 	func dataSourceDidChange() {
@@ -109,12 +117,12 @@ private extension FullScreenPhotosViewController {
 		collectionView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 1, height: 1), animated: false)
 	}
 
-	func currentCellDidChange() {
-		if let cell = currentCell, let indexPath = collectionView.indexPath(for: cell) {
-			dataSource?.selectedPhotoIndex = indexPath.item
-		}
+	// MARK: - Updates
 
-		updateToolBar()
+	func updateCurrentCell() {
+		if let cell = collectionView.visibleCells.first as? FullScreenCollectionViewCell {
+			currentCell = cell
+		}
 	}
 
 	func updateToolBar() {
@@ -129,11 +137,7 @@ private extension FullScreenPhotosViewController {
 		navigationController?.toolbar.items = [sharePhotoButton, UIBarButtonItem.flexibleSpace, likePhotoButton]
 	}
 
-	func updateCurrentCell() {
-		if let cell = collectionView.visibleCells.first as? FullScreenCollectionViewCell {
-			currentCell = cell
-		}
-	}
+	// MARK: - Photos loading
 
 	func handlePhotosLoadingEvent(_ event: LoadingState) {
 
@@ -150,13 +154,6 @@ private extension FullScreenPhotosViewController {
 		}
 	}
 
-	func scrollToSelectedPhoto(animated: Bool) {
-		if let index = dataSource?.selectedPhotoIndex {
-			let indexPath = IndexPath(item: index, section: 0)
-			collectionView?.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: animated)
-		}
-	}
-
 	func insertPhotos(_ numberOfPhotos: Int, at index: Int) {
 		guard numberOfPhotos > 0 else { return }
 
@@ -167,6 +164,15 @@ private extension FullScreenPhotosViewController {
 		}
 		collectionView?.insertItems(at: indexPaths)
 	}
+
+	func scrollToSelectedPhoto(animated: Bool) {
+		if let index = dataSource?.selectedPhotoIndex {
+			let indexPath = IndexPath(item: index, section: 0)
+			collectionView?.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: animated)
+		}
+	}
+
+	// MARK: - Toolbar actions
 
 	@objc func likePhoto() {
 
@@ -206,6 +212,8 @@ private extension FullScreenPhotosViewController {
 
 		present(vc, animated: true, completion: nil)
 	}
+
+	// MARK: - Images loading
 
 	func loadImageForCellAt(_ indexPath: IndexPath) {
 		guard let photo = dataSource?.photoAt(indexPath.item) else { return }
