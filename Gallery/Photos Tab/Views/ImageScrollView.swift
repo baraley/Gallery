@@ -20,7 +20,7 @@ class ImageScrollView: UIScrollView {
 	required init?(coder: NSCoder) {
 		super.init(coder: coder)
 		delegate = self
-		configureTapGestures()
+		setupTapGestures()
 	}
 
 	// MARK: - Properties
@@ -81,7 +81,7 @@ class ImageScrollView: UIScrollView {
 // MARK: - Private
 private extension ImageScrollView {
 
-	func configureTapGestures() {
+	func setupTapGestures() {
 		let singleTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(singleTapAction(_:)))
 		let doubleTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(doubleTapAction(_:)))
 

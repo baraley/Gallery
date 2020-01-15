@@ -28,7 +28,8 @@ class GalleryRootViewController: UITabBarController {
 		return controller
 	}()
 
-    private lazy var photosTabViewController = PhotosTabViewController(
+    private lazy var tilesPhotosViewController = TilesPhotosViewController(
+		networkService: NetworkService(),
 		collectionViewLayout: PinterestCollectionViewLayout()
 	)
     
@@ -64,7 +65,9 @@ private extension GalleryRootViewController {
     }
 
 	func makePhotoTabViewController() -> UIViewController {
-		let navVC = UINavigationController(rootViewController: photosTabViewController)
+		let title = "Photos"
+
+		let navVC = UINavigationController(rootViewController: tilesPhotosViewController)
 		navVC.navigationBar.prefersLargeTitles = true
 
 		let segmentedControl = UISegmentedControl(items: ["New", "Popular"])
@@ -72,13 +75,13 @@ private extension GalleryRootViewController {
 			.addTarget(self, action: #selector(photosTabSegmentedControlValueDidChange(_:)), for: .valueChanged)
 		segmentedControl.selectedSegmentIndex = 0
 
-		let navItem = UINavigationItem(title: "Photos")
-		navItem.rightBarButtonItem = UIBarButtonItem(customView: segmentedControl)
-
-		photosTabViewController.navigationItem.title = "Photos"
-		photosTabViewController.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: segmentedControl)
-		photosTabViewController.tabBarItem = UITabBarItem(title: "Photos", image: #imageLiteral(resourceName: "collections"), selectedImage: nil)
-		photosTabViewController.dataSource = makePhotosModelController(with: .latest)
+		tilesPhotosViewController.navigationItem.title = title
+		tilesPhotosViewController.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: segmentedControl)
+		tilesPhotosViewController.tabBarItem = UITabBarItem(title: title, image: #imageLiteral(resourceName: "collections"), selectedImage: nil)
+		tilesPhotosViewController.dataSource = makePhotosModelController(with: .latest)
+		tilesPhotosViewController.photoDidSelectHandler = { [weak self] (selectedPhotoIndex) in
+			self?.handleSelectionsOfPhoto(at: selectedPhotoIndex)
+		}
 
 		return navVC
 	}
@@ -86,14 +89,31 @@ private extension GalleryRootViewController {
 	@objc func photosTabSegmentedControlValueDidChange(_ segmentedControl: UISegmentedControl) {
 		let order: UnsplashPhotoListOrder = segmentedControl.selectedSegmentIndex == 0 ? .latest : .popular
 
-		photosTabViewController.dataSource = makePhotosModelController(with: order)
+		tilesPhotosViewController.dataSource = makePhotosModelController(with: order)
 	}
 
 	func makePhotosModelController(with order: UnsplashPhotoListOrder) -> PhotosModelController {
-		let photoListRequest: PhotoListRequest = .init(order: order, accessToken: authenticationController.accessToken)
-
-		let modelController = PhotosModelController(networkService: NetworkService(), photoListRequest: photoListRequest)
+		let request: PhotoListRequest = .init(order: order, accessToken: authenticationController.accessToken)
+		let modelController = PhotosModelController(networkService: NetworkService(), photoListRequest: request)
 
 		return modelController
+	}
+
+	func handleSelectionsOfPhoto(at index: Int) {
+		guard let modelController = tilesPhotosViewController.dataSource as? PhotosModelController else {
+			return
+		}
+
+		modelController.selectedPhotoIndex = index
+
+		let layout = FullScreenPhotosCollectionViewLayout()
+		let fullScreenPhotosViewController = FullScreenPhotosViewController(
+			networkService: NetworkService(),
+			authenticationStateProvider: authenticationController,
+			collectionViewLayout: layout
+		)
+		fullScreenPhotosViewController.dataSource = modelController
+
+		tilesPhotosViewController.navigationController?.pushViewController(fullScreenPhotosViewController, animated: true)
 	}
 }

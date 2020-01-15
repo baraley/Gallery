@@ -9,6 +9,8 @@
 import CoreGraphics
 
 class PinterestLayoutFrameCalculator {
+
+	// MARK: - Initialization
 	
 	let contentWidth: CGFloat
 	private let cellSpacing: CGFloat
@@ -19,8 +21,10 @@ class PinterestLayoutFrameCalculator {
 		self.cellSpacing = cellSpacing
 		self.numberOfColumns = numberOfColumns
 	}
+
+	// MARK: - Public methods
 	
-	public func frameForItem(with size: CGSize) -> CGRect {
+	func frameForItem(with size: CGSize) -> CGRect {
 		let origin = currentCellOrigin
 		let frame = CGRect(origin: origin, size: size)
 		
@@ -29,7 +33,7 @@ class PinterestLayoutFrameCalculator {
 		return frame.insetBy(dx: cellSpacing, dy: cellSpacing)
 	}
 	
-	// MARK: - Calculation properties
+	// MARK: - Private properties
 	
 	private(set) var contentHeight: CGFloat = 0
 	
@@ -57,7 +61,7 @@ class PinterestLayoutFrameCalculator {
 		return origin
 	}
 	
-	// MARK: - Calculation methods
+	// MARK: - Private methods
 	
 	private func addNewCellToLayout(with frame: CGRect) {
 		contentHeight = max(contentHeight, frame.maxY)

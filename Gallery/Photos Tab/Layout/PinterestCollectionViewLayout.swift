@@ -47,15 +47,17 @@ class PinterestCollectionViewLayout: UICollectionViewLayout {
 	private var columnWidth: CGFloat {
 		return contentWidth / CGFloat(numberOfColumns)
 	}
-	
-	// MARK: - Helpers
-	
+
+	// MARK: - Public methods
+
 	func reset() {
 		frameCalculator = PinterestLayoutFrameCalculator(
 			contentWidth: contentWidth, cellSpacing: interItemsSpacing, numberOfColumns: numberOfColumns
 		)
 		cellLayoutAttributes.removeAll()
 	}
+
+	// MARK: - Private methods
 	
 	private func frameForFooterSupplementaryView() -> CGRect {
 		guard let collectionView = collectionView, let frameCalculator = frameCalculator else {
@@ -69,7 +71,7 @@ class PinterestCollectionViewLayout: UICollectionViewLayout {
 	}
 }
 
-// MARK: - Overriden
+// MARK: - Overridden
 extension PinterestCollectionViewLayout {
 	
 	override func prepare() {
@@ -90,12 +92,12 @@ extension PinterestCollectionViewLayout {
 	
 	override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
 		
-		var atttributes = cellLayoutAttributes.filter { return $0.frame.intersects(rect) }
+		var attributes = cellLayoutAttributes.filter { return $0.frame.intersects(rect) }
 		
-		if let footerAttributs = footerLayoutAttributes, footerAttributs.frame.intersects(rect) {
-			atttributes.append(footerAttributs)
+		if let footerAttributes = footerLayoutAttributes, footerAttributes.frame.intersects(rect) {
+			attributes.append(footerAttributes)
 		}
-		return atttributes
+		return attributes
 	}
 	
 	override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
@@ -112,9 +114,9 @@ extension PinterestCollectionViewLayout {
 			collectionView, heightForCellAtIndexPath: indexPath, whileCellWidthIs: columnWidth
 		) ?? 0
 		
-		let fullheight = interItemsSpacing * 2 + cellHeight
+		let fullHeight = interItemsSpacing * 2 + cellHeight
 		
-		let frame = frameCalculator.frameForItem(with: CGSize(width: columnWidth, height: fullheight))
+		let frame = frameCalculator.frameForItem(with: CGSize(width: columnWidth, height: fullHeight))
 		
 		let attributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
 		attributes.frame = frame

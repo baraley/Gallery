@@ -52,6 +52,8 @@ class PaginalContentLoader<Request: PaginalRequest> {
 	var hasContentToLoad: Bool {
 		return currentPage <= totalPages
 	}
+
+	var isLoading: Bool = false
 	
 	func resetToFirstPage() {
 		currentPage = 1
@@ -62,8 +64,11 @@ class PaginalContentLoader<Request: PaginalRequest> {
 		setupRequestForNextPage()
 		
 		guard hasContentToLoad else { return }
+
+		isLoading = true
 		
 		networkService.performRequest(request) { [weak self] (result) in
+			self?.isLoading = false
 			self?.contentDidLoadHandler?(result)
 		}
 	}

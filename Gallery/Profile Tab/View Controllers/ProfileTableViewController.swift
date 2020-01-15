@@ -44,7 +44,7 @@ class ProfileTableViewController: UITableViewController, SegueHandlerType {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		initialConfiguration()
+		initialSetup()
 	}
 	
 	// MARK: - Navigation
@@ -104,7 +104,7 @@ private extension ProfileTableViewController {
 		case name, biography, location, content, edit, logOut
 	}
 	
-	func initialConfiguration() {
+	func initialSetup() {
 		let refreshControl = UIRefreshControl()
 		refreshControl.tintColor = .darkGray
 		refreshControl.addTarget(self, action: #selector(updateUserData), for: .valueChanged)

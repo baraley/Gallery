@@ -15,4 +15,8 @@ extension UIBarButtonItem {
 		activityView.startAnimating()
 		return activityItem
 	}
+
+	class var flexibleSpace: UIBarButtonItem {
+		UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+	}
 }

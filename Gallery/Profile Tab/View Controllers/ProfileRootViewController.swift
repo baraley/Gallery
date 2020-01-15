@@ -84,7 +84,7 @@ class ProfileRootViewController: UIViewController, SegueHandlerType {
 // MARK: - Private
 private extension ProfileRootViewController {
 	
-	func initialConfiguration() {
+	func initialSetup() {
 		loadingView?.stopAnimating()
 		authorizationButton?.isHidden = true
 		profileTableViewController?.view.isHidden = true
@@ -110,26 +110,26 @@ private extension ProfileRootViewController {
 extension ProfileRootViewController: AuthenticationObserver {
 
 	func authenticationDidStart() {
-		initialConfiguration()
+		initialSetup()
 
 		loadingView?.startAnimating()
 	}
 
 	func authenticationDidFinish(with userData: AuthenticatedUserData) {
-		initialConfiguration()
+		initialSetup()
 
 		profileTableViewController?.userData = userData
 		profileTableViewController?.view.isHidden = false
 	}
 
 	func deauthenticationDidFinish() {
-		initialConfiguration()
+		initialSetup()
 
 		authorizationButton?.isHidden = false
 	}
 
 	func authorizationDidFail(with error: RequestError) {
-		initialConfiguration()
+		initialSetup()
 
 		showError(error)
 	}
