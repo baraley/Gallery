@@ -8,76 +8,126 @@
 
 import UIKit
 
+var count = 0
+
 class FullScreenCollectionViewCell: UICollectionViewCell {
 
-	private let imageView = UIImageView(frame: .zero)
-	private let loadingView = UIActivityIndicatorView(style: .whiteLarge)
+	// MARK: - Initialization
 
-	var loadingViewColor: UIColor = .black {
-		didSet {
-			loadingView.color = loadingViewColor
-		}
-	}
-	var image: UIImage? {
-		didSet {
-			imageDidChange()
-		}
-	}
+	private let scrollView = UIScrollView(frame: .zero)
+	private let imageView = UIImageView(image: nil)
+	private let loadingView = UIActivityIndicatorView(style: .whiteLarge)
 
 	override init(frame: CGRect) {
 		super.init(frame: frame)
 
-		setupImageView()
-		setupLoadingView()
+		initialSetup()
 	}
 
 	required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}
 
+	// MARK: - Overridden
+
+	override func layoutSubviews() {
+		super.layoutSubviews()
+
+		scrollView.frame = contentView.bounds
+		loadingView.center = contentView.center
+		updateScrollView()
+	}
+
 	override func prepareForReuse() {
 		super.prepareForReuse()
 
+		scrollView.zoomScale = 1.0
 		image = nil
+	}
+
+	// MARK: - Public
+
+	var loadingViewColor: UIColor = .black {
+		didSet {
+			loadingView.color = loadingViewColor
+		}
+	}
+
+	var image: UIImage? {
+		get {
+			imageView.image
+		}
+		set {
+			imageView.image = newValue
+			imageDidChange()
+		}
 	}
 }
 
 private extension FullScreenCollectionViewCell {
 
+	func initialSetup() {
+		imageView.contentMode = .scaleAspectFit
+
+		setupLoadingView()
+		setupScrollView()
+
+		contentView.addSubview(scrollView)
+		contentView.addSubview(loadingView)
+	}
+
 	func setupLoadingView() {
 		loadingView.startAnimating()
 		loadingView.color = loadingViewColor
-		loadingView.translatesAutoresizingMaskIntoConstraints = false
-
-		contentView.addSubview(loadingView)
-
-		NSLayoutConstraint.activate([
-			loadingView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-			loadingView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor)
-		])
 	}
 
-	func setupImageView() {
-		imageView.contentMode = .scaleAspectFit
+	func setupScrollView() {
+		scrollView.delegate = self
+		scrollView.showsHorizontalScrollIndicator = false
+		scrollView.showsVerticalScrollIndicator = false
+		scrollView.contentInsetAdjustmentBehavior = .never
+		scrollView.addSubview(imageView)
+	}
 
-		imageView.translatesAutoresizingMaskIntoConstraints = false
+	func updateScrollView() {
+		guard let image = imageView.image else { return }
 
-		contentView.addSubview(imageView)
+		let widthScale = contentView.bounds.size.width / image.size.width
+		let heightScale = contentView.bounds.size.height / image.size.height
 
-		NSLayoutConstraint.activate([
-			imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
-			imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-			imageView.leftAnchor.constraint(equalTo: contentView.leftAnchor),
-			imageView.rightAnchor.constraint(equalTo: contentView.rightAnchor)
-		])
+		let minScale = min(widthScale, heightScale)
+
+		scrollView.contentSize = contentView.bounds.size
+		scrollView.minimumZoomScale = minScale
+		scrollView.zoomScale = minScale
+
+		if minScale == widthScale {
+			let imageRelativeHeight = contentView.bounds.size.height - (image.size.height * minScale)
+			let inset = imageRelativeHeight / 2
+
+			scrollView.contentInset = UIEdgeInsets(top: inset, left: 0, bottom: inset, right: 0)
+		} else {
+			let imageRelativeWidth = contentView.bounds.size.width - (image.size.width * minScale)
+			let inset = imageRelativeWidth / 2
+
+			scrollView.contentInset = UIEdgeInsets(top: 0, left: inset, bottom: 0, right: inset)
+		}
 	}
 
 	func imageDidChange() {
-		if image == nil {
+		if imageView.image == nil {
 			loadingView.startAnimating()
 		} else {
 			loadingView.stopAnimating()
 		}
-		imageView.image = image
+		imageView.sizeToFit()
+		setNeedsLayout()
+	}
+}
+
+extension FullScreenCollectionViewCell: UIScrollViewDelegate {
+
+	func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+		imageView
 	}
 }

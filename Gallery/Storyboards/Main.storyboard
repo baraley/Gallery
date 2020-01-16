@@ -191,21 +191,14 @@
                                 <rect key="frame" x="169" y="315" width="37" height="37"/>
                                 <color key="color" cocoaTouchSystemColor="darkTextColor"/>
                             </activityIndicatorView>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4L1-Qr-1db">
-                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
-                                <items/>
-                            </toolbar>
                         </subviews>
                         <gestureRecognizers/>
                         <constraints>
-                            <constraint firstItem="4L1-Qr-1db" firstAttribute="trailing" secondItem="eF9-P1-i3f" secondAttribute="trailing" id="3ER-XT-xj6"/>
                             <constraint firstItem="ecP-do-lce" firstAttribute="leading" secondItem="JnE-uc-x5m" secondAttribute="leading" id="M0Y-rY-RAp"/>
                             <constraint firstAttribute="bottom" secondItem="ecP-do-lce" secondAttribute="bottom" id="NlT-xs-0nv"/>
-                            <constraint firstItem="4L1-Qr-1db" firstAttribute="leading" secondItem="eF9-P1-i3f" secondAttribute="leading" id="TDn-0M-b5U"/>
                             <constraint firstAttribute="trailing" secondItem="ecP-do-lce" secondAttribute="trailing" id="URR-6k-PDA"/>
                             <constraint firstAttribute="top" secondItem="ecP-do-lce" secondAttribute="top" id="et2-dI-Owi"/>
                             <constraint firstItem="3gQ-sZ-5ze" firstAttribute="centerY" secondItem="JnE-uc-x5m" secondAttribute="centerY" id="kjn-mh-8Fh"/>
-                            <constraint firstItem="eF9-P1-i3f" firstAttribute="bottom" secondItem="4L1-Qr-1db" secondAttribute="bottom" id="u07-rb-KVJ"/>
                             <constraint firstItem="3gQ-sZ-5ze" firstAttribute="centerX" secondItem="JnE-uc-x5m" secondAttribute="centerX" id="xpU-IM-Ui5"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="eF9-P1-i3f"/>
@@ -214,8 +207,6 @@
                     <connections>
                         <outlet property="imageScrollView" destination="ecP-do-lce" id="mGg-4c-NCw"/>
                         <outlet property="loadingView" destination="3gQ-sZ-5ze" id="ygj-mV-PT6"/>
-                        <outlet property="photoToolBar" destination="4L1-Qr-1db" id="1di-yW-5De"/>
-                        <outlet property="photoToolBarBottomConstraint" destination="u07-rb-KVJ" id="OdJ-gf-sHU"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wuJ-9a-bbH" userLabel="First Responder" sceneMemberID="firstResponder"/>

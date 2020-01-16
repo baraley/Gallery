@@ -46,6 +46,8 @@ class GalleryRootViewController: UITabBarController {
 		
 //        selectedViewController = viewControllers?[2]
         instantiateViewControllers()
+
+		view.backgroundColor = .white
     }
 }
 

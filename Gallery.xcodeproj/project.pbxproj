@@ -34,7 +34,6 @@
 		11FD5CC822DCEBC600840D01 /* UITableView+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11FD5CC722DCEBC600840D01 /* UITableView+extension.swift */; };
 		11FD5CCA22DDB02600840D01 /* EditProfileTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11FD5CC922DDB02600840D01 /* EditProfileTableViewCell.swift */; };
 		11FD5CCC22DDDF5800840D01 /* EditableUserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11FD5CCB22DDDF5800840D01 /* EditableUserData.swift */; };
-		3D2EE30B21F0775200E7AB52 /* ImageScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D2EE30A21F0775200E7AB52 /* ImageScrollView.swift */; };
 		3D52559A20DB78D700A11A4B /* AuthenticatedUserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D52559920DB78D700A11A4B /* AuthenticatedUserData.swift */; };
 		3D5FB29E21B7DB1D0095EE9A /* UIBarButtonItem+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D5FB29D21B7DB1D0095EE9A /* UIBarButtonItem+extension.swift */; };
 		3D638F40212AAC5A00386C4F /* UIViewController+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D638F3F212AAC5A00386C4F /* UIViewController+extensions.swift */; };
@@ -95,7 +94,6 @@
 		11FD5CC922DDB02600840D01 /* EditProfileTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileTableViewCell.swift; sourceTree = "<group>"; };
 		11FD5CCB22DDDF5800840D01 /* EditableUserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableUserData.swift; sourceTree = "<group>"; };
 		192437F3C06AB46B0B9A8AFC /* Pods-Gallery.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Gallery.release.xcconfig"; path = "Pods/Target Support Files/Pods-Gallery/Pods-Gallery.release.xcconfig"; sourceTree = "<group>"; };
-		3D2EE30A21F0775200E7AB52 /* ImageScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageScrollView.swift; sourceTree = "<group>"; };
 		3D52559920DB78D700A11A4B /* AuthenticatedUserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedUserData.swift; sourceTree = "<group>"; };
 		3D5FB29D21B7DB1D0095EE9A /* UIBarButtonItem+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIBarButtonItem+extension.swift"; sourceTree = "<group>"; };
 		3D638F3F212AAC5A00386C4F /* UIViewController+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+extensions.swift"; sourceTree = "<group>"; };
@@ -220,7 +218,6 @@
 			children = (
 				3D772CA820B8EA2E00F3DC48 /* TileCollectionViewCell.swift */,
 				3DCDB58320B9ED66006297A4 /* CollectionViewLoadingFooter.swift */,
-				3D2EE30A21F0775200E7AB52 /* ImageScrollView.swift */,
 				11E626D423CE1B20003BCE4F /* FullScreenCollectionViewCell.swift */,
 			);
 			path = Views;
@@ -540,7 +537,6 @@
 				3DCDB58220B9E43A006297A4 /* UICollectionView+extension.swift in Sources */,
 				3D52559A20DB78D700A11A4B /* AuthenticatedUserData.swift in Sources */,
 				3D772CAD20B8EA3A00F3DC48 /* Photo.swift in Sources */,
-				3D2EE30B21F0775200E7AB52 /* ImageScrollView.swift in Sources */,
 				11E626D523CE1B20003BCE4F /* FullScreenCollectionViewCell.swift in Sources */,
 				1100DBD322CCF06F0022E653 /* GalleryRootViewController.swift in Sources */,
 				11FD5CC622DCE4C400840D01 /* EditProfileViewController.swift in Sources */,
