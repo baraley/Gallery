@@ -1,5 +1,5 @@
 //
-//  PinterestLayoutFrameCalculator.swift
+//  TilesLayoutFrameCalculator.swift
 //  Gallery
 //
 //  Created by Alexander Baraley on 10/19/18.
@@ -8,7 +8,7 @@
 
 import CoreGraphics
 
-class PinterestLayoutFrameCalculator {
+class TilesLayoutFrameCalculator {
 
 	// MARK: - Initialization
 	

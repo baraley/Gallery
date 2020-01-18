@@ -85,7 +85,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="aLD-tO-cgD"/>
-                        <collectionViewLayout key="collectionViewLayout" id="b8y-6n-0ul" customClass="PinterestCollectionViewLayout" customModule="Gallery" customModuleProvider="target"/>
+                        <collectionViewLayout key="collectionViewLayout" id="b8y-6n-0ul" customClass="TilesCollectionViewLayout" customModule="Gallery" customModuleProvider="target"/>
                         <cells>
                             <collectionViewCell opaque="NO" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PhotoCollectionViewCell" id="uCq-YS-L9m" customClass="PhotoCollectionViewCell" customModule="Gallery" customModuleProvider="target">
                                 <rect key="frame" x="3" y="0.0" width="369" height="255"/>

@@ -30,7 +30,7 @@ class GalleryRootViewController: UITabBarController {
 
     private lazy var tilesPhotosViewController = TilesPhotosViewController(
 		networkService: NetworkService(),
-		collectionViewLayout: PinterestCollectionViewLayout()
+		collectionViewLayout: TilesCollectionViewLayout()
 	)
     
     private lazy var profileRootViewController: ProfileRootViewController = {
@@ -102,9 +102,7 @@ private extension GalleryRootViewController {
 	}
 
 	func handleSelectionsOfPhoto(at index: Int) {
-		guard let modelController = tilesPhotosViewController.dataSource as? PhotosModelController else {
-			return
-		}
+		guard let modelController = tilesPhotosViewController.dataSource as? PhotosModelController else { return }
 
 		modelController.selectedPhotoIndex = index
 

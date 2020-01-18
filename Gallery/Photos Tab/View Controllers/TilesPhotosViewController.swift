@@ -26,14 +26,14 @@ class TilesPhotosViewController: UICollectionViewController {
 
 	// MARK: - Properties
 
-	var dataSource: (PhotosDataSource & PinterestCollectionViewLayoutDataSource)? { didSet { dataSourceDidChange() } }
+	var dataSource: (PhotosDataSource & TilesCollectionViewLayoutDataSource)? { didSet { dataSourceDidChange() } }
 
 	var photoDidSelectHandler: ((Int) -> Void)?
 
 	private var errorMessageWasShown = false
 	private weak var activityIndicatorView: UIActivityIndicatorView?
-	private var layout: PinterestCollectionViewLayout? {
-		return collectionView.collectionViewLayout as? PinterestCollectionViewLayout
+	private var layout: TilesCollectionViewLayout? {
+		return collectionView.collectionViewLayout as? TilesCollectionViewLayout
 	}
 
 	private lazy var refreshControl: UIRefreshControl = {
@@ -84,7 +84,6 @@ private extension TilesPhotosViewController {
 		layout?.reset()
 
 		collectionView.reloadData()
-		collectionView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 1, height: 1), animated: false)
 	}
 
 	@objc func refreshPhotos() {
@@ -164,19 +163,23 @@ private extension TilesPhotosViewController {
 // MARK: - UICollectionViewDataSource
 extension TilesPhotosViewController {
 
-	override func collectionView(_ collectionView: UICollectionView,
-						numberOfItemsInSection section: Int) -> Int {
+	override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 		return dataSource?.numberOfPhotos ?? 0
 	}
 
-	override func collectionView(_ collectionView: UICollectionView,
-						cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+	override func collectionView(
+		_ collectionView: UICollectionView,
+		cellForItemAt indexPath: IndexPath
+	) -> UICollectionViewCell {
+
 		return collectionView.dequeueCell(indexPath: indexPath) as TileCollectionViewCell
 	}
 
-	override func collectionView(_ collectionView: UICollectionView,
-						viewForSupplementaryElementOfKind kind: String,
-						at indexPath: IndexPath) -> UICollectionReusableView {
+	override func collectionView(
+		_ collectionView: UICollectionView,
+		viewForSupplementaryElementOfKind kind: String,
+		at indexPath: IndexPath
+	) -> UICollectionReusableView {
 
 		let view = collectionView
 			.dequeueSupplementaryView(of: kind, at: indexPath) as CollectionViewLoadingFooter
@@ -187,28 +190,37 @@ extension TilesPhotosViewController {
 // MARK: - UICollectionViewDelegate
 extension TilesPhotosViewController {
 
-	override func collectionView(_ collectionView: UICollectionView,
-								 willDisplay cell: UICollectionViewCell,
-								 forItemAt indexPath: IndexPath) {
+	override func collectionView(
+		_ collectionView: UICollectionView,
+		willDisplay cell: UICollectionViewCell,
+		forItemAt indexPath: IndexPath
+	) {
 		loadThumbForCellAt(indexPath)
 	}
 
-	override func collectionView(_ collectionView: UICollectionView,
-								 didSelectItemAt indexPath: IndexPath) {
+	override func collectionView(
+		_ collectionView: UICollectionView,
+		didSelectItemAt indexPath: IndexPath
+	) {
 		photoDidSelectHandler?(indexPath.item)
 	}
 
-	override func collectionView(_ collectionView: UICollectionView,
-								 didEndDisplaying cell: UICollectionViewCell,
-								 forItemAt indexPath: IndexPath) {
+	override func collectionView(
+		_ collectionView: UICollectionView,
+		didEndDisplaying cell: UICollectionViewCell,
+		forItemAt indexPath: IndexPath
+	) {
 		cancelLoadingThumbForCellAt(indexPath)
 	}
 
-	override func collectionView(_ collectionView: UICollectionView,
-								 willDisplaySupplementaryView view: UICollectionReusableView,
-								 forElementKind elementKind: String, at indexPath: IndexPath) {
+	override func collectionView(
+		_ collectionView: UICollectionView,
+		willDisplaySupplementaryView view: UICollectionReusableView,
+		forElementKind elementKind: String, at indexPath: IndexPath
+	) {
 
 		guard let footer = view as? CollectionViewLoadingFooter else { return }
+
 		activityIndicatorView = footer.activityIndicator
 
 		dataSource?.loadMorePhotos()

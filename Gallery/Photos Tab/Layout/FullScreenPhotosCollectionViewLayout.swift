@@ -13,11 +13,7 @@ class FullScreenPhotosCollectionViewLayout: UICollectionViewFlowLayout {
 	override func prepare() {
 		super.prepare()
 
-		guard let collectionView = collectionView else { return }
-
 		scrollDirection = .horizontal
-		itemSize = collectionView.bounds.size
-
 		minimumLineSpacing = round(itemSize.width * 0.1)
 	}
 
@@ -26,12 +22,7 @@ class FullScreenPhotosCollectionViewLayout: UICollectionViewFlowLayout {
 		withScrollingVelocity velocity: CGPoint
 	) -> CGPoint {
 
-		guard let currentContentOffset = collectionView?.contentOffset else {
-			return super.targetContentOffset(
-				forProposedContentOffset: proposedContentOffset,
-				withScrollingVelocity: velocity
-			)
-		}
+		let currentContentOffset = collectionView?.contentOffset ?? .zero
 
 		let pageWidth = itemSize.width + minimumLineSpacing
 		let currentPage = round(currentContentOffset.x / pageWidth)
@@ -50,5 +41,9 @@ class FullScreenPhotosCollectionViewLayout: UICollectionViewFlowLayout {
 		}
 
 		return CGPoint(x: currentPageOffset, y: 0)
+	}
+
+	override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
+		collectionView?.bounds.size != newBounds.size
 	}
 }

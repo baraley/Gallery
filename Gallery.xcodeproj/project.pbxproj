@@ -55,8 +55,8 @@
 		3D772C9F20B8EA1000F3DC48 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D772C9E20B8EA1000F3DC48 /* Main.storyboard */; };
 		3D772CA920B8EA2E00F3DC48 /* TileCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D772CA820B8EA2E00F3DC48 /* TileCollectionViewCell.swift */; };
 		3D772CAF20B8EA4200F3DC48 /* Identifiable+protocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D772CAE20B8EA4200F3DC48 /* Identifiable+protocol.swift */; };
-		3D9C6D08217A6C3F00D59D36 /* PinterestCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9C6D07217A6C3F00D59D36 /* PinterestCollectionViewLayout.swift */; };
-		3D9C6D0A217A793500D59D36 /* PinterestLayoutFrameCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9C6D09217A793500D59D36 /* PinterestLayoutFrameCalculator.swift */; };
+		3D9C6D08217A6C3F00D59D36 /* TilesCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9C6D07217A6C3F00D59D36 /* TilesCollectionViewLayout.swift */; };
+		3D9C6D0A217A793500D59D36 /* TilesLayoutFrameCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9C6D09217A793500D59D36 /* TilesLayoutFrameCalculator.swift */; };
 		3DBC2C5221E019EA004DE7F1 /* UIColor+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DBC2C5121E019EA004DE7F1 /* UIColor+extension.swift */; };
 		3DCDB58220B9E43A006297A4 /* UICollectionView+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DCDB58120B9E439006297A4 /* UICollectionView+extension.swift */; };
 		3DCDB58420B9ED66006297A4 /* CollectionViewLoadingFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DCDB58320B9ED66006297A4 /* CollectionViewLoadingFooter.swift */; };
@@ -117,8 +117,8 @@
 		3D772C9E20B8EA1000F3DC48 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		3D772CA820B8EA2E00F3DC48 /* TileCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TileCollectionViewCell.swift; sourceTree = "<group>"; };
 		3D772CAE20B8EA4200F3DC48 /* Identifiable+protocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Identifiable+protocol.swift"; sourceTree = "<group>"; };
-		3D9C6D07217A6C3F00D59D36 /* PinterestCollectionViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinterestCollectionViewLayout.swift; sourceTree = "<group>"; };
-		3D9C6D09217A793500D59D36 /* PinterestLayoutFrameCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinterestLayoutFrameCalculator.swift; sourceTree = "<group>"; };
+		3D9C6D07217A6C3F00D59D36 /* TilesCollectionViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TilesCollectionViewLayout.swift; sourceTree = "<group>"; };
+		3D9C6D09217A793500D59D36 /* TilesLayoutFrameCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TilesLayoutFrameCalculator.swift; sourceTree = "<group>"; };
 		3DBC2C5121E019EA004DE7F1 /* UIColor+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+extension.swift"; sourceTree = "<group>"; };
 		3DCDB58120B9E439006297A4 /* UICollectionView+extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UICollectionView+extension.swift"; sourceTree = "<group>"; };
 		3DCDB58320B9ED66006297A4 /* CollectionViewLoadingFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewLoadingFooter.swift; sourceTree = "<group>"; };
@@ -392,8 +392,8 @@
 		3DEC5BE6217AF7FE00AD6330 /* Layout */ = {
 			isa = PBXGroup;
 			children = (
-				3D9C6D07217A6C3F00D59D36 /* PinterestCollectionViewLayout.swift */,
-				3D9C6D09217A793500D59D36 /* PinterestLayoutFrameCalculator.swift */,
+				3D9C6D07217A6C3F00D59D36 /* TilesCollectionViewLayout.swift */,
+				3D9C6D09217A793500D59D36 /* TilesLayoutFrameCalculator.swift */,
 				119172E723CB721C00DEFCB3 /* FullScreenPhotosCollectionViewLayout.swift */,
 			);
 			path = Layout;
@@ -547,9 +547,9 @@
 				1191741E23D36E3700BE1214 /* UserRequest.swift in Sources */,
 				1191742923D36E8400BE1214 /* UnsplashRequest.swift in Sources */,
 				11F4238523C9BEAC00FEEFED /* ProfileTabViewController.swift in Sources */,
-				3D9C6D0A217A793500D59D36 /* PinterestLayoutFrameCalculator.swift in Sources */,
+				3D9C6D0A217A793500D59D36 /* TilesLayoutFrameCalculator.swift in Sources */,
 				3DCDB58420B9ED66006297A4 /* CollectionViewLoadingFooter.swift in Sources */,
-				3D9C6D08217A6C3F00D59D36 /* PinterestCollectionViewLayout.swift in Sources */,
+				3D9C6D08217A6C3F00D59D36 /* TilesCollectionViewLayout.swift in Sources */,
 				1151C6F422D7276100F3B657 /* UIStoryboard+extension.swift in Sources */,
 				1191744C23D36EF300BE1214 /* AuthenticatedUserData.swift in Sources */,
 				1191740F23D36E2800BE1214 /* NetworkService.swift in Sources */,

@@ -16,8 +16,6 @@ enum LoadingState {
 
 class PhotosModelController: NSObject, PhotosDataSource {
 
-	var loadingEventsHandler: ((LoadingState) -> Void)?
-
 	private let networkService: NetworkService
 	private let photoListRequest: PhotoListRequest
 	private let	accessToken: String?
@@ -30,28 +28,20 @@ class PhotosModelController: NSObject, PhotosDataSource {
 		super.init()
 	}
 
-	private lazy var photosLoader: PaginalContentLoader<PhotoListRequest> = {
-		let loader = PaginalContentLoader(networkService: networkService, request: photoListRequest)
-		loader.contentDidLoadHandler = { [weak self] (result) in
-			DispatchQueue.main.async {
-				switch result {
-				case .success(let newPhotos): 	self?.insertNewPhotos(newPhotos)
-				case .failure(let error): 		self?.loadingEventsHandler?(.loadingError(error: error))
-				}
-			}
-		}
-		return loader
-	}()
+	private lazy var photosLoader: PaginalContentLoader<PhotoListRequest> = instantiatePhotosLoader()
 
 	private var photos: [Photo] = [] { didSet { numberOfPhotos = photos.count } }
-
 	private(set) var numberOfPhotos: Int = 0
+
+	// MARK: - Public
+
+	var selectedPhotoIndex: Int?
+
+	var loadingEventsHandler: ((LoadingState) -> Void)?
 
 	func indexOf(_ photo: Photo) -> Int? {
 		return photos.firstIndex(of: photo)
 	}
-
-	var selectedPhotoIndex: Int?
 
 	func reloadPhotos() {
 		photosLoader.resetToFirstPage()
@@ -83,6 +73,20 @@ class PhotosModelController: NSObject, PhotosDataSource {
 // MARK: - Private
 private extension PhotosModelController {
 
+	func instantiatePhotosLoader() -> PaginalContentLoader<PhotoListRequest> {
+		let loader = PaginalContentLoader(networkService: networkService, request: photoListRequest)
+
+		loader.contentDidLoadHandler = { [weak self] (result) in
+			DispatchQueue.main.async {
+				switch result {
+				case .success(let newPhotos): 	self?.insertNewPhotos(newPhotos)
+				case .failure(let error): 		self?.loadingEventsHandler?(.loadingError(error: error))
+				}
+			}
+		}
+		return loader
+	}
+
 	func insertNewPhotos(_ newPhotos: [Photo]) {
 		let newPhotosNumber: Int
 		let locationIndex = numberOfPhotos == 0 ? 0 : numberOfPhotos - 1
@@ -104,8 +108,8 @@ private extension PhotosModelController {
 	}
 }
 
-// MARK: - PinterestCollectionViewLayoutDataSource -
-extension PhotosModelController: PinterestCollectionViewLayoutDataSource {
+// MARK: - TilesCollectionViewLayoutDataSource -
+extension PhotosModelController: TilesCollectionViewLayoutDataSource {
 
 	func collectionView(_ collectionView: UICollectionView, heightForCellAtIndexPath indexPath: IndexPath,
 						whileCellWidthIs cellWidth: CGFloat) -> CGFloat {

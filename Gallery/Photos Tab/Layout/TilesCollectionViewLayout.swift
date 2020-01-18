@@ -1,5 +1,5 @@
 //
-//  PinterestCollectionViewLayout.swift
+//  TilesCollectionViewLayout.swift
 //  Gallery
 //
 //  Created by Alexander Baraley on 10/19/18.
@@ -8,30 +8,27 @@
 
 import UIKit
 
-protocol PinterestCollectionViewLayoutDataSource: class {
+protocol TilesCollectionViewLayoutDataSource: class {
 	func collectionView(_ collectionView: UICollectionView,
 						heightForCellAtIndexPath indexPath:IndexPath,
 						whileCellWidthIs cellWidth: CGFloat) -> CGFloat
 }
 
-class PinterestCollectionViewLayout: UICollectionViewLayout {
-	
-	var interItemsSpacing: CGFloat = 5
-	var numberOfColumns: Int {
+class TilesCollectionViewLayout: UICollectionViewLayout {
+
+	weak var dataSource: TilesCollectionViewLayoutDataSource?
+
+	private var frameCalculator: TilesLayoutFrameCalculator?
+	private let footerHeight: CGFloat = 50.0
+	private var interItemsSpacing: CGFloat = 5
+	private var numberOfColumns: Int {
 		guard let collectionView = collectionView else { return 0 }
 		return collectionView.bounds.width > collectionView.bounds.height ? 4 : 2
 	}
 	
-	weak var dataSource: PinterestCollectionViewLayoutDataSource?
-	
-	private let footerHeight: CGFloat = 50.0
-	
-	private var frameCalculator: PinterestLayoutFrameCalculator?
-	
 	// MARK: - Cache properties
 	
 	private var cellLayoutAttributes: [UICollectionViewLayoutAttributes] = []
-	
 	private var footerLayoutAttributes: UICollectionViewLayoutAttributes? = nil
 	
 	// MARK: - Computed properties
@@ -51,7 +48,7 @@ class PinterestCollectionViewLayout: UICollectionViewLayout {
 	// MARK: - Public methods
 
 	func reset() {
-		frameCalculator = PinterestLayoutFrameCalculator(
+		frameCalculator = TilesLayoutFrameCalculator(
 			contentWidth: contentWidth, cellSpacing: interItemsSpacing, numberOfColumns: numberOfColumns
 		)
 		cellLayoutAttributes.removeAll()
@@ -72,22 +69,19 @@ class PinterestCollectionViewLayout: UICollectionViewLayout {
 }
 
 // MARK: - Overridden
-extension PinterestCollectionViewLayout {
+extension TilesCollectionViewLayout {
 	
 	override func prepare() {
 		
-		guard cellLayoutAttributes.isEmpty == true, let collectionView = collectionView else {
-			return
-		}
+		guard cellLayoutAttributes.isEmpty == true, let collectionView = collectionView else { return }
 
 		for item in 0 ..< collectionView.numberOfItems(inSection: 0) {
-			let indexPath = IndexPath(item: item, section: 0)
-
-			let _ = layoutAttributesForItem(at: indexPath)
+			let _ = layoutAttributesForItem(at: IndexPath(item: item, section: 0))
 		}
 
 		let _ = layoutAttributesForSupplementaryView(
-			ofKind: UICollectionView.elementKindSectionFooter, at: IndexPath(item: 0, section: 0))
+			ofKind: UICollectionView.elementKindSectionFooter, at: IndexPath(item: 0, section: 0)
+		)
 	}
 	
 	override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
@@ -127,7 +121,8 @@ extension PinterestCollectionViewLayout {
 	}
 	
 	override func layoutAttributesForSupplementaryView(
-		ofKind elementKind: String, at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
+		ofKind elementKind: String, at indexPath: IndexPath
+	) -> UICollectionViewLayoutAttributes? {
 		
 		guard elementKind == UICollectionView.elementKindSectionFooter else { return nil }
 		
@@ -151,12 +146,8 @@ extension PinterestCollectionViewLayout {
 		return CGSize(width: contentWidth, height: contentHeight + footerHeight)
 	}
 	
-	override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
-		guard let collectionView = collectionView else { return false }
-		
-		let equal = newBounds.size.equalTo(collectionView.bounds.size)
-		
-		return !equal
+	override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {		
+		collectionView?.bounds.size != newBounds.size
 	}
 	
 	override func invalidateLayout() {

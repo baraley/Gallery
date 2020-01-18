@@ -52,9 +52,7 @@ class AuthenticationController: NSObject, AuthenticationStateProvider {
 extension AuthenticationController {
 
 	func loadUserDataIfAvailable() {
-		guard let accessToken = KeychainWrapper.standard.string(forKey: UnsplashAPI.accessTokenKey) else {
-			return
-		}
+		guard let accessToken = KeychainWrapper.standard.string(forKey: UnsplashAPI.accessTokenKey) else { return }
 
 		loadAuthorizedUser(with: accessToken)
 	}
