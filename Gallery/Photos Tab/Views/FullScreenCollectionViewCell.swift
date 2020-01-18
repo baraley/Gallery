@@ -8,14 +8,14 @@
 
 import UIKit
 
-var count = 0
-
 class FullScreenCollectionViewCell: UICollectionViewCell {
+
+	var singleTapGestureHandler: (() -> Void)?
 
 	// MARK: - Initialization
 
+	let imageView = UIImageView(image: nil)
 	private let scrollView = UIScrollView(frame: .zero)
-	private let imageView = UIImageView(image: nil)
 	private let loadingView = UIActivityIndicatorView(style: .whiteLarge)
 
 	override init(frame: CGRect) {
@@ -35,14 +35,13 @@ class FullScreenCollectionViewCell: UICollectionViewCell {
 
 		scrollView.frame = contentView.bounds
 		loadingView.center = contentView.center
-		updateScrollView()
 	}
 
 	override func prepareForReuse() {
 		super.prepareForReuse()
 
 		scrollView.zoomScale = 1.0
-		image = nil
+		showImage(nil)
 	}
 
 	// MARK: - Public
@@ -53,24 +52,44 @@ class FullScreenCollectionViewCell: UICollectionViewCell {
 		}
 	}
 
-	var image: UIImage? {
-		get {
-			imageView.image
+	func showImage(_ image: UIImage?) {
+
+		imageView.image = image
+
+		if image == nil {
+			loadingView.startAnimating()
+		} else {
+			loadingView.stopAnimating()
+			imageView.sizeToFit()
+			updateScrollViewZoomScales()
 		}
-		set {
-			imageView.image = newValue
-			imageDidChange()
-		}
+	}
+
+	// MARK: - Updates
+
+	func updateScrollViewZoomScales() {
+		guard let image = imageView.image else { return }
+
+		let widthScale = contentView.bounds.size.width / image.size.width
+		let heightScale = contentView.bounds.size.height / image.size.height
+
+		let minScale = min(widthScale, heightScale)
+
+		scrollView.minimumZoomScale = minScale
+		scrollView.zoomScale = minScale
 	}
 }
 
+// MARK: - Private
 private extension FullScreenCollectionViewCell {
 
-	func initialSetup() {
-		imageView.contentMode = .scaleAspectFit
+	// MARK: - Setups
 
+	func initialSetup() {
 		setupLoadingView()
+		setupImageView()
 		setupScrollView()
+		setupGestureRecognizers()
 
 		contentView.addSubview(scrollView)
 		contentView.addSubview(loadingView)
@@ -81,6 +100,11 @@ private extension FullScreenCollectionViewCell {
 		loadingView.color = loadingViewColor
 	}
 
+	func setupImageView() {
+		imageView.contentMode = .scaleAspectFit
+		imageView.isUserInteractionEnabled = true
+	}
+
 	func setupScrollView() {
 		scrollView.delegate = self
 		scrollView.showsHorizontalScrollIndicator = false
@@ -89,45 +113,61 @@ private extension FullScreenCollectionViewCell {
 		scrollView.addSubview(imageView)
 	}
 
-	func updateScrollView() {
-		guard let image = imageView.image else { return }
+	func setupGestureRecognizers() {
+		let tap = UITapGestureRecognizer(target: self, action: #selector(singleTapAction(_:)))
+		let doubleTap = UITapGestureRecognizer(target: self, action: #selector(doubleTapAction(_:)))
 
-		let widthScale = contentView.bounds.size.width / image.size.width
-		let heightScale = contentView.bounds.size.height / image.size.height
+		tap.require(toFail: doubleTap)
+		doubleTap.numberOfTapsRequired = 2
 
-		let minScale = min(widthScale, heightScale)
-
-		scrollView.contentSize = contentView.bounds.size
-		scrollView.minimumZoomScale = minScale
-		scrollView.zoomScale = minScale
-
-		if minScale == widthScale {
-			let imageRelativeHeight = contentView.bounds.size.height - (image.size.height * minScale)
-			let inset = imageRelativeHeight / 2
-
-			scrollView.contentInset = UIEdgeInsets(top: inset, left: 0, bottom: inset, right: 0)
-		} else {
-			let imageRelativeWidth = contentView.bounds.size.width - (image.size.width * minScale)
-			let inset = imageRelativeWidth / 2
-
-			scrollView.contentInset = UIEdgeInsets(top: 0, left: inset, bottom: 0, right: inset)
-		}
+		imageView.addGestureRecognizer(doubleTap)
+		scrollView.addGestureRecognizer(tap)
 	}
 
-	func imageDidChange() {
-		if imageView.image == nil {
-			loadingView.startAnimating()
+	func setupScrollViewContentInset() {
+
+		var hInset = (bounds.width - scrollView.contentSize.width) / 2
+		var vInset = (bounds.height - scrollView.contentSize.height) / 2
+
+		hInset = hInset > 0 ? hInset : 0
+		vInset = vInset > 0 ? vInset : 0
+
+		scrollView.contentInset = UIEdgeInsets(top: vInset, left: hInset, bottom: vInset, right: hInset)
+	}
+
+	// MARK: - Gesture recognizers' actions
+
+	@objc private func singleTapAction(_ sender: UITapGestureRecognizer) {
+		guard sender.state == UIGestureRecognizer.State.ended else { return }
+
+		singleTapGestureHandler?()
+	}
+
+	@objc private func doubleTapAction(_ sender: UITapGestureRecognizer) {
+
+		let tapLocation = sender.location(in: imageView)
+
+		if scrollView.zoomScale != scrollView.minimumZoomScale {
+			scrollView.setZoomScale(scrollView.minimumZoomScale, animated: true)
 		} else {
-			loadingView.stopAnimating()
+			let xOrigin = tapLocation.x - (bounds.width / 2)
+			let yOrigin = tapLocation.y - (bounds.height / 2)
+
+			let zoomRect = CGRect(x: xOrigin, y: yOrigin, width: bounds.width, height: bounds.height)
+
+			scrollView.zoom(to: zoomRect, animated: true)
 		}
-		imageView.sizeToFit()
-		setNeedsLayout()
 	}
 }
 
+// MARK: - UIScrollViewDelegate
 extension FullScreenCollectionViewCell: UIScrollViewDelegate {
 
 	func viewForZooming(in scrollView: UIScrollView) -> UIView? {
 		imageView
+	}
+
+	func scrollViewDidZoom(_ scrollView: UIScrollView) {
+		setupScrollViewContentInset()
 	}
 }

@@ -78,21 +78,51 @@ class FullScreenPhotosViewController: UICollectionViewController {
 
 		navigationController?.setToolbarHidden(true, animated: true)
 	}
+
+	override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+
+		layout?.itemSize = size
+
+		coordinator.animate(alongsideTransition: { (_) in
+			self.collectionViewLayout.invalidateLayout()
+			self.currentCell?.updateScrollViewZoomScales()
+		})
+	}
 }
 
 // MARK: - Private
 private extension FullScreenPhotosViewController {
 
+	var barsAreHidden: Bool {
+		guard let navController = navigationController else {
+			return true
+		}
+		return navController.isNavigationBarHidden && navController.isToolbarHidden
+	}
+
 	func initialSetup() {
 
+		layout?.itemSize = collectionView.bounds.size
 		collectionView.contentInsetAdjustmentBehavior = .never
 		navigationItem.largeTitleDisplayMode = .never
-		
+
 		collectionView.backgroundColor = .white
 		collectionView.decelerationRate = .fast
 		collectionView.showsHorizontalScrollIndicator = false
 
 		collectionView.register(FullScreenCollectionViewCell.self)
+	}
+
+	func updatePhotoBackgroundColor() {
+		collectionView.backgroundColor = barsAreHidden ? .black : .white
+
+		if currentCell?.imageView.image == nil {
+			currentCell?.loadingViewColor = barsAreHidden ? .white : .black
+		}
+
+		if !barsAreHidden {
+			updateToolBar()
+		}
 	}
 
 	// MARK: - Changes
@@ -126,7 +156,7 @@ private extension FullScreenPhotosViewController {
 	}
 
 	func updateToolBar() {
-		sharePhotoButton.isEnabled = currentCell?.image != nil
+		sharePhotoButton.isEnabled = currentCell?.imageView.image != nil
 		likePhotoButton.isEnabled = sharePhotoButton.isEnabled && authenticationStateProvider.isAuthenticated
 
 		if let indexPath = collectionView.indexPathsForVisibleItems.first,
@@ -205,7 +235,7 @@ private extension FullScreenPhotosViewController {
 	}
 
 	@objc func sharePhoto() {
-		guard let imageData = currentCell?.image?.jpegData(compressionQuality: 1.0) else { return }
+		guard let imageData = currentCell?.imageView.image?.jpegData(compressionQuality: 1.0) else { return }
 
 		let vc = UIActivityViewController(activityItems: [imageData], applicationActivities: [])
 		vc.popoverPresentationController?.barButtonItem = sharePhotoButton
@@ -226,7 +256,7 @@ private extension FullScreenPhotosViewController {
 				switch result {
 				case .success(let image):
 					let cell = self.collectionView.cellForItem(at: indexPath) as? FullScreenCollectionViewCell
-					cell?.image = image
+					cell?.showImage(image)
 					self.updateToolBar()
 
 				case .failure(let error):
@@ -243,6 +273,23 @@ private extension FullScreenPhotosViewController {
 
 		networkService.cancel(imageRequest)
 	}
+
+	// MARK: - Gesture recognizers' handlers
+
+	func handlerSingleTapGesture() {
+
+		if let isNavBarHidden = navigationController?.isNavigationBarHidden,
+            let isToolBarHidden = navigationController?.isToolbarHidden {
+
+			UIView.animate(withDuration: 0.35) {
+				self.navigationController?.isNavigationBarHidden = !isNavBarHidden
+				self.navigationController?.isToolbarHidden = !isToolBarHidden
+
+				self.updatePhotoBackgroundColor()
+			}
+			setNeedsStatusBarAppearanceUpdate()
+        }
+	}
 }
 
 // MARK: - UICollectionViewDataSource
@@ -255,7 +302,14 @@ extension FullScreenPhotosViewController {
 
 	override func collectionView(_ collectionView: UICollectionView,
 						cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-		return collectionView.dequeueCell(indexPath: indexPath) as FullScreenCollectionViewCell
+		let cell = collectionView.dequeueCell(indexPath: indexPath) as FullScreenCollectionViewCell
+
+		cell.singleTapGestureHandler = { [weak self] in
+			self?.handlerSingleTapGesture()
+		}
+		cell.loadingViewColor = barsAreHidden ? .white : .black
+
+		return cell
 	}
 }
 
@@ -266,11 +320,6 @@ extension FullScreenPhotosViewController {
 								 willDisplay cell: UICollectionViewCell,
 								 forItemAt indexPath: IndexPath) {
 		loadImageForCellAt(indexPath)
-	}
-
-	override func collectionView(_ collectionView: UICollectionView,
-								 didSelectItemAt indexPath: IndexPath) {
-
 	}
 
 	override func collectionView(_ collectionView: UICollectionView,
@@ -285,4 +334,31 @@ extension FullScreenPhotosViewController {
 		cancelLoadingImageForCellAt(indexPath)
 		updateCurrentCell()
 	}
+
+	override func collectionView(
+		_ collectionView: UICollectionView,
+		targetContentOffsetForProposedContentOffset proposedContentOffset: CGPoint
+	) -> CGPoint {
+
+		guard let layout = layout, let cell = currentCell else { return .zero }
+
+		let pageWidth = collectionView.bounds.width + layout.minimumLineSpacing
+
+		let currentCellIndex = collectionView.indexPath(for: cell)?.item ?? 0
+		let currentPageOffset = pageWidth * CGFloat(currentCellIndex)
+
+		return CGPoint(x: currentPageOffset, y: 0)
+	}
+}
+
+// MARK: - StatusBar
+extension FullScreenPhotosViewController {
+
+    override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
+		.none
+	}
+
+    override var prefersStatusBarHidden: Bool {
+        return navigationController?.isNavigationBarHidden ?? false
+    }
 }
