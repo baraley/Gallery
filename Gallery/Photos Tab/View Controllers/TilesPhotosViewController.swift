@@ -30,6 +30,7 @@ class TilesPhotosViewController: PhotosBaseViewController {
 
 		collectionView.showsHorizontalScrollIndicator = false
 		collectionView.showsVerticalScrollIndicator = false
+		collectionView.keyboardDismissMode = .onDrag
 		collectionView.refreshControl = refreshControl
 		collectionView.register(TileCollectionViewCell.self)
 		collectionView.register(
