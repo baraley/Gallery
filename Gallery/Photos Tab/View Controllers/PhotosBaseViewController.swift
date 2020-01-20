@@ -9,7 +9,7 @@
 
 import UIKit
 
-class PhotosBaseViewController: UICollectionViewController {
+class PhotosBaseViewController: UICollectionViewController, PhotosDataSourceObserver {
 
 	// MARK: - Initialization
 
@@ -53,6 +53,19 @@ class PhotosBaseViewController: UICollectionViewController {
 		scrollToSelectedPhoto(animated: false)
 	}
 
+	// MARK: - PhotosDataSourceObserver
+
+	func photosLoadingDidStart() { }
+
+	func photosLoadingDidFinish(numberOfPhotos number: Int, locationIndex index: Int) {
+		errorMessageWasShown = false
+		insertPhotos(number, at: index)
+	}
+
+	func photosLoadingDidFinishWith(_ error: RequestError) {
+		showError(error)
+	}
+
 	// MARK: - Setup
 
 	func initialSetup() {
@@ -61,21 +74,6 @@ class PhotosBaseViewController: UICollectionViewController {
 	}
 
 	// MARK: - Photos loading
-
-	func handlePhotosLoadingEvent(_ event: LoadingState) {
-
-		switch event {
-		case .startLoading:
-			break
-
-		case .loadingDidFinish(let number, let locationIndex):
-			errorMessageWasShown = false
-			insertPhotos(number, at: locationIndex)
-
-		case .loadingError(let error):
-			showError(error)
-		}
-	}
 
 	func insertPhotos(_ numberOfPhotos: Int, at index: Int) {
 		guard numberOfPhotos > 0 else { return }
@@ -139,9 +137,7 @@ class PhotosBaseViewController: UICollectionViewController {
 	func dataSourceDidChange() {
 		errorMessageWasShown = false
 
-		dataSource?.loadingEventsHandler = { [weak self] (event) in
-			self?.handlePhotosLoadingEvent(event)
-		}
+		dataSource?.addObserve(self)
 		
 		collectionView.reloadData()
 	}

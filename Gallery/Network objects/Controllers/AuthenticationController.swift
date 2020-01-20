@@ -28,7 +28,7 @@ class AuthenticationController: NSObject, AuthenticationStateProvider {
 		super.init()
     }
     
-    // MARK: - AuthorizationInformer
+    // MARK: - AuthenticationStateProvider
 
     private struct Observation {
         weak var observer: AuthenticationObserver?

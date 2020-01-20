@@ -133,7 +133,8 @@ private extension FullScreenPhotosViewController {
 
 			likePhotoButton.image = photo.isLiked ? #imageLiteral(resourceName: "unlike") : #imageLiteral(resourceName: "like")
 		}
-		navigationController?.toolbar.items = [sharePhotoButton, .flexibleSpace, likePhotoButton]
+		navigationController?.toolbar.items = isAuthenticated ?
+			[sharePhotoButton, .flexibleSpace, likePhotoButton] : [sharePhotoButton, .flexibleSpace]
 	}
 
 	// MARK: - Toolbar actions

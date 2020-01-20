@@ -23,14 +23,6 @@ class TilesPhotosViewController: PhotosBaseViewController {
 		return refreshControl
 	}()
 
-	// MARK: - Life cycle
-	
-	override func viewWillAppear(_ animated: Bool) {
-		dataSourceDidChange()
-
-		super.viewWillAppear(animated)
-	}
-
 	// MARK: - Overridden
 
 	override func initialSetup() {
@@ -53,22 +45,26 @@ class TilesPhotosViewController: PhotosBaseViewController {
 
 	// MARK: - Photos loading
 
-	override func handlePhotosLoadingEvent(_ event: LoadingState) {
-		super.handlePhotosLoadingEvent(event)
+	override func photosLoadingDidStart() {
+		super.photosLoadingDidStart()
 
-		switch event {
-		case .startLoading:
-			if !refreshControl.isRefreshing {
-				activityIndicatorView?.startAnimating()
-			}
-		case .loadingDidFinish(_):
-			refreshControl.endRefreshing()
-			activityIndicatorView?.stopAnimating()
-
-		case .loadingError(_):
-			refreshControl.endRefreshing()
-			activityIndicatorView?.stopAnimating()
+		if !refreshControl.isRefreshing {
+			activityIndicatorView?.startAnimating()
 		}
+	}
+
+	override func photosLoadingDidFinish(numberOfPhotos number: Int, locationIndex index: Int) {
+		super.photosLoadingDidFinish(numberOfPhotos: number, locationIndex: index)
+
+		refreshControl.endRefreshing()
+		activityIndicatorView?.stopAnimating()
+	}
+
+	override func photosLoadingDidFinishWith(_ error: RequestError) {
+		super.photosLoadingDidFinishWith(error)
+
+		refreshControl.endRefreshing()
+		activityIndicatorView?.stopAnimating()
 	}
 
 	// MARK: - Images loading

@@ -8,12 +8,6 @@
 
 import UIKit
 
-enum LoadingState {
-	case startLoading
-	case loadingDidFinish(numberOfPhotos: Int, _ locationIndex: Int)
-	case loadingError(error: RequestError)
-}
-
 class PhotosModelController: NSObject, PhotosDataSource {
 
 	private let networkService: NetworkService
@@ -37,8 +31,6 @@ class PhotosModelController: NSObject, PhotosDataSource {
 
 	var selectedPhotoIndex: Int?
 
-	var loadingEventsHandler: ((LoadingState) -> Void)?
-
 	func indexOf(_ photo: Photo) -> Int? {
 		return photos.firstIndex(of: photo)
 	}
@@ -51,7 +43,7 @@ class PhotosModelController: NSObject, PhotosDataSource {
 
 	func loadMorePhotos() {
 		if photosLoader.loadContent() {
-			loadingEventsHandler?(.startLoading)
+			notifyObservers { $0.photosLoadingDidStart() }
 		}
 	}
 
@@ -66,6 +58,24 @@ class PhotosModelController: NSObject, PhotosDataSource {
 
 		photos[index] = photo
 	}
+
+    // MARK: - Observations
+
+    private struct Observation {
+        weak var observer: PhotosDataSourceObserver?
+    }
+
+    private var observations = [ObjectIdentifier : Observation]()
+
+    func addObserve(_ observer: PhotosDataSourceObserver) {
+        let id = ObjectIdentifier(observer)
+        observations[id] = Observation(observer: observer)
+    }
+
+    func removeObserver(_ observer: PhotosDataSourceObserver) {
+        let id = ObjectIdentifier(observer)
+        observations.removeValue(forKey: id)
+    }
 }
 
 // MARK: - Private
@@ -77,8 +87,13 @@ private extension PhotosModelController {
 		loader.contentDidLoadHandler = { [weak self] (result) in
 			DispatchQueue.main.async {
 				switch result {
-				case .success(let newPhotos): 	self?.insertNewPhotos(newPhotos)
-				case .failure(let error): 		self?.loadingEventsHandler?(.loadingError(error: error))
+				case .success(let newPhotos):
+					self?.insertNewPhotos(newPhotos)
+
+				case .failure(let error):
+					self?.notifyObservers {
+						$0.photosLoadingDidFinishWith(error)
+					}
 				}
 			}
 		}
@@ -102,7 +117,19 @@ private extension PhotosModelController {
 			photos.append(contentsOf: newPhotos)
 		}
 
-		loadingEventsHandler?(.loadingDidFinish(numberOfPhotos: newPhotosNumber, locationIndex))
+		notifyObservers {
+			$0.photosLoadingDidFinish(numberOfPhotos: newPhotosNumber, locationIndex: locationIndex)
+		}
+	}
+
+	func notifyObservers(invoking notification: @escaping (PhotosDataSourceObserver) -> Void) {
+		observations.forEach { (key, observation) in
+			guard let observer = observation.observer else {
+				observations.removeValue(forKey: key)
+				return
+			}
+			notification(observer)
+		}
 	}
 }
 
