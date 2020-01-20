@@ -8,37 +8,10 @@
 
 import UIKit
 
-class FullScreenPhotosViewController: UICollectionViewController {
-
-	// MARK: - Initialization
-
-	private let networkService: NetworkService
-	private let authenticationStateProvider: AuthenticationStateProvider
-
-	init(
-		networkService: NetworkService,
-		authenticationStateProvider: AuthenticationStateProvider,
-		collectionViewLayout layout: UICollectionViewLayout
-	) {
-		self.networkService = networkService
-		self.authenticationStateProvider = authenticationStateProvider
-
-		super.init(collectionViewLayout: layout)
-
-		hidesBottomBarWhenPushed = true
-	}
-
-	required init?(coder: NSCoder) {
-		fatalError("init(coder:) has not been implemented")
-	}
+class FullScreenPhotosViewController: PhotosBaseViewController {
 
 	// MARK: - Properties
 
-	var dataSource: PhotosDataSource? { didSet { dataSourceDidChange() } }
-
-	var photoDidSelectHandler: ((Int) -> Void)?
-
-	private var errorMessageWasShown = false
 	private var layout: FullScreenPhotosCollectionViewLayout? {
 		return collectionView.collectionViewLayout as? FullScreenPhotosCollectionViewLayout
 	}
@@ -60,18 +33,6 @@ class FullScreenPhotosViewController: UICollectionViewController {
 
 	// MARK: - Life cycle
 
-	override func viewDidLoad() {
-		super.viewDidLoad()
-
-		initialSetup()
-	}
-
-	override func viewWillAppear(_ animated: Bool) {
-		super.viewWillAppear(animated)
-
-		scrollToSelectedPhoto(animated: false)
-	}
-
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 
@@ -92,18 +53,14 @@ class FullScreenPhotosViewController: UICollectionViewController {
 			self.currentCell?.updateScrollViewZoomScales()
 		})
 	}
-}
 
-// MARK: - Private
-private extension FullScreenPhotosViewController {
+	// MARK: - Overridden
 
-	var barsAreHidden: Bool {
-		guard let navController = navigationController else { return false }
+	 override func initialSetup() {
+		 super.initialSetup()
 
-		return navController.isNavigationBarHidden && navController.isToolbarHidden
-	}
+		hidesBottomBarWhenPushed = true
 
-	func initialSetup() {
 		navigationItem.largeTitleDisplayMode = .never
 
 		layout?.itemSize = collectionView.bounds.size
@@ -113,6 +70,34 @@ private extension FullScreenPhotosViewController {
 		collectionView.decelerationRate = .fast
 		collectionView.showsHorizontalScrollIndicator = false
 		collectionView.register(FullScreenCollectionViewCell.self)
+	}
+
+	// MARK: - Images loading
+
+	override func handleImageLoadingResult(_ result: Result<UIImage, RequestError>, forCellAt indexPath: IndexPath) {
+		switch result {
+		case .success(let image):
+			let cell = collectionView.cellForItem(at: indexPath) as? FullScreenCollectionViewCell
+			cell?.showImage(image)
+			if indexPath == currentCellIndexPath {
+				updateToolBar()
+			}
+
+		case .failure(let error):
+				showError(error)
+		}
+	}
+}
+
+// MARK: - Private
+private extension FullScreenPhotosViewController {
+
+	// MARK: - Setup
+
+	var barsAreHidden: Bool {
+		guard let navController = navigationController else { return false }
+
+		return navController.isNavigationBarHidden && navController.isToolbarHidden
 	}
 
 	func updatePhotoBackgroundColor() {
@@ -130,9 +115,7 @@ private extension FullScreenPhotosViewController {
 	// MARK: - Changes
 
 	func currentCellDidChange() {
-		if let indexPath = currentCellIndexPath {
-			dataSource?.selectedPhotoIndex = indexPath.item
-		}
+		dataSource?.selectedPhotoIndex = currentCellIndexPath?.item
 		updateToolBar()
 	}
 
@@ -151,45 +134,6 @@ private extension FullScreenPhotosViewController {
 			likePhotoButton.image = photo.isLiked ? #imageLiteral(resourceName: "unlike") : #imageLiteral(resourceName: "like")
 		}
 		navigationController?.toolbar.items = [sharePhotoButton, .flexibleSpace, likePhotoButton]
-	}
-
-	func dataSourceDidChange() {
-
-		errorMessageWasShown = false
-
-		dataSource?.loadingEventsHandler = { [weak self] (event) in
-			self?.handlePhotosLoadingEvent(event)
-		}
-
-		collectionView.reloadData()
-	}
-
-	// MARK: - Photos loading
-
-	func handlePhotosLoadingEvent(_ event: LoadingState) {
-
-		switch event {
-		case .startLoading:
-			break
-
-		case .loadingDidFinish(let number, let locationIndex):
-			errorMessageWasShown = false
-			insertPhotos(number, at: locationIndex)
-
-		case .loadingError(let error):
-			showError(error)
-		}
-	}
-
-	func insertPhotos(_ numberOfPhotos: Int, at index: Int) {
-		guard numberOfPhotos > 0 else { return }
-
-		var indexPaths: [IndexPath] = []
-
-		for i in index..<index + numberOfPhotos {
-			indexPaths.append(IndexPath(item: i, section: 0))
-		}
-		collectionView?.insertItems(at: indexPaths)
 	}
 
 	// MARK: - Toolbar actions
@@ -233,38 +177,6 @@ private extension FullScreenPhotosViewController {
 		present(vc, animated: true, completion: nil)
 	}
 
-	// MARK: - Images loading
-
-	func loadImageForCellAt(_ indexPath: IndexPath) {
-		guard let photo = dataSource?.photoAt(indexPath.item) else { return }
-
-		networkService.performRequest(ImageRequest(url: photo.imageURL)) { [weak self] (result) in
-			DispatchQueue.main.async {
-				self?.handleImageLoadingResult(result, forCellAt: indexPath)
-			}
-		}
-	}
-
-	func cancelLoadingImageForCellAt(_ indexPath: IndexPath) {
-		if let photo = dataSource?.photoAt(indexPath.item) {
-			networkService.cancel(ImageRequest(url: photo.imageURL))
-		}
-	}
-
-	func handleImageLoadingResult(_ result: Result<UIImage, RequestError>, forCellAt indexPath: IndexPath) {
-		switch result {
-		case .success(let image):
-			let cell = collectionView.cellForItem(at: indexPath) as? FullScreenCollectionViewCell
-			cell?.showImage(image)
-			if indexPath == currentCellIndexPath {
-				updateToolBar()
-			}
-
-		case .failure(let error):
-			showError(error)
-		}
-	}
-
 	// MARK: - Gesture recognizers' handlers
 
 	func handlerSingleTapGesture() {
@@ -281,23 +193,10 @@ private extension FullScreenPhotosViewController {
 			setNeedsStatusBarAppearanceUpdate()
 		}
 	}
-
-	// MARK: - Helpers
-
-	func scrollToSelectedPhoto(animated: Bool) {
-		if let index = dataSource?.selectedPhotoIndex {
-			let indexPath = IndexPath(item: index, section: 0)
-			collectionView?.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: animated)
-		}
-	}
 }
 
 // MARK: - UICollectionViewDataSource
 extension FullScreenPhotosViewController {
-
-	override func collectionView(_ collectionView: UICollectionView,numberOfItemsInSection section: Int) -> Int {
-		return dataSource?.numberOfPhotos ?? 0
-	}
 
 	override func collectionView(
 		_ collectionView: UICollectionView,
@@ -320,23 +219,11 @@ extension FullScreenPhotosViewController {
 
 	override func collectionView(
 		_ collectionView: UICollectionView,
-		willDisplay cell: UICollectionViewCell,
-		forItemAt indexPath: IndexPath
-	) {
-		loadImageForCellAt(indexPath)
-		
-		if let numberOfPhotos = dataSource?.numberOfPhotos,
-			indexPath.item > numberOfPhotos - 5 {
-			dataSource?.loadMorePhotos()
-		}
-	}
-
-	override func collectionView(
-		_ collectionView: UICollectionView,
 		didEndDisplaying cell: UICollectionViewCell,
 		forItemAt indexPath: IndexPath
 	) {
-		cancelLoadingImageForCellAt(indexPath)
+		super.collectionView(collectionView, didEndDisplaying: cell, forItemAt: indexPath)
+		
 		currentCell = collectionView.visibleCells.first as? FullScreenCollectionViewCell
 	}
 

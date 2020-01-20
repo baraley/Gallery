@@ -50,11 +50,9 @@ class PhotosModelController: NSObject, PhotosDataSource {
 	}
 
 	func loadMorePhotos() {
-		guard photosLoader.hasContentToLoad && !photosLoader.isLoading else { return }
-
-		loadingEventsHandler?(.startLoading)
-
-		photosLoader.loadContent()
+		if photosLoader.loadContent() {
+			loadingEventsHandler?(.startLoading)
+		}
 	}
 
 	func photoAt(_ index: Int) -> Photo? {

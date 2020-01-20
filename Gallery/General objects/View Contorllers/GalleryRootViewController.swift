@@ -30,9 +30,10 @@ class GalleryRootViewController: UITabBarController {
 
     private lazy var tilesPhotosViewController = TilesPhotosViewController(
 		networkService: NetworkService(),
+		authenticationStateProvider: authenticationController,
 		collectionViewLayout: TilesCollectionViewLayout()
 	)
-    
+
     private lazy var profileRootViewController: ProfileRootViewController = {
 		let controller = UIStoryboard.init(storyboard: .main).instantiateViewController() as ProfileRootViewController
 		controller.authenticationController = authenticationController
@@ -77,12 +78,18 @@ private extension GalleryRootViewController {
 			.addTarget(self, action: #selector(photosTabSegmentedControlValueDidChange(_:)), for: .valueChanged)
 		segmentedControl.selectedSegmentIndex = 0
 
+		let photosModelController = makePhotosModelController(with: .latest)
+
 		tilesPhotosViewController.navigationItem.title = title
 		tilesPhotosViewController.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: segmentedControl)
 		tilesPhotosViewController.tabBarItem = UITabBarItem(title: title, image: #imageLiteral(resourceName: "collections"), selectedImage: nil)
-		tilesPhotosViewController.dataSource = makePhotosModelController(with: .latest)
+		tilesPhotosViewController.dataSource = photosModelController
 		tilesPhotosViewController.photoDidSelectHandler = { [weak self] (selectedPhotoIndex) in
 			self?.handleSelectionsOfPhoto(at: selectedPhotoIndex)
+		}
+
+		if let layout = tilesPhotosViewController.collectionViewLayout as? TilesCollectionViewLayout {
+			layout.dataSource = photosModelController
 		}
 
 		return navVC
@@ -91,7 +98,13 @@ private extension GalleryRootViewController {
 	@objc func photosTabSegmentedControlValueDidChange(_ segmentedControl: UISegmentedControl) {
 		let order: UnsplashPhotoListOrder = segmentedControl.selectedSegmentIndex == 0 ? .latest : .popular
 
-		tilesPhotosViewController.dataSource = makePhotosModelController(with: order)
+		let photosModelController = makePhotosModelController(with: order)
+
+		if let layout = tilesPhotosViewController.collectionViewLayout as? TilesCollectionViewLayout {
+			layout.dataSource = photosModelController
+		}
+
+		tilesPhotosViewController.dataSource = photosModelController
 	}
 
 	func makePhotosModelController(with order: UnsplashPhotoListOrder) -> PhotosModelController {

@@ -59,17 +59,17 @@ class PaginalContentLoader<Request: PaginalRequest> {
 		currentPage = 1
 	}
 	
-	func loadContent() {
-		
-		setupRequestForNextPage()
-		
-		guard hasContentToLoad else { return }
+	func loadContent() -> Bool {
+		guard hasContentToLoad, !isLoading else { return false }
 
 		isLoading = true
 		
 		networkService.performRequest(request) { [weak self] (result) in
 			self?.isLoading = false
 			self?.contentDidLoadHandler?(result)
+			self?.setupRequestForNextPage()
 		}
+
+		return true
 	}
 }
