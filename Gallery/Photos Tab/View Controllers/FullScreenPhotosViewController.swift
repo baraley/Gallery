@@ -126,11 +126,11 @@ private extension FullScreenPhotosViewController {
 		let isAuthenticated = authenticationStateProvider.isAuthenticated
 
 		sharePhotoButton.isEnabled = hasImage
-		likePhotoButton.isEnabled = hasImage && isAuthenticated
 
 		if let indexPath = currentCellIndexPath,
 			let photo = dataSource?.photoAt(indexPath.item) {
 
+			likePhotoButton.isEnabled = hasImage && isAuthenticated
 			likePhotoButton.image = photo.isLiked ? #imageLiteral(resourceName: "unlike") : #imageLiteral(resourceName: "like")
 		}
 		navigationController?.toolbar.items = isAuthenticated ?

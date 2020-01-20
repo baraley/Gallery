@@ -28,6 +28,7 @@ class TilesPhotosViewController: PhotosBaseViewController {
 	override func initialSetup() {
 		super.initialSetup()
 
+		collectionView.showsHorizontalScrollIndicator = false
 		collectionView.showsVerticalScrollIndicator = false
 		collectionView.refreshControl = refreshControl
 		collectionView.register(TileCollectionViewCell.self)

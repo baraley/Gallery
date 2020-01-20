@@ -15,6 +15,7 @@
 		11300CEB23D594E400FC4912 /* TilesPhotosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11300CEA23D594E300FC4912 /* TilesPhotosViewController.swift */; };
 		11300CED23D594F100FC4912 /* PhotosBaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11300CEC23D594F100FC4912 /* PhotosBaseViewController.swift */; };
 		11300CEF23D5C84000FC4912 /* PhotosDataSourceObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11300CEE23D5C84000FC4912 /* PhotosDataSourceObserver.swift */; };
+		11300CF123D5CD9200FC4912 /* PhotosTabFlowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11300CF023D5CD9200FC4912 /* PhotosTabFlowController.swift */; };
 		11364EE723956E7400A0C334 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 11364EE623956E7400A0C334 /* README.md */; };
 		1151C6F422D7276100F3B657 /* UIStoryboard+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1151C6F322D7276100F3B657 /* UIStoryboard+extension.swift */; };
 		119172E823CB721C00DEFCB3 /* FullScreenPhotosCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 119172E723CB721C00DEFCB3 /* FullScreenPhotosCollectionViewLayout.swift */; };
@@ -76,6 +77,7 @@
 		11300CEA23D594E300FC4912 /* TilesPhotosViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TilesPhotosViewController.swift; sourceTree = "<group>"; };
 		11300CEC23D594F100FC4912 /* PhotosBaseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotosBaseViewController.swift; sourceTree = "<group>"; };
 		11300CEE23D5C84000FC4912 /* PhotosDataSourceObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosDataSourceObserver.swift; sourceTree = "<group>"; };
+		11300CF023D5CD9200FC4912 /* PhotosTabFlowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosTabFlowController.swift; sourceTree = "<group>"; };
 		11364EE623956E7400A0C334 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1151C6F322D7276100F3B657 /* UIStoryboard+extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIStoryboard+extension.swift"; sourceTree = "<group>"; };
 		119172E723CB721C00DEFCB3 /* FullScreenPhotosCollectionViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenPhotosCollectionViewLayout.swift; sourceTree = "<group>"; };
@@ -199,6 +201,7 @@
 		118C0E1B22E11CDE00395509 /* Photos Tab */ = {
 			isa = PBXGroup;
 			children = (
+				11300CF023D5CD9200FC4912 /* PhotosTabFlowController.swift */,
 				11D9B80123CE122700C35060 /* Protocols */,
 				1107BD7A23CE0E0500B875A5 /* Model Controllers */,
 				3DEC5BE6217AF7FE00AD6330 /* Layout */,
@@ -585,6 +588,7 @@
 				1191741023D36E2800BE1214 /* AuthenticationController.swift in Sources */,
 				1191741123D36E2800BE1214 /* PaginalContentLoader.swift in Sources */,
 				1191741A23D36E3700BE1214 /* EditUserRequest.swift in Sources */,
+				11300CF123D5CD9200FC4912 /* PhotosTabFlowController.swift in Sources */,
 				1191741B23D36E3700BE1214 /* UnsplashAccessTokenRequest.swift in Sources */,
 				1191742023D36E3700BE1214 /* TogglePhotoLikeRequest.swift in Sources */,
 				1191744823D36EF300BE1214 /* Photo.swift in Sources */,

@@ -28,12 +28,6 @@ class GalleryRootViewController: UITabBarController {
 		return controller
 	}()
 
-    private lazy var tilesPhotosViewController = TilesPhotosViewController(
-		networkService: NetworkService(),
-		authenticationStateProvider: authenticationController,
-		collectionViewLayout: TilesCollectionViewLayout()
-	)
-
     private lazy var profileRootViewController: ProfileRootViewController = {
 		let controller = UIStoryboard.init(storyboard: .main).instantiateViewController() as ProfileRootViewController
 		controller.authenticationController = authenticationController
@@ -59,74 +53,12 @@ private extension GalleryRootViewController {
 		let profileTabVC = UINavigationController.init(rootViewController: profileRootViewController)
 		profileTabVC.navigationBar.prefersLargeTitles = true
 
-		let photoTabViewController = makePhotoTabViewController()
-
+		let photoTabFlowController = PhotosTabFlowController(authenticationStateProvider: authenticationController)
+		photoTabFlowController.start()
+		
         viewControllers = [
-			photoTabViewController,
+			photoTabFlowController,
 			profileTabVC
 		]
     }
-
-	func makePhotoTabViewController() -> UIViewController {
-		let title = "Photos"
-
-		let navVC = UINavigationController(rootViewController: tilesPhotosViewController)
-		navVC.navigationBar.prefersLargeTitles = true
-
-		let segmentedControl = UISegmentedControl(items: ["New", "Popular"])
-		segmentedControl
-			.addTarget(self, action: #selector(photosTabSegmentedControlValueDidChange(_:)), for: .valueChanged)
-		segmentedControl.selectedSegmentIndex = 0
-
-		let photosModelController = makePhotosModelController(with: .latest)
-
-		tilesPhotosViewController.navigationItem.title = title
-		tilesPhotosViewController.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: segmentedControl)
-		tilesPhotosViewController.tabBarItem = UITabBarItem(title: title, image: #imageLiteral(resourceName: "collections"), selectedImage: nil)
-		tilesPhotosViewController.dataSource = photosModelController
-		tilesPhotosViewController.photoDidSelectHandler = { [weak self] (selectedPhotoIndex) in
-			self?.handleSelectionsOfPhoto(at: selectedPhotoIndex)
-		}
-
-		if let layout = tilesPhotosViewController.collectionViewLayout as? TilesCollectionViewLayout {
-			layout.dataSource = photosModelController
-		}
-
-		return navVC
-	}
-
-	@objc func photosTabSegmentedControlValueDidChange(_ segmentedControl: UISegmentedControl) {
-		let order: UnsplashPhotoListOrder = segmentedControl.selectedSegmentIndex == 0 ? .latest : .popular
-
-		let photosModelController = makePhotosModelController(with: order)
-
-		if let layout = tilesPhotosViewController.collectionViewLayout as? TilesCollectionViewLayout {
-			layout.dataSource = photosModelController
-		}
-
-		tilesPhotosViewController.dataSource = photosModelController
-	}
-
-	func makePhotosModelController(with order: UnsplashPhotoListOrder) -> PhotosModelController {
-		let request: PhotoListRequest = .init(order: order, accessToken: authenticationController.accessToken)
-		let modelController = PhotosModelController(networkService: NetworkService(), photoListRequest: request)
-
-		return modelController
-	}
-
-	func handleSelectionsOfPhoto(at index: Int) {
-		guard let modelController = tilesPhotosViewController.dataSource as? PhotosModelController else { return }
-
-		modelController.selectedPhotoIndex = index
-
-		let layout = FullScreenPhotosCollectionViewLayout()
-		let fullScreenPhotosViewController = FullScreenPhotosViewController(
-			networkService: NetworkService(),
-			authenticationStateProvider: authenticationController,
-			collectionViewLayout: layout
-		)
-		fullScreenPhotosViewController.dataSource = modelController
-
-		tilesPhotosViewController.navigationController?.pushViewController(fullScreenPhotosViewController, animated: true)
-	}
 }
