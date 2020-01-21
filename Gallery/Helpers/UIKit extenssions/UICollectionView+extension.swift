@@ -11,29 +11,29 @@ import UIKit
 extension UICollectionView {
 
 	func register<T: UICollectionViewCell>(_: T.Type) {
-		register(T.self, forCellWithReuseIdentifier: T.identifier)
+		register(T.self, forCellWithReuseIdentifier: T.stringIdentifier)
     }
 
 	func register<T: UICollectionReusableView>(_: T.Type, forSupplementaryViewOfKind kind: String) {
-		register(T.self, forSupplementaryViewOfKind: kind, withReuseIdentifier: T.identifier)
+		register(T.self, forSupplementaryViewOfKind: kind, withReuseIdentifier: T.stringIdentifier)
 	}
 	
 	func dequeueCell<T:UICollectionViewCell>(indexPath: IndexPath) -> T {
-		let bareCell = dequeueReusableCell(withReuseIdentifier: T.identifier, for: indexPath)
+		let bareCell = dequeueReusableCell(withReuseIdentifier: T.stringIdentifier, for: indexPath)
 		guard let cell = bareCell as? T
 			else {
-				fatalError( "Failed to dequeue a cell with identifier \(T.identifier)")
+				fatalError( "Failed to dequeue a cell with stringIdentifier \(T.stringIdentifier)")
 		}
 		return cell
 	}
 	
 	func dequeueSupplementaryView<T:UICollectionReusableView>(of kind: String, at indexPath: IndexPath) -> T {
 		let bareView = dequeueReusableSupplementaryView(ofKind: kind,
-														withReuseIdentifier: T.identifier,
+														withReuseIdentifier: T.stringIdentifier,
 														for: indexPath)
 		guard let supplementaryView = bareView as? T
 			else {
-				fatalError("Failed to dequeue a supplementary view with identifier \(T.identifier)")
+				fatalError("Failed to dequeue a supplementary view with stringIdentifier \(T.stringIdentifier)")
 		}
 		return supplementaryView
 	}

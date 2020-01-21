@@ -8,20 +8,17 @@
 
 import UIKit
 
-class ProfileTableViewController: UITableViewController, SegueHandlerType {
+class ProfileTableViewController: UITableViewController {
 
 	// MARK: - Types
-
-	struct ActionsHandlers {
-		var updateUserData: (() -> ())
-		var editProfile: (() -> ())
-		var logOut: (() -> ())
+	enum Action {
+		case updateUserData, editProfile, showLikedPhotos, logOut
 	}
 
 	// MARK: - Public properties
 	
 	var networkService: NetworkService!
-	var actionHandlers: ActionsHandlers!
+	var actionHandlers: ((Action) -> Void)?
     var userData: AuthenticatedUserData? {
         didSet {
 			if isViewLoaded {
@@ -47,29 +44,6 @@ class ProfileTableViewController: UITableViewController, SegueHandlerType {
 		initialSetup()
 	}
 	
-	// MARK: - Navigation
-	
-	enum SegueIdentifier: String {
-		case likedPhotos
-	}
-	
-	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-		switch segueIdentifier(for: segue) {
-		case .likedPhotos:
-			guard let accessToken = userData?.accessToken, let userName = userData?.user.userName
-			else { return }
-//			
-//			let vc = segue.destination as! PhotosCollectionViewController
-//			
-//			let request = PhotoListRequest(likedPhotosOfUser: userName, accessToken: accessToken)
-//			
-//			vc.title = "Liked photos"
-//			vc.paginalContentStore = PaginalContentStore(
-//				networkService: NetworkService(), paginalRequest: request
-//			)
-		}
-	}
-	
 	// MARK: - Table view delegate
 	
 	override func tableView(_ tableView: UITableView,
@@ -78,7 +52,7 @@ class ProfileTableViewController: UITableViewController, SegueHandlerType {
 		switch Section(rawValue: indexPath.section)! {
 		case .name, .biography, .location:
 			return false
-		case .content, .edit, .logOut:
+		case .content, .editProfile, .logOut:
 			return true
 		}
 	}
@@ -87,10 +61,12 @@ class ProfileTableViewController: UITableViewController, SegueHandlerType {
 		tableView.deselectRow(at: indexPath, animated: true)
 
 		switch Section(rawValue: indexPath.section)! {
-		case .edit:
-			actionHandlers.editProfile()
+		case .editProfile:
+			actionHandlers?(.editProfile)
+		case .content:
+			actionHandlers?(.showLikedPhotos)
 		case .logOut:
-			actionHandlers.logOut()
+			actionHandlers?(.logOut)
 		default:
 			break
 		}
@@ -101,7 +77,7 @@ class ProfileTableViewController: UITableViewController, SegueHandlerType {
 private extension ProfileTableViewController {
 	
 	enum Section: Int {
-		case name, biography, location, content, edit, logOut
+		case name, biography, location, content, editProfile, logOut
 	}
 	
 	func initialSetup() {
@@ -115,7 +91,7 @@ private extension ProfileTableViewController {
 	}
 	
 	@objc func updateUserData() {
-		actionHandlers.updateUserData()
+		actionHandlers?(.updateUserData)
 	}
     
     func userDataDidChange() {

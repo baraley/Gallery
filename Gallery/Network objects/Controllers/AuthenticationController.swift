@@ -127,6 +127,8 @@ private extension AuthenticationController {
 	}
 	
 	func requestAuthorizationCode() {
+		state = .isAuthenticating
+		
 		let handler: ASWebAuthenticationSession.CompletionHandler = { [weak self] (callBack, error) in
 			if let successURL = callBack {
 				let queryItems = URLComponents(string: successURL.absoluteString)?.queryItems

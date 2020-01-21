@@ -28,37 +28,39 @@ class GalleryRootViewController: UITabBarController {
 		return controller
 	}()
 
-    private lazy var profileRootViewController: ProfileRootViewController = {
-		let controller = UIStoryboard.init(storyboard: .main).instantiateViewController() as ProfileRootViewController
-		controller.authenticationController = authenticationController
-		return controller
-    }()
-
 	// MARK: - Life cycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
 		
-//        selectedViewController = viewControllers?[2]
         instantiateViewControllers()
-
 		view.backgroundColor = .white
     }
+
+//	override func viewWillAppear(_ animated: Bool) {
+//		super.viewWillAppear(animated)
+//
+//		selectedViewController = viewControllers?[1]
+//	}
 }
 
 // MARK: - Private
 private extension GalleryRootViewController {
     
     func instantiateViewControllers() {
-		let profileTabVC = UINavigationController.init(rootViewController: profileRootViewController)
-		profileTabVC.navigationBar.prefersLargeTitles = true
+		let profileNavController = UIStoryboard.init(storyboard: .profileTab)
+			.instantiateViewController() as UINavigationController
+
+		if let profileTabVC = profileNavController.viewControllers.first as? ProfileTabViewController {
+			profileTabVC.authenticationController = authenticationController
+		}
 
 		let photoTabFlowController = PhotosTabFlowController(authenticationStateProvider: authenticationController)
 		photoTabFlowController.start()
 		
         viewControllers = [
 			photoTabFlowController,
-			profileTabVC
+			profileNavController
 		]
     }
 }

@@ -11,7 +11,7 @@ import UIKit
 extension UIStoryboard {
 	
 	enum Storyboard: String {
-		case main				= "Main"
+		case profileTab = "ProfileTab"
 	}
 	
 	convenience init(storyboard: Storyboard, bundle: Bundle? = nil) {
@@ -23,7 +23,7 @@ extension UIStoryboard {
 	}
 
 	func instantiateViewController<T: UIViewController>() -> T {
-		let identifier = T.identifier
+		let identifier = T.stringIdentifier
 		guard let viewController = instantiateViewController(withIdentifier: identifier) as? T else {
 			fatalError("Could not find view controller with name \(identifier)")
 		}

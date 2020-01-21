@@ -8,13 +8,13 @@
 
 import UIKit
 
-protocol Identifiable {}
+protocol StringIdentifiable {}
 
-extension Identifiable {
-    static var identifier: String {
+extension StringIdentifiable {
+    static var stringIdentifier: String {
         return String(describing: self)
     }
 }
 
-extension UIView: Identifiable {}
-extension UIViewController: Identifiable {}
+extension UIView: StringIdentifiable {}
+extension UIViewController: StringIdentifiable {}

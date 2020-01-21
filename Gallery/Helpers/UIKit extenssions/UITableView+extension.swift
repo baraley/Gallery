@@ -11,12 +11,16 @@ import UIKit
 extension UITableView {
 	
 	func registerNibForCell<T: UITableViewCell>(_: T.Type) {
-		let nib = UINib(nibName: T.identifier, bundle: nil)
-		register(nib, forCellReuseIdentifier: T.identifier)
+		let nib = UINib(nibName: T.stringIdentifier, bundle: nil)
+		register(nib, forCellReuseIdentifier: T.stringIdentifier)
+	}
+
+	func register<T: UITableViewCell>(_: T.Type) {
+		register(T.self, forCellReuseIdentifier: T.stringIdentifier)
 	}
 	
 	func dequeueCell<T: UITableViewCell>(indexPath: IndexPath) -> T {
-		let identifier = T.identifier
+		let identifier = T.stringIdentifier
 		guard let cell = dequeueReusableCell(withIdentifier: identifier, for: indexPath) as? T else {
 			fatalError("Could not dequeue cell with \(identifier)")
 		}
