@@ -22,7 +22,7 @@ class CollectionsOfPhotosCollectionViewLayout: UICollectionViewFlowLayout {
 		sectionInset = UIEdgeInsets(top: vSectionInset, left: hSectionInset, bottom: vSectionInset, right: hSectionInset)
 		minimumLineSpacing = vSectionInset
 		minimumInteritemSpacing = hSectionInset / 2
-		footerReferenceSize = CGSize(width: width, height: height * 0.15)
+		footerReferenceSize = CGSize(width: width, height: height * 0.07)
 
 		var itemWidth: CGFloat = width - 2 * hSectionInset
 

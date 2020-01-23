@@ -37,11 +37,11 @@ class GalleryRootViewController: UITabBarController {
 		view.backgroundColor = .white
     }
 
-	override func viewWillAppear(_ animated: Bool) {
-		super.viewWillAppear(animated)
-
-		selectedViewController = viewControllers?[1]
-	}
+//	override func viewWillAppear(_ animated: Bool) {
+//		super.viewWillAppear(animated)
+//
+//		selectedViewController = viewControllers?[1]
+//	}
 }
 
 // MARK: - Private
@@ -69,17 +69,3 @@ private extension GalleryRootViewController {
 		]
     }
 }
-
-
-
-
-//
-//class UnsplashItemsModelController<Request: PaginalRequest>: NSObject  {
-//	typealias Model = Request.ContentModel
-//
-//	var items: Array<Model> = []
-//}
-//
-//class PhotosModelController2: UnsplashItemsModelController<PhotoListRequest> {
-//
-//}

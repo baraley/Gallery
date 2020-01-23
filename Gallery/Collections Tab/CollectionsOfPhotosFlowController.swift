@@ -87,7 +87,9 @@ private extension CollectionsOfPhotosFlowController {
 		return controller
 	}
 
-	func makeCollectionsOfPhotosModelController(with searchQuery: String? = nil) -> CollectionsOfPhotosModelController {
+	func makeCollectionsOfPhotosModelController(
+		with searchQuery: String? = nil
+	) -> CollectionsOfPhotosModelController {
 
 		let photoCollectionListRequest: PhotoCollectionListRequest
 
@@ -110,13 +112,13 @@ private extension CollectionsOfPhotosFlowController {
 		}
 		return CollectionsOfPhotosModelController(
 			networkService: NetworkService(),
-			photoCollectionListRequest: photoCollectionListRequest
+			request: photoCollectionListRequest
 		)
 	}
 
 	func makePhotosModelController(with searchQuery: String) -> PhotosModelController {
 		let request = PhotoListRequest(searchQuery: searchQuery, accessToken: authenticationStateProvider.accessToken)
-		let modelController = PhotosModelController(networkService: NetworkService(), photoListRequest: request)
+		let modelController = PhotosModelController(networkService: NetworkService(), request: request)
 
 		return modelController
 	}
@@ -130,7 +132,7 @@ private extension CollectionsOfPhotosFlowController {
 			photosFromCollection: selectedCollection,
 			accessToken: authenticationStateProvider.accessToken
 		)
-		let photosModelController = PhotosModelController(networkService: networkService, photoListRequest: request)
+		let photosModelController = PhotosModelController(networkService: networkService, request: request)
 		let layout = TilesCollectionViewLayout()
 		layout.dataSource = photosModelController
 

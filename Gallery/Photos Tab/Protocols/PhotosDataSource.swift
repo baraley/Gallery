@@ -1,5 +1,5 @@
 //
-//  PhotosCollectionViewDataSource.swift
+//  PhotosDataSource.swift
 //  Gallery
 //
 //  Created by Alexander Baraley on 14.01.2020.
@@ -11,7 +11,6 @@ import UIKit
 protocol PhotosDataSource: AnyObject {
 
 	var numberOfPhotos: Int { get }
-
 	var selectedPhotoIndex: Int? { get set }
 	
 	func reloadPhotos()
@@ -20,6 +19,6 @@ protocol PhotosDataSource: AnyObject {
 	func photoAt(_ index: Int) -> Photo?
 	func updatePhotoAt(_ index: Int, with photo: Photo)
 
-	func addObserve(_ observer: PhotosDataSourceObserver)
-	func removeObserver(_ observer: PhotosDataSourceObserver)
+	func addObserve(_ observer: UnsplashItemsLoadingObserver)
+	func removeObserver(_ observer: UnsplashItemsLoadingObserver)
 }

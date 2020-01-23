@@ -60,7 +60,6 @@ class PhotosFlowController: UINavigationController {
 	func start() {
 		let controller = makeTilesPhotosViewController()
 		tilesPhotosViewController = controller
-		setupSearchController()
 
 		setViewControllers([controller], animated: false)
 	}
@@ -73,7 +72,7 @@ private extension PhotosFlowController {
 		let layout = TilesCollectionViewLayout()
 		let photosModelController = PhotosModelController(
 			networkService: NetworkService(),
-			photoListRequest: PhotoListRequest(order: .latest, accessToken: authenticationStateProvider.accessToken)
+			request: PhotoListRequest(order: .latest, accessToken: authenticationStateProvider.accessToken)
 		)
 
 		layout.dataSource = photosModelController
@@ -101,7 +100,7 @@ private extension PhotosFlowController {
 		if let searchQuery = searchQuery {
 			photosModelController = PhotosModelController(
 				networkService: NetworkService(),
-				photoListRequest: PhotoListRequest(
+				request: PhotoListRequest(
 					searchQuery: searchQuery,
 					accessToken: authenticationStateProvider.accessToken
 				)
@@ -109,7 +108,7 @@ private extension PhotosFlowController {
 		} else {
 			photosModelController = PhotosModelController(
 				networkService: NetworkService(),
-				photoListRequest: PhotoListRequest(order: order, accessToken: authenticationStateProvider.accessToken)
+				request: PhotoListRequest(order: order, accessToken: authenticationStateProvider.accessToken)
 			)
 		}
 

@@ -107,7 +107,7 @@ private extension ProfileTabViewController {
 
 		let networkService = NetworkService()
 		let request = PhotoListRequest(likedPhotosOfUser: userData.user.userName, accessToken: userData.accessToken)
-		let photosModelController = PhotosModelController(networkService: networkService, photoListRequest: request)
+		let photosModelController = PhotosModelController(networkService: networkService, request: request)
 		let layout = TilesCollectionViewLayout()
 		layout.dataSource = photosModelController
 

@@ -46,23 +46,23 @@ class TilesPhotosViewController: PhotosBaseViewController {
 
 	// MARK: - Photos loading
 
-	override func photosLoadingDidStart() {
-		super.photosLoadingDidStart()
+	override func itemsLoadingDidStart() {
+		super.itemsLoadingDidStart()
 
 		if !refreshControl.isRefreshing {
 			activityIndicatorView?.startAnimating()
 		}
 	}
 
-	override func photosLoadingDidFinish(numberOfPhotos number: Int, locationIndex index: Int) {
-		super.photosLoadingDidFinish(numberOfPhotos: number, locationIndex: index)
+	override func itemsLoadingDidFinish(numberOfItems number: Int, locationIndex index: Int) {
+		super.itemsLoadingDidFinish(numberOfItems: number, locationIndex: index)
 
 		refreshControl.endRefreshing()
 		activityIndicatorView?.stopAnimating()
 	}
 
-	override func photosLoadingDidFinishWith(_ error: RequestError) {
-		super.photosLoadingDidFinishWith(error)
+	override func itemsLoadingDidFinishWith(_ error: RequestError) {
+		super.itemsLoadingDidFinishWith(error)
 
 		refreshControl.endRefreshing()
 		activityIndicatorView?.stopAnimating()

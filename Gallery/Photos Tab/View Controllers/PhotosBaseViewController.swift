@@ -9,7 +9,7 @@
 
 import UIKit
 
-class PhotosBaseViewController: UICollectionViewController, PhotosDataSourceObserver {
+class PhotosBaseViewController: UICollectionViewController, UnsplashItemsLoadingObserver {
 
 	// MARK: - Initialization
 
@@ -53,16 +53,16 @@ class PhotosBaseViewController: UICollectionViewController, PhotosDataSourceObse
 		scrollToSelectedPhoto(animated: false)
 	}
 
-	// MARK: - PhotosDataSourceObserver
+	// MARK: - UnsplashItemsLoadingObserver
 
-	func photosLoadingDidStart() { }
+	func itemsLoadingDidStart() { }
 
-	func photosLoadingDidFinish(numberOfPhotos number: Int, locationIndex index: Int) {
+	func itemsLoadingDidFinish(numberOfItems number: Int, locationIndex index: Int) {
 		errorMessageWasShown = false
 		insertPhotos(number, at: index)
 	}
 
-	func photosLoadingDidFinishWith(_ error: RequestError) {
+	func itemsLoadingDidFinishWith(_ error: RequestError) {
 		showError(error)
 	}
 

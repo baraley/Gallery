@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CollectionsOfPhotosViewController: UICollectionViewController, PhotosDataSourceObserver {
+class CollectionsOfPhotosViewController: UICollectionViewController, UnsplashItemsLoadingObserver {
 
 	// MARK: - Initialization
 
@@ -29,7 +29,7 @@ class CollectionsOfPhotosViewController: UICollectionViewController, PhotosDataS
 	
 	// MARK: - Properties
 	
-	var dataSource: CollectionsOfPhotosModelController? { didSet { dataSourceDidChange() } }
+	var dataSource: CollectionsOfPhotosDataSource? { didSet { dataSourceDidChange() } }
 	var collectionDidSelectHandler: ((Int) -> Void)?
 
 	private weak var activityIndicatorView: UIActivityIndicatorView?
@@ -37,7 +37,7 @@ class CollectionsOfPhotosViewController: UICollectionViewController, PhotosDataS
 	private lazy var refreshControl: UIRefreshControl = {
 		let refreshControl = UIRefreshControl()
 		refreshControl.tintColor = .darkGray
-		refreshControl.addTarget(self, action: #selector(refreshPhotos), for: .valueChanged)
+		refreshControl.addTarget(self, action: #selector(refreshCollections), for: .valueChanged)
 		return refreshControl
 	}()
 
@@ -49,15 +49,15 @@ class CollectionsOfPhotosViewController: UICollectionViewController, PhotosDataS
 		initialSetup()
 	}
 
-	// MARK: - PhotosDataSourceObserver
+	// MARK: - UnsplashItemsLoadingObserver
 
-	func photosLoadingDidStart() {
+	func itemsLoadingDidStart() {
 		if !refreshControl.isRefreshing {
 			activityIndicatorView?.startAnimating()
 		}
 	}
 
-	func photosLoadingDidFinish(numberOfPhotos number: Int, locationIndex index: Int) {
+	func itemsLoadingDidFinish(numberOfItems number: Int, locationIndex index: Int) {
 		refreshControl.endRefreshing()
 		activityIndicatorView?.stopAnimating()
 
@@ -65,7 +65,7 @@ class CollectionsOfPhotosViewController: UICollectionViewController, PhotosDataS
 		insertCollections(number, at: index)
 	}
 
-	func photosLoadingDidFinishWith(_ error: RequestError) {
+	func itemsLoadingDidFinishWith(_ error: RequestError) {
 		refreshControl.endRefreshing()
 		activityIndicatorView?.stopAnimating()
 		showError(error)
@@ -150,7 +150,7 @@ class CollectionsOfPhotosViewController: UICollectionViewController, PhotosDataS
 // MARK: - Private
 private extension CollectionsOfPhotosViewController {
 
-	@objc func refreshPhotos() {
+	@objc func refreshCollections() {
 		dataSource?.reloadCollections()
 		collectionView.reloadData()
 	}
@@ -205,7 +205,7 @@ extension CollectionsOfPhotosViewController {
 		guard let footer = view as? CollectionViewLoadingFooter else { return }
 
 		activityIndicatorView = footer.activityIndicator
-		dataSource?.loadMorePhotos()
+		dataSource?.loadMoreCollections()
 	}
 
 	override func collectionView(
@@ -214,11 +214,6 @@ extension CollectionsOfPhotosViewController {
 		forItemAt indexPath: IndexPath
 	) {
 		loadImageForCellAt(indexPath)
-
-		if let numberOfPhotos = dataSource?.numberOfCollections,
-			indexPath.item > numberOfPhotos - 5 {
-			dataSource?.loadMorePhotos()
-		}
 	}
 
 	override func collectionView(
