@@ -17,6 +17,7 @@ class ProfileTabViewController: UIViewController, SegueHandlerType {
 	// MARK: - Private properties
 
 	private var profileTableViewController: ProfileTableViewController?
+	private weak var likedPhotosViewController: TilesPhotosViewController?
 	
 	// MARK: - Outlets
 	
@@ -105,14 +106,14 @@ private extension ProfileTabViewController {
 	func showUserLikedPhotos() {
 		guard let userData = profileTableViewController?.userData else { return }
 
-		let networkService = NetworkService()
 		let request = PhotoListRequest(likedPhotosOfUser: userData.user.userName, accessToken: userData.accessToken)
-		let photosModelController = PhotosModelController(networkService: networkService, request: request)
+		let photosModelController = PhotosModelController(networkService: NetworkService(), request: request)
+
 		let layout = TilesCollectionViewLayout()
 		layout.dataSource = photosModelController
 
 		let photosViewController = TilesPhotosViewController(
-			networkService: networkService,
+			networkService: NetworkService(),
 			authenticationStateProvider: authenticationController,
 			collectionViewLayout: layout
 		)
@@ -120,19 +121,29 @@ private extension ProfileTabViewController {
 		photosViewController.title = "Liked photos"
 		photosViewController.dataSource = photosModelController
 		photosViewController.photoDidSelectHandler = { (selectedPhotoIndex) in
-			photosModelController.selectedPhotoIndex = selectedPhotoIndex
-
-			let fullScreenPhotosViewController = FullScreenPhotosViewController(
-				networkService: networkService,
-				authenticationStateProvider: self.authenticationController,
-				collectionViewLayout: FullScreenPhotosCollectionViewLayout()
-			)
-			fullScreenPhotosViewController.dataSource = photosModelController
-
-			self.navigationController?.pushViewController(fullScreenPhotosViewController, animated: true)
+			self.handleLikedPhotoSelection(at: selectedPhotoIndex)
 		}
 
+		likedPhotosViewController = photosViewController
+		
 		navigationController?.pushViewController(photosViewController, animated: true)
+	}
+
+	func handleLikedPhotoSelection(at index: Int) {
+		guard let photosModelController = likedPhotosViewController?.dataSource as? PhotosModelController else {
+			return
+		}
+
+		photosModelController.selectedPhotoIndex = index
+
+		let fullScreenPhotosViewController = FullScreenPhotosViewController(
+			networkService: NetworkService(),
+			authenticationStateProvider: authenticationController,
+			collectionViewLayout: FullScreenPhotosCollectionViewLayout()
+		)
+		fullScreenPhotosViewController.dataSource = photosModelController
+
+		navigationController?.pushViewController(fullScreenPhotosViewController, animated: true)
 	}
 }
 

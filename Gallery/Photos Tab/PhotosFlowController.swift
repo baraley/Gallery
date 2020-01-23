@@ -32,6 +32,7 @@ class PhotosFlowController: UINavigationController {
 
 	private lazy var searchController = UISearchController(searchResultsController: nil)
 	private weak var tilesPhotosViewController: TilesPhotosViewController?
+	private weak var lastOrderedPhotosModelController: PhotosModelController?
 
 	// MARK: - Segmented control
 
@@ -58,23 +59,36 @@ class PhotosFlowController: UINavigationController {
 	// MARK: - Public
 
 	func start() {
-		let controller = makeTilesPhotosViewController()
-		tilesPhotosViewController = controller
+		tilesPhotosViewController = makeTilesPhotosViewController()
 
-		setViewControllers([controller], animated: false)
+		setViewControllers([tilesPhotosViewController!], animated: false)
 	}
 }
 
 // MARK: - Private
 private extension PhotosFlowController {
 
-	func makeTilesPhotosViewController() -> TilesPhotosViewController {
-		let layout = TilesCollectionViewLayout()
-		let photosModelController = PhotosModelController(
-			networkService: NetworkService(),
-			request: PhotoListRequest(order: .latest, accessToken: authenticationStateProvider.accessToken)
-		)
+	var photosOrder: UnsplashPhotoListOrder {
+		photosOrderSegmentedControl.selectedSegmentIndex == 0 ? .latest : .popular
+	}
 
+	func setupSearchController() {
+		searchController.obscuresBackgroundDuringPresentation = false
+		searchController.hidesNavigationBarDuringPresentation = true
+		searchController.searchBar.placeholder = "Search Photos"
+		searchController.searchBar.autocorrectionType = .yes
+		searchController.searchBar.delegate = self
+
+		tilesPhotosViewController?.navigationItem.searchController = searchController
+	}
+
+	func makeTilesPhotosViewController() -> TilesPhotosViewController {
+
+		let request = PhotoListRequest(order: photosOrder, accessToken: authenticationStateProvider.accessToken)
+		let photosModelController = PhotosModelController(networkService: NetworkService(), request: request)
+		lastOrderedPhotosModelController = photosModelController
+
+		let layout = TilesCollectionViewLayout()
 		layout.dataSource = photosModelController
 
 		let controller = TilesPhotosViewController(
@@ -93,32 +107,6 @@ private extension PhotosFlowController {
 		return controller
 	}
 
-	func updateTilesViewControllerDataSource(with searchQuery: String? = nil) {
-		let order: UnsplashPhotoListOrder = photosOrderSegmentedControl.selectedSegmentIndex == 0 ? .latest : .popular
-		let photosModelController: PhotosModelController
-
-		if let searchQuery = searchQuery {
-			photosModelController = PhotosModelController(
-				networkService: NetworkService(),
-				request: PhotoListRequest(
-					searchQuery: searchQuery,
-					accessToken: authenticationStateProvider.accessToken
-				)
-			)
-		} else {
-			photosModelController = PhotosModelController(
-				networkService: NetworkService(),
-				request: PhotoListRequest(order: order, accessToken: authenticationStateProvider.accessToken)
-			)
-		}
-
-		if let layout = tilesPhotosViewController?.collectionViewLayout as? TilesCollectionViewLayout {
-			layout.dataSource = photosModelController
-		}
-
-		tilesPhotosViewController?.dataSource = photosModelController
-	}
-
 	func handleSelectionOfPhoto(at index: Int) {
 		guard let modelController = tilesPhotosViewController?.dataSource as? PhotosModelController else { return }
 
@@ -134,14 +122,30 @@ private extension PhotosFlowController {
 		pushViewController(fullScreenPhotosViewController, animated: true)
 	}
 
-	func setupSearchController() {
-		searchController.obscuresBackgroundDuringPresentation = false
-		searchController.hidesNavigationBarDuringPresentation = true
-		searchController.searchBar.placeholder = "Search Photos"
-		searchController.searchBar.autocorrectionType = .yes
-		searchController.searchBar.delegate = self
-		
-		tilesPhotosViewController?.navigationItem.searchController = searchController
+	func updateTilesViewControllerDataSource(with searchQuery: String? = nil) {
+		let photosModelController: PhotosModelController
+
+		if let searchQuery = searchQuery {
+			photosModelController = PhotosModelController(
+				networkService: NetworkService(),
+				request: PhotoListRequest(
+					searchQuery: searchQuery,
+					accessToken: authenticationStateProvider.accessToken
+				)
+			)
+		} else {
+			photosModelController = PhotosModelController(
+				networkService: NetworkService(),
+				request: PhotoListRequest(order: photosOrder, accessToken: authenticationStateProvider.accessToken)
+			)
+			lastOrderedPhotosModelController = photosModelController
+		}
+
+		if let layout = tilesPhotosViewController?.collectionViewLayout as? TilesCollectionViewLayout {
+			layout.dataSource = photosModelController
+		}
+
+		tilesPhotosViewController?.dataSource = photosModelController
 	}
 }
 
@@ -163,14 +167,16 @@ extension PhotosFlowController: UISearchBarDelegate {
 	func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
 		if let text = searchBar.text, !text.isEmpty {
 			updateTilesViewControllerDataSource(with: text)
-		} else {
-			searchBar.resignFirstResponder()
 		}
 	}
 
 	func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
 		searchBar.text = ""
 		searchBar.resignFirstResponder()
-		updateTilesViewControllerDataSource()
+		if let currentModelController = tilesPhotosViewController?.dataSource as? PhotosModelController,
+			currentModelController != lastOrderedPhotosModelController {
+			
+			updateTilesViewControllerDataSource()
+		}
 	}
 }

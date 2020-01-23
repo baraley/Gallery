@@ -32,6 +32,7 @@ class CollectionsOfPhotosFlowController: UINavigationController {
 
 	private lazy var searchController = UISearchController(searchResultsController: nil)
 	private weak var collectionsOfPhotosViewController: CollectionsOfPhotosViewController?
+	private weak var lastCollectionOfPhotosModelController: CollectionsOfPhotosModelController?
 
 	// MARK: - Segmented control
 
@@ -58,23 +59,34 @@ class CollectionsOfPhotosFlowController: UINavigationController {
 	// MARK: - Public
 
 	func start() {
-		let controller = makeCollectionsOfPhotosViewController()
-		collectionsOfPhotosViewController = controller
+		collectionsOfPhotosViewController = makeCollectionsOfPhotosViewController()
 
-		setViewControllers([controller], animated: false)
+		setViewControllers([collectionsOfPhotosViewController!], animated: false)
 	}
 }
 
 // MARK: - Private
 private extension CollectionsOfPhotosFlowController {
 
+	func setupSearchController() {
+		searchController.obscuresBackgroundDuringPresentation = false
+		searchController.hidesNavigationBarDuringPresentation = true
+		searchController.searchBar.placeholder = "Search Photos"
+		searchController.searchBar.autocorrectionType = .yes
+		searchController.searchBar.delegate = self
+
+		definesPresentationContext = true
+
+		collectionsOfPhotosViewController?.navigationItem.searchController = searchController
+	}
+
 	func makeCollectionsOfPhotosViewController() -> CollectionsOfPhotosViewController {
-		let layout = CollectionsOfPhotosCollectionViewLayout()
 		let collectionsOfPhotosModelController = makeCollectionsOfPhotosModelController()
+		lastCollectionOfPhotosModelController = collectionsOfPhotosModelController
 
 		let controller = CollectionsOfPhotosViewController(
 			networkService: NetworkService(),
-			collectionViewLayout: layout
+			collectionViewLayout: CollectionsOfPhotosCollectionViewLayout()
 		)
 
 		controller.navigationItem.title = title
@@ -116,28 +128,20 @@ private extension CollectionsOfPhotosFlowController {
 		)
 	}
 
-	func makePhotosModelController(with searchQuery: String) -> PhotosModelController {
-		let request = PhotoListRequest(searchQuery: searchQuery, accessToken: authenticationStateProvider.accessToken)
-		let modelController = PhotosModelController(networkService: NetworkService(), request: request)
-
-		return modelController
-	}
-
 	func handleSelectionOfCollection(at index: Int) {
 		guard let modelController = collectionsOfPhotosViewController?.dataSource,
-			let selectedCollection = modelController.collectionAt(index) else { return }
+			let selectedCollection = modelController.collectionAt(index) else {
+				return
+		}
 
-		let networkService = NetworkService()
-		let request = PhotoListRequest(
-			photosFromCollection: selectedCollection,
-			accessToken: authenticationStateProvider.accessToken
-		)
-		let photosModelController = PhotosModelController(networkService: networkService, request: request)
+		let accessToken = authenticationStateProvider.accessToken
+		let request = PhotoListRequest(photosFromCollection: selectedCollection, accessToken: accessToken)
+		let photosModelController = PhotosModelController(networkService: NetworkService(), request: request)
 		let layout = TilesCollectionViewLayout()
 		layout.dataSource = photosModelController
 
 		let photosViewController = TilesPhotosViewController(
-			networkService: networkService,
+			networkService: NetworkService(),
 			authenticationStateProvider: authenticationStateProvider,
 			collectionViewLayout: layout
 		)
@@ -148,7 +152,7 @@ private extension CollectionsOfPhotosFlowController {
 			photosModelController.selectedPhotoIndex = selectedPhotoIndex
 
 			let fullScreenPhotosViewController = FullScreenPhotosViewController(
-				networkService: networkService,
+				networkService: NetworkService(),
 				authenticationStateProvider: self.authenticationStateProvider,
 				collectionViewLayout: FullScreenPhotosCollectionViewLayout()
 			)
@@ -159,21 +163,9 @@ private extension CollectionsOfPhotosFlowController {
 
 		pushViewController(photosViewController, animated: true)
 	}
-
-	func setupSearchController() {
-		searchController.obscuresBackgroundDuringPresentation = false
-		searchController.hidesNavigationBarDuringPresentation = true
-		searchController.searchBar.placeholder = "Search Photos"
-		searchController.searchBar.autocorrectionType = .yes
-		searchController.searchBar.delegate = self
-
-		definesPresentationContext = true
-
-		collectionsOfPhotosViewController?.navigationItem.searchController = searchController
-	}
 }
 
-// MARK: - PhotosTabFlowController
+// MARK: - AuthenticationObserver
 extension CollectionsOfPhotosFlowController: AuthenticationObserver {
 
 	func authenticationDidFinish(with userData: AuthenticatedUserData) {
@@ -191,14 +183,19 @@ extension CollectionsOfPhotosFlowController: UISearchBarDelegate {
 	func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
 		if let searchQuery = searchBar.text, !searchQuery.isEmpty {
 			collectionsOfPhotosViewController?.dataSource = makeCollectionsOfPhotosModelController(with: searchQuery)
-		} else {
-			searchBar.resignFirstResponder()
 		}
 	}
 
 	func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
 		searchBar.text = ""
 		searchBar.resignFirstResponder()
-		collectionsOfPhotosViewController?.dataSource = makeCollectionsOfPhotosModelController()
+
+		let dataSource = collectionsOfPhotosViewController?.dataSource
+
+		if let currentModelController = dataSource as? CollectionsOfPhotosModelController,
+			currentModelController != lastCollectionOfPhotosModelController {
+
+			collectionsOfPhotosViewController?.dataSource = makeCollectionsOfPhotosModelController()
+		}
 	}
 }

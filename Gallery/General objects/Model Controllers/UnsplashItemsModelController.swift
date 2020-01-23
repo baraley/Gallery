@@ -78,39 +78,31 @@ private extension UnsplashItemsModelController {
 		loader.contentDidLoadHandler = { [weak self] (result) in
 			DispatchQueue.main.async {
 				switch result {
-				case .success(let newItems):
-					self?.insertNewItems(newItems)
-
-				case .failure(let error):
-					self?.notifyObservers {
-						$0.itemsLoadingDidFinishWith(error)
-					}
+				case .success(let newItems): 	self?.insertLoadedItems(newItems)
+				case .failure(let error): 		self?.notifyObservers { $0.itemsLoadingDidFinishWith(error) }
 				}
 			}
 		}
 		return loader
 	}
 
-	func insertNewItems(_ newItems: [Model]) {
+	func insertLoadedItems(_ loadedItems: [Model]) {
 		let newItemsNumber: Int
 		let locationIndex = numberOfItems == 0 ? 0 : numberOfItems - 1
 
-		if let lastPhoto = items.last,
-			let lastCommonPhotoIndex = newItems.firstIndex(of: lastPhoto) {
+		if let lastItem = items.last, let lastCommonItemIndex = loadedItems.firstIndex(of: lastItem) {
 
-			let newItemsRange = lastCommonPhotoIndex.advanced(by: 1)..<newItems.endIndex
+			let newItemsRange = lastCommonItemIndex.advanced(by: 1)..<loadedItems.endIndex
 
 			newItemsNumber = newItemsRange.count
-			items.append(contentsOf: newItems[newItemsRange])
+			items.append(contentsOf: loadedItems[newItemsRange])
 
 		} else {
-			newItemsNumber = newItems.count
-			items.append(contentsOf: newItems)
+			newItemsNumber = loadedItems.count
+			items.append(contentsOf: loadedItems)
 		}
 
-		notifyObservers {
-			$0.itemsLoadingDidFinish(numberOfItems: newItemsNumber, locationIndex: locationIndex)
-		}
+		notifyObservers { $0.itemsLoadingDidFinish(numberOfItems: newItemsNumber, locationIndex: locationIndex) }
 	}
 
 	func notifyObservers(invoking notification: @escaping (UnsplashItemsLoadingObserver) -> Void) {
