@@ -1,5 +1,5 @@
 //
-//  PhotosTabFlowController.swift
+//  PhotosFlowController.swift
 //  Gallery
 //
 //  Created by Alexander Baraley on 20.01.2020.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class PhotosTabFlowController: UINavigationController {
+class PhotosFlowController: UINavigationController {
 
 	// MARK: - Initialization
 
@@ -21,7 +21,7 @@ class PhotosTabFlowController: UINavigationController {
 
 		navigationBar.prefersLargeTitles = true
 		title = "Photos"
-		tabBarItem = UITabBarItem(title: title, image: #imageLiteral(resourceName: "collections"), selectedImage: nil)
+		tabBarItem = UITabBarItem(title: title, image: #imageLiteral(resourceName: "Photos"), selectedImage: nil)
 	}
 
 	required init?(coder: NSCoder) {
@@ -47,6 +47,14 @@ class PhotosTabFlowController: UINavigationController {
 		updateTilesViewControllerDataSource()
 	}
 
+	// MARK: - Life cycle
+
+	override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
+
+		setupSearchController()
+	}
+
 	// MARK: - Public
 
 	func start() {
@@ -59,11 +67,14 @@ class PhotosTabFlowController: UINavigationController {
 }
 
 // MARK: - Private
-private extension PhotosTabFlowController {
+private extension PhotosFlowController {
 
 	func makeTilesPhotosViewController() -> TilesPhotosViewController {
 		let layout = TilesCollectionViewLayout()
-		let photosModelController = makePhotosModelController(with: .latest)
+		let photosModelController = PhotosModelController(
+			networkService: NetworkService(),
+			photoListRequest: PhotoListRequest(order: .latest, accessToken: authenticationStateProvider.accessToken)
+		)
 
 		layout.dataSource = photosModelController
 
@@ -83,28 +94,23 @@ private extension PhotosTabFlowController {
 		return controller
 	}
 
-	func makePhotosModelController(with order: UnsplashPhotoListOrder) -> PhotosModelController {
-		let request = PhotoListRequest(order: order, accessToken: authenticationStateProvider.accessToken)
-		let modelController = PhotosModelController(networkService: NetworkService(), photoListRequest: request)
-
-		return modelController
-	}
-
-	func makePhotosModelController(with searchQuery: String) -> PhotosModelController {
-		let request = PhotoListRequest(searchQuery: searchQuery, accessToken: authenticationStateProvider.accessToken)
-		let modelController = PhotosModelController(networkService: NetworkService(), photoListRequest: request)
-
-		return modelController
-	}
-
 	func updateTilesViewControllerDataSource(with searchQuery: String? = nil) {
 		let order: UnsplashPhotoListOrder = photosOrderSegmentedControl.selectedSegmentIndex == 0 ? .latest : .popular
 		let photosModelController: PhotosModelController
 
 		if let searchQuery = searchQuery {
-			photosModelController = makePhotosModelController(with: searchQuery)
+			photosModelController = PhotosModelController(
+				networkService: NetworkService(),
+				photoListRequest: PhotoListRequest(
+					searchQuery: searchQuery,
+					accessToken: authenticationStateProvider.accessToken
+				)
+			)
 		} else {
-			photosModelController = makePhotosModelController(with: order)
+			photosModelController = PhotosModelController(
+				networkService: NetworkService(),
+				photoListRequest: PhotoListRequest(order: order, accessToken: authenticationStateProvider.accessToken)
+			)
 		}
 
 		if let layout = tilesPhotosViewController?.collectionViewLayout as? TilesCollectionViewLayout {
@@ -141,7 +147,7 @@ private extension PhotosTabFlowController {
 }
 
 // MARK: - PhotosTabFlowController
-extension PhotosTabFlowController: AuthenticationObserver {
+extension PhotosFlowController: AuthenticationObserver {
 
 	func authenticationDidFinish(with userData: AuthenticatedUserData) {
 		updateTilesViewControllerDataSource()
@@ -153,7 +159,7 @@ extension PhotosTabFlowController: AuthenticationObserver {
 }
 
 // MARK: - UISearchBarDelegate
-extension PhotosTabFlowController: UISearchBarDelegate {
+extension PhotosFlowController: UISearchBarDelegate {
 
 	func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
 		if let text = searchBar.text, !text.isEmpty {

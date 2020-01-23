@@ -1,5 +1,5 @@
 //
-//  TileCollectionViewCell.swift
+//  ImageCollectionViewCell.swift
 //  Gallery
 //
 //  Created by Alexander Baraley on 12/17/17.
@@ -8,11 +8,16 @@
 
 import UIKit
 
-private let cornerRadius: CGFloat = 10
+//private let cornerRadius: CGFloat = 10
 
-class TileCollectionViewCell: UICollectionViewCell {
+class ImageCollectionViewCell: UICollectionViewCell {
     
 	var imageView = UIImageView(image: #imageLiteral(resourceName: "image placeholder"))
+	var cornerRadius: CGFloat = 0.0 {
+		didSet {
+			cornerRadiusDidChange()
+		}
+	}
 
 	override init(frame: CGRect) {
 		super.init(frame: frame)
@@ -26,34 +31,37 @@ class TileCollectionViewCell: UICollectionViewCell {
 		fatalError("init(coder:) has not been implemented")
 	}
 
+	override func layoutSubviews() {
+		super.layoutSubviews()
+
+		updateShadowPath()
+	}
+
     override func prepareForReuse() {
 		super.prepareForReuse()
 		
         imageView.image = #imageLiteral(resourceName: "image placeholder")
 	}
-	
-	func setupShadowPath(for size: CGSize) {
-		let rect = CGRect(origin: CGPoint.zero, size: size)
-		layer.shadowPath = UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius).cgPath
-	}
 }
 
-private extension TileCollectionViewCell {
+private extension ImageCollectionViewCell {
 
 	func setupImageView() {
-
 		imageView.contentMode = .scaleAspectFill
-
 		imageView.translatesAutoresizingMaskIntoConstraints = false
 
 		contentView.addSubview(imageView)
-
 		NSLayoutConstraint.activate([
 			imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
 			imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
 			imageView.leftAnchor.constraint(equalTo: contentView.leftAnchor),
 			imageView.rightAnchor.constraint(equalTo: contentView.rightAnchor)
 		])
+	}
+
+	func cornerRadiusDidChange() {
+		setupCorners()
+		setupShadows()
 	}
 
 	func setupCorners() {
@@ -68,5 +76,11 @@ private extension TileCollectionViewCell {
 		layer.shadowOffset = CGSize(width: 0.0, height: 0.0)
 		layer.shadowRadius = 3.0
 		layer.shadowOpacity = 0.5
+		updateShadowPath()
+	}
+
+	func updateShadowPath() {
+		let rect = CGRect(origin: CGPoint.zero, size: bounds.size)
+		layer.shadowPath = UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius).cgPath
 	}
 }

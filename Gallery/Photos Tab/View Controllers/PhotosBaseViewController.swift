@@ -160,11 +160,6 @@ extension PhotosBaseViewController {
 		forItemAt indexPath: IndexPath
 	) {
 		loadImageForCellAt(indexPath)
-
-		if let numberOfPhotos = dataSource?.numberOfPhotos,
-			indexPath.item > numberOfPhotos - 5 {
-			dataSource?.loadMorePhotos()
-		}
 	}
 
 	override func collectionView(

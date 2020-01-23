@@ -37,17 +37,21 @@ class GalleryRootViewController: UITabBarController {
 		view.backgroundColor = .white
     }
 
-//	override func viewWillAppear(_ animated: Bool) {
-//		super.viewWillAppear(animated)
-//
-//		selectedViewController = viewControllers?[1]
-//	}
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+
+		selectedViewController = viewControllers?[1]
+	}
 }
 
 // MARK: - Private
 private extension GalleryRootViewController {
     
     func instantiateViewControllers() {
+
+		let photoTabController = PhotosFlowController(authenticationStateProvider: authenticationController)
+		photoTabController.start()
+
 		let profileNavController = UIStoryboard.init(storyboard: .profileTab)
 			.instantiateViewController() as UINavigationController
 
@@ -55,12 +59,27 @@ private extension GalleryRootViewController {
 			profileTabVC.authenticationController = authenticationController
 		}
 
-		let photoTabFlowController = PhotosTabFlowController(authenticationStateProvider: authenticationController)
-		photoTabFlowController.start()
+		let collectionsOfPhotosFlowController = CollectionsOfPhotosFlowController(authenticationStateProvider: authenticationController)
+		collectionsOfPhotosFlowController.start()
 		
         viewControllers = [
-			photoTabFlowController,
+			photoTabController,
+			collectionsOfPhotosFlowController,
 			profileNavController
 		]
     }
 }
+
+
+
+
+//
+//class UnsplashItemsModelController<Request: PaginalRequest>: NSObject  {
+//	typealias Model = Request.ContentModel
+//
+//	var items: Array<Model> = []
+//}
+//
+//class PhotosModelController2: UnsplashItemsModelController<PhotoListRequest> {
+//
+//}

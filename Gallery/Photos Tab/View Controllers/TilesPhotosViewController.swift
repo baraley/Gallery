@@ -32,9 +32,8 @@ class TilesPhotosViewController: PhotosBaseViewController {
 		collectionView.showsVerticalScrollIndicator = false
 		collectionView.keyboardDismissMode = .onDrag
 		collectionView.refreshControl = refreshControl
-		collectionView.register(TileCollectionViewCell.self)
-		collectionView.register(
-			CollectionViewLoadingFooter.self,
+		collectionView.register(ImageCollectionViewCell.self)
+		collectionView.register(CollectionViewLoadingFooter.self,
 			forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter
 		)
 	}
@@ -78,7 +77,7 @@ class TilesPhotosViewController: PhotosBaseViewController {
 	override func handleImageLoadingResult(_ result: Result<UIImage, RequestError>, forCellAt indexPath: IndexPath) {
 		switch result {
 		case .success(let image):
-			let cell = self.collectionView.cellForItem(at: indexPath) as? TileCollectionViewCell
+			let cell = self.collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell
 			cell?.imageView.image = image
 
 		case .failure(let error):
@@ -105,7 +104,10 @@ extension TilesPhotosViewController {
 		cellForItemAt indexPath: IndexPath
 	) -> UICollectionViewCell {
 
-		return collectionView.dequeueCell(indexPath: indexPath) as TileCollectionViewCell
+		let cell = collectionView.dequeueCell(indexPath: indexPath) as ImageCollectionViewCell
+		cell.cornerRadius = 10
+
+		return cell
 	}
 
 	override func collectionView(

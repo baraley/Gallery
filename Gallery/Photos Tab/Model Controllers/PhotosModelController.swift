@@ -31,10 +31,6 @@ class PhotosModelController: NSObject, PhotosDataSource {
 
 	var selectedPhotoIndex: Int?
 
-	func indexOf(_ photo: Photo) -> Int? {
-		return photos.firstIndex(of: photo)
-	}
-
 	func reloadPhotos() {
 		photosLoader.resetToFirstPage()
 		photos.removeAll()
@@ -136,8 +132,11 @@ private extension PhotosModelController {
 // MARK: - TilesCollectionViewLayoutDataSource -
 extension PhotosModelController: TilesCollectionViewLayoutDataSource {
 
-	func collectionView(_ collectionView: UICollectionView, heightForCellAtIndexPath indexPath: IndexPath,
-						whileCellWidthIs cellWidth: CGFloat) -> CGFloat {
+	func collectionView(
+		_ collectionView: UICollectionView,
+		heightForCellAtIndexPath indexPath: IndexPath,
+		whileCellWidthIs cellWidth: CGFloat
+	) -> CGFloat {
 
 		let photo = photos[indexPath.item]
 

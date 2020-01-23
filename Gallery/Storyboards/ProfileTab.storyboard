@@ -12,7 +12,7 @@
         <!--Profile-->
         <scene sceneID="2bz-LI-De1">
             <objects>
-                <viewController storyboardIdentifier="ProfileRootViewController" id="SYt-Xz-G4d" customClass="ProfileTabViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ProfileRootViewController" id="SYt-Xz-G4d" customClass="ProfileTabViewController" customModule="Gallery" customModuleProvider="target" propertyAccessControl="all" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="TVC-Ke-Q2O">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -49,7 +49,6 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="wFI-Og-vKr"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Profile" image="profileIcon" id="nX6-u8-qyu"/>
                     <navigationItem key="navigationItem" title="Profile" id="GJd-I9-dAK"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
@@ -66,7 +65,7 @@
         <!--Profile-->
         <scene sceneID="Ko0-de-IXB">
             <objects>
-                <tableViewController storyboardIdentifier="ProfileTableViewController" id="B0N-hQ-9JW" customClass="ProfileTableViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="ProfileTableViewController" id="B0N-hQ-9JW" customClass="ProfileTableViewController" customModule="Gallery" customModuleProvider="target" propertyAccessControl="all" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="R6L-Zt-QlS">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -259,7 +258,7 @@
         <!--Profile-->
         <scene sceneID="ec4-cS-1e0">
             <objects>
-                <navigationController storyboardIdentifier="UINavigationController" automaticallyAdjustsScrollViewInsets="NO" id="mtO-Ot-ovS" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="UINavigationController" automaticallyAdjustsScrollViewInsets="NO" id="mtO-Ot-ovS" propertyAccessControl="all" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Profile" image="profileIcon" id="dj4-Tz-3LW"/>
                     <toolbarItems/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
@@ -279,7 +278,7 @@
         <!--Edit Profile View Controller-->
         <scene sceneID="TTh-Fy-ExZ">
             <objects>
-                <tableViewController id="QBz-PY-lv7" customClass="EditProfileViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="QBz-PY-lv7" customClass="EditProfileViewController" customModule="Gallery" customModuleProvider="target" propertyAccessControl="all" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="prototypes" style="grouped" separatorStyle="default" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="tLS-VM-vc0">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -345,7 +344,7 @@
         <!--Navigation Controller-->
         <scene sceneID="q8O-us-YIY">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="UXy-5O-WM2" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="UXy-5O-WM2" propertyAccessControl="localizable" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="FGx-dO-y0g">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="56"/>

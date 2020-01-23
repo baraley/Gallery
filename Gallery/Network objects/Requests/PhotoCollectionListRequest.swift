@@ -23,7 +23,7 @@ struct PhotoCollectionListRequest: UnsplashRequest, PaginalRequest {
 		endpoint = "/collections"
 	}
 	
-	init(featuredCollectionsWithPageSize pageSize: UnsplashPageSize = .large, accessToken: String? = nil) {
+	init(featuredCollectionsWithPageSize pageSize: UnsplashPageSize, accessToken: String? = nil) {
 		
 		self.init(pageSize: pageSize, accessToken: accessToken)
 		endpoint = "/collections/featured"

@@ -109,7 +109,6 @@ private extension ProfileTableViewController {
 			DispatchQueue.main.async {
 				self?.imageView.image = image
 				self?.imageView.layer.cornerRadius = image.size.width / 2
-				self?.tableView.reloadData()
 			}
         }
 		

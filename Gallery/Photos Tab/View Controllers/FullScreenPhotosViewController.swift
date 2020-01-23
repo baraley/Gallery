@@ -220,6 +220,19 @@ extension FullScreenPhotosViewController {
 
 	override func collectionView(
 		_ collectionView: UICollectionView,
+		willDisplay cell: UICollectionViewCell,
+		forItemAt indexPath: IndexPath
+	) {
+		super.collectionView(collectionView, willDisplay: cell, forItemAt: indexPath)
+
+		if let numberOfPhotos = dataSource?.numberOfPhotos,
+			indexPath.item > numberOfPhotos - 5 {
+			dataSource?.loadMorePhotos()
+		}
+	}
+
+	override func collectionView(
+		_ collectionView: UICollectionView,
 		didEndDisplaying cell: UICollectionViewCell,
 		forItemAt indexPath: IndexPath
 	) {
