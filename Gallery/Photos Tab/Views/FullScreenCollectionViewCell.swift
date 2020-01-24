@@ -8,11 +8,11 @@
 
 import UIKit
 
-class FullScreenCollectionViewCell: UICollectionViewCell {
+class FullScreenCollectionViewCell: ImageCollectionViewCell {
 
 	// MARK: - Initialization
 
-	let imageView = UIImageView(image: nil)
+	private let imageView = UIImageView(image: nil)
 	private let scrollView = UIScrollView(frame: .zero)
 	private let loadingView = UIActivityIndicatorView(style: .whiteLarge)
 
@@ -52,16 +52,12 @@ class FullScreenCollectionViewCell: UICollectionViewCell {
 
 	var singleTapGestureHandler: (() -> Void)?
 
-	func showImage(_ image: UIImage?) {
-
-		imageView.image = image
-
-		if image == nil {
-			loadingView.startAnimating()
-		} else {
-			loadingView.stopAnimating()
-			imageView.sizeToFit()
-			updateScrollViewZoomScales()
+	override var image: UIImage? {
+		get {
+			imageView.image
+		}
+		set {
+			showImage(newValue)
 		}
 	}
 
@@ -76,18 +72,10 @@ class FullScreenCollectionViewCell: UICollectionViewCell {
 		scrollView.minimumZoomScale = minScale
 		scrollView.zoomScale = minScale
 	}
-}
 
-// MARK: - Private
-private extension FullScreenCollectionViewCell {
+	// MARK: - Overridden
 
-	// MARK: - Setups
-
-	func initialSetup() {
-
-		loadingView.startAnimating()
-		loadingView.color = loadingViewColor
-
+	override func setupImageView() {
 		imageView.contentMode = .scaleAspectFit
 		imageView.isUserInteractionEnabled = true
 
@@ -96,6 +84,17 @@ private extension FullScreenCollectionViewCell {
 		scrollView.showsVerticalScrollIndicator = false
 		scrollView.contentInsetAdjustmentBehavior = .never
 		scrollView.addSubview(imageView)
+	}
+}
+
+// MARK: - Private
+private extension FullScreenCollectionViewCell {
+
+	// MARK: - Setups
+
+	func initialSetup() {
+		loadingView.startAnimating()
+		loadingView.color = loadingViewColor
 
 		setupGestureRecognizers()
 
@@ -143,6 +142,19 @@ private extension FullScreenCollectionViewCell {
 	}
 
 	// MARK: - Helpers
+
+	func showImage(_ image: UIImage?) {
+
+		imageView.image = image
+
+		if image == nil {
+			loadingView.startAnimating()
+		} else {
+			loadingView.stopAnimating()
+			imageView.sizeToFit()
+			updateScrollViewZoomScales()
+		}
+	}
 
 	func zoomToRect(at location: CGPoint) {
 

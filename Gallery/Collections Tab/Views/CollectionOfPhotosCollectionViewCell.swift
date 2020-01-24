@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CollectionOfPhotosCollectionViewCell: ImageCollectionViewCell {
+class CollectionOfPhotosCollectionViewCell: RoundedImageCollectionViewCell {
 
 	var title: String? {
 		didSet {
@@ -60,14 +60,6 @@ private extension CollectionOfPhotosCollectionViewCell {
 	func setupDimmingView() {
 		dimmingView.alpha = 0.4
 		dimmingView.backgroundColor = .black
-//		dimmingView.translatesAutoresizingMaskIntoConstraints = false
-//
 		contentView.addSubview(dimmingView)
-//		NSLayoutConstraint.activate([
-//			dimmingView.topAnchor.constraint(equalTo: contentView.topAnchor),
-//			dimmingView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-//			dimmingView.leftAnchor.constraint(equalTo: contentView.leftAnchor),
-//			dimmingView.rightAnchor.constraint(equalTo: contentView.rightAnchor)
-//		])
 	}
 }

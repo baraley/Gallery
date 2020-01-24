@@ -8,15 +8,17 @@
 
 import UIKit
 
-class TilesPhotosViewController: PhotosBaseViewController {
+class TilesPhotosViewController: PhotosBaseViewController, UnsplashItemsLoadingObserver, LoadingFooterPresenter {
 
 	// MARK: - Properties
 
-	private weak var activityIndicatorView: UIActivityIndicatorView?
+	var photoDidSelectHandler: ((Int) -> Void)?
+
 	private var layout: TilesCollectionViewLayout? {
 		collectionView.collectionViewLayout as? TilesCollectionViewLayout
 	}
-	private lazy var refreshControl: UIRefreshControl = {
+	private(set) weak var activityIndicatorView: UIActivityIndicatorView?
+	lazy var refreshControl: UIRefreshControl = {
 		let refreshControl = UIRefreshControl()
 		refreshControl.tintColor = .darkGray
 		refreshControl.addTarget(self, action: #selector(refreshPhotos), for: .valueChanged)
@@ -28,61 +30,28 @@ class TilesPhotosViewController: PhotosBaseViewController {
 	override func initialSetup() {
 		super.initialSetup()
 
-		collectionView.showsHorizontalScrollIndicator = false
 		collectionView.showsVerticalScrollIndicator = false
 		collectionView.keyboardDismissMode = .onDrag
 		collectionView.refreshControl = refreshControl
-		collectionView.register(ImageCollectionViewCell.self)
+		collectionView.register(RoundedImageCollectionViewCell.self)
 		collectionView.register(CollectionViewLoadingFooter.self,
-			forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter
+								forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter
 		)
 	}
 
 	override func dataSourceDidChange() {
 		layout?.reset()
+		dataSource?.addObserve(self)
 
 		super.dataSourceDidChange()
 	}
 
-	// MARK: - Photos loading
+	// MARK: - NetworkImagePresenter
 
-	override func itemsLoadingDidStart() {
-		super.itemsLoadingDidStart()
+	override func imageRequestForImage(at indexPath: IndexPath) -> ImageRequest? {
+		guard let photo = dataSource?.photoAt(indexPath.item) else { return nil }
 
-		if !refreshControl.isRefreshing {
-			activityIndicatorView?.startAnimating()
-		}
-	}
-
-	override func itemsLoadingDidFinish(numberOfItems number: Int, locationIndex index: Int) {
-		super.itemsLoadingDidFinish(numberOfItems: number, locationIndex: index)
-
-		refreshControl.endRefreshing()
-		activityIndicatorView?.stopAnimating()
-	}
-
-	override func itemsLoadingDidFinishWith(_ error: RequestError) {
-		super.itemsLoadingDidFinishWith(error)
-
-		refreshControl.endRefreshing()
-		activityIndicatorView?.stopAnimating()
-	}
-
-	// MARK: - Images loading
-
-	override var photoImageRequestKeyPath: KeyPath<Photo, URL> {
-		\Photo.thumbURL
-	}
-
-	override func handleImageLoadingResult(_ result: Result<UIImage, RequestError>, forCellAt indexPath: IndexPath) {
-		switch result {
-		case .success(let image):
-			let cell = self.collectionView.cellForItem(at: indexPath) as? ImageCollectionViewCell
-			cell?.imageView.image = image
-
-		case .failure(let error):
-			showError(error)
-		}
+		return ImageRequest(url: photo.thumbURL)
 	}
 }
 
@@ -104,7 +73,7 @@ extension TilesPhotosViewController {
 		cellForItemAt indexPath: IndexPath
 	) -> UICollectionViewCell {
 
-		let cell = collectionView.dequeueCell(indexPath: indexPath) as ImageCollectionViewCell
+		let cell = collectionView.dequeueCell(indexPath: indexPath) as RoundedImageCollectionViewCell
 		cell.cornerRadius = 10
 
 		return cell

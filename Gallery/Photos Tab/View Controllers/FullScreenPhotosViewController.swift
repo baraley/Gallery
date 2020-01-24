@@ -8,7 +8,7 @@
 
 import UIKit
 
-class FullScreenPhotosViewController: PhotosBaseViewController {
+class FullScreenPhotosViewController: PhotosBaseViewController, UnsplashItemsLoadingObserver {
 
 	// MARK: - Properties
 
@@ -56,8 +56,8 @@ class FullScreenPhotosViewController: PhotosBaseViewController {
 
 	// MARK: - Overridden
 
-	 override func initialSetup() {
-		 super.initialSetup()
+	override func initialSetup() {
+		super.initialSetup()
 
 		hidesBottomBarWhenPushed = true
 
@@ -66,25 +66,27 @@ class FullScreenPhotosViewController: PhotosBaseViewController {
 		layout?.itemSize = collectionView.bounds.size
 
 		collectionView.contentInsetAdjustmentBehavior = .never
-		collectionView.backgroundColor = .white
 		collectionView.decelerationRate = .fast
-		collectionView.showsHorizontalScrollIndicator = false
 		collectionView.register(FullScreenCollectionViewCell.self)
 	}
 
-	// MARK: - Images loading
+	override func dataSourceDidChange() {
+		dataSource?.addObserve(self)
 
-	override func handleImageLoadingResult(_ result: Result<UIImage, RequestError>, forCellAt indexPath: IndexPath) {
-		switch result {
-		case .success(let image):
-			let cell = collectionView.cellForItem(at: indexPath) as? FullScreenCollectionViewCell
-			cell?.showImage(image)
-			if indexPath == currentCellIndexPath {
-				updateToolBar()
-			}
+		super.dataSourceDidChange()
+	}
 
-		case .failure(let error):
-				showError(error)
+	// MARK: - NetworkImagePresenter
+
+	override func imageRequestForImage(at indexPath: IndexPath) -> ImageRequest? {
+		guard let photo = dataSource?.photoAt(indexPath.item) else { return nil }
+
+		return ImageRequest(url: photo.imageURL)
+	}
+
+	func imageDidLoadedForCell(at indexPath: IndexPath) {
+		if indexPath == currentCellIndexPath {
+			updateToolBar()
 		}
 	}
 }
@@ -103,7 +105,7 @@ private extension FullScreenPhotosViewController {
 	func updatePhotoBackgroundColor() {
 		collectionView.backgroundColor = barsAreHidden ? .black : .white
 
-		if currentCell?.imageView.image == nil {
+		if currentCell?.image == nil {
 			currentCell?.loadingViewColor = barsAreHidden ? .white : .black
 		}
 
@@ -122,7 +124,7 @@ private extension FullScreenPhotosViewController {
 	// MARK: - Updates
 
 	func updateToolBar() {
-		let hasImage = currentCell?.imageView.image != nil
+		let hasImage = currentCell?.image != nil
 		let isAuthenticated = authenticationStateProvider.isAuthenticated
 
 		sharePhotoButton.isEnabled = hasImage
@@ -170,7 +172,7 @@ private extension FullScreenPhotosViewController {
 	}
 
 	@objc func sharePhoto() {
-		guard let imageData = currentCell?.imageView.image?.jpegData(compressionQuality: 1.0) else { return }
+		guard let imageData = currentCell?.image?.jpegData(compressionQuality: 1.0) else { return }
 
 		let vc = UIActivityViewController(activityItems: [imageData], applicationActivities: [])
 		vc.popoverPresentationController?.barButtonItem = sharePhotoButton

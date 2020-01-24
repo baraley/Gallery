@@ -9,7 +9,7 @@
 
 import UIKit
 
-class PhotosBaseViewController: UICollectionViewController, UnsplashItemsLoadingObserver {
+class PhotosBaseViewController: UICollectionViewController, NetworkImagePresenter {
 
 	// MARK: - Initialization
 
@@ -35,10 +35,6 @@ class PhotosBaseViewController: UICollectionViewController, UnsplashItemsLoading
 
 	var dataSource: PhotosDataSource? { didSet { dataSourceDidChange() } }
 
-	var photoDidSelectHandler: ((Int) -> Void)?
-
-	var errorMessageWasShown = false
-
 	// MARK: - Life cycle
 
 	override func viewDidLoad() {
@@ -53,72 +49,20 @@ class PhotosBaseViewController: UICollectionViewController, UnsplashItemsLoading
 		scrollToSelectedPhoto(animated: false)
 	}
 
-	// MARK: - UnsplashItemsLoadingObserver
-
-	func itemsLoadingDidStart() { }
-
-	func itemsLoadingDidFinish(numberOfItems number: Int, locationIndex index: Int) {
-		errorMessageWasShown = false
-		insertPhotos(number, at: index)
-	}
-
-	func itemsLoadingDidFinishWith(_ error: RequestError) {
-		showError(error)
-	}
-
 	// MARK: - Setup
 
 	func initialSetup() {
 
 		collectionView.backgroundColor = .white
+		collectionView.showsHorizontalScrollIndicator = false
 	}
 
-	// MARK: - Photos loading
+	// MARK: - NetworkImagePresenter
 
-	func insertPhotos(_ numberOfPhotos: Int, at index: Int) {
-		guard numberOfPhotos > 0 else { return }
+	typealias CellType = ImageCollectionViewCell
 
-		var indexPaths: [IndexPath] = []
-
-		for i in index..<index + numberOfPhotos {
-			indexPaths.append(IndexPath(item: i, section: 0))
-		}
-		collectionView?.insertItems(at: indexPaths)
-	}
-
-	// MARK: - Images loading
-
-	var photoImageRequestKeyPath: KeyPath<Photo, URL> {
-		\Photo.imageURL
-	}
-
-	func loadImageForCellAt(_ indexPath: IndexPath) {
-		guard let photo = dataSource?.photoAt(indexPath.item) else { return }
-
-		let url = photo[keyPath: photoImageRequestKeyPath]
-		let imageRequest = ImageRequest(url: url)
-
-		networkService.performRequest(imageRequest) { [weak self] (result) in
-			DispatchQueue.main.async {
-				self?.handleImageLoadingResult(result, forCellAt: indexPath)
-			}
-		}
-	}
-
-	func cancelLoadingImageForCellAt(_ indexPath: IndexPath) {
-		if let photo = dataSource?.photoAt(indexPath.item) {
-			let url = photo[keyPath: photoImageRequestKeyPath]
-			let imageRequest = ImageRequest(url: url)
-
-			networkService.cancel(imageRequest)
-		}
-	}
-
-	func handleImageLoadingResult(_ result: Result<UIImage, RequestError>, forCellAt indexPath: IndexPath) {
-		switch result {
-		case .success(_): 			break
-		case .failure(let error): 	showError(error)
-		}
+	func imageRequestForImage(at indexPath: IndexPath) -> ImageRequest? {
+		nil
 	}
 
 	// MARK: - Helpers
@@ -135,10 +79,6 @@ class PhotosBaseViewController: UICollectionViewController, UnsplashItemsLoading
 	}
 
 	func dataSourceDidChange() {
-		errorMessageWasShown = false
-
-		dataSource?.addObserve(self)
-		
 		collectionView.reloadData()
 	}
 }

@@ -8,7 +8,9 @@
 
 import UIKit
 
-class CollectionsOfPhotosViewController: UICollectionViewController, UnsplashItemsLoadingObserver {
+class CollectionsOfPhotosViewController:
+	UICollectionViewController, UnsplashItemsLoadingObserver, NetworkImagePresenter, LoadingFooterPresenter
+{
 
 	// MARK: - Initialization
 
@@ -32,9 +34,8 @@ class CollectionsOfPhotosViewController: UICollectionViewController, UnsplashIte
 	var dataSource: CollectionsOfPhotosDataSource? { didSet { dataSourceDidChange() } }
 	var collectionDidSelectHandler: ((Int) -> Void)?
 
-	private weak var activityIndicatorView: UIActivityIndicatorView?
-	private var errorMessageWasShown = false
-	private lazy var refreshControl: UIRefreshControl = {
+	private(set) weak var activityIndicatorView: UIActivityIndicatorView?
+	lazy var refreshControl: UIRefreshControl = {
 		let refreshControl = UIRefreshControl()
 		refreshControl.tintColor = .darkGray
 		refreshControl.addTarget(self, action: #selector(refreshCollections), for: .valueChanged)
@@ -47,28 +48,6 @@ class CollectionsOfPhotosViewController: UICollectionViewController, UnsplashIte
 		super.viewDidLoad()
 
 		initialSetup()
-	}
-
-	// MARK: - UnsplashItemsLoadingObserver
-
-	func itemsLoadingDidStart() {
-		if !refreshControl.isRefreshing {
-			activityIndicatorView?.startAnimating()
-		}
-	}
-
-	func itemsLoadingDidFinish(numberOfItems number: Int, locationIndex index: Int) {
-		refreshControl.endRefreshing()
-		activityIndicatorView?.stopAnimating()
-
-		errorMessageWasShown = false
-		insertCollections(number, at: index)
-	}
-
-	func itemsLoadingDidFinishWith(_ error: RequestError) {
-		refreshControl.endRefreshing()
-		activityIndicatorView?.stopAnimating()
-		showError(error)
 	}
 
 	// MARK: - Setup
@@ -85,64 +64,20 @@ class CollectionsOfPhotosViewController: UICollectionViewController, UnsplashIte
 		)
 	}
 
-	// MARK: - Collections loading
+	// MARK: - CellsWithNetworkImagePresenter
 
-	func insertCollections(_ numberOfCollections: Int, at index: Int) {
-		guard numberOfCollections > 0 else { return }
+	typealias CellType = ImageCollectionViewCell
 
-		var indexPaths: [IndexPath] = []
+	func imageRequestForImage(at indexPath: IndexPath) -> ImageRequest? {
+		guard let collection = dataSource?.collectionAt(indexPath.item) else { return nil }
 
-		for i in index..<index + numberOfCollections {
-			indexPaths.append(IndexPath(item: i, section: 0))
-		}
-		collectionView?.insertItems(at: indexPaths)
-	}
-
-	// MARK: - Images loading
-
-	var imageRequestKeyPath: KeyPath<PhotoCollection, URL> {
-		\PhotoCollection.thumbURL
-	}
-
-	func loadImageForCellAt(_ indexPath: IndexPath) {
-		guard let collection = dataSource?.collectionAt(indexPath.item) else { return }
-
-		let url = collection[keyPath: imageRequestKeyPath]
-		let imageRequest = ImageRequest(url: url)
-
-		networkService.performRequest(imageRequest) { [weak self] (result) in
-			DispatchQueue.main.async {
-				self?.handleImageLoadingResult(result, forCellAt: indexPath)
-			}
-		}
-	}
-
-	func cancelLoadingImageForCellAt(_ indexPath: IndexPath) {
-		if let photo = dataSource?.collectionAt(indexPath.item) {
-			let url = photo[keyPath: imageRequestKeyPath]
-			let imageRequest = ImageRequest(url: url)
-
-			networkService.cancel(imageRequest)
-		}
-	}
-
-	func handleImageLoadingResult(_ result: Result<UIImage, RequestError>, forCellAt indexPath: IndexPath) {
-		switch result {
-		case .success(let image):
-			let cell = self.collectionView.cellForItem(at: indexPath) as? CollectionOfPhotosCollectionViewCell
-			cell?.imageView.image = image
-		case .failure(let error):
-			showError(error)
-		}
+		return ImageRequest(url: collection.thumbURL)
 	}
 
 	// MARK: - Helpers
 
 	func dataSourceDidChange() {
-		errorMessageWasShown = false
-
 		dataSource?.addObserve(self)
-
 		collectionView.reloadData()
 	}
 }

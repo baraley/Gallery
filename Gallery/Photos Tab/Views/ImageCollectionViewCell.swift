@@ -8,14 +8,16 @@
 
 import UIKit
 
-//private let cornerRadius: CGFloat = 10
-
-class ImageCollectionViewCell: UICollectionViewCell {
+class ImageCollectionViewCell: UICollectionViewCell, CellWithImage {
     
-	var imageView = UIImageView(image: #imageLiteral(resourceName: "image placeholder"))
-	var cornerRadius: CGFloat = 0.0 {
-		didSet {
-			cornerRadiusDidChange()
+	private var imageView = UIImageView(image: #imageLiteral(resourceName: "image placeholder"))
+
+	var image: UIImage? {
+		get {
+			imageView.image
+		}
+		set {
+			imageView.image = newValue
 		}
 	}
 
@@ -23,18 +25,10 @@ class ImageCollectionViewCell: UICollectionViewCell {
 		super.init(frame: frame)
 
 		setupImageView()
-		setupCorners()
-		setupShadows()
 	}
 
 	required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
-	}
-
-	override func layoutSubviews() {
-		super.layoutSubviews()
-
-		updateShadowPath()
 	}
 
     override func prepareForReuse() {
@@ -42,9 +36,6 @@ class ImageCollectionViewCell: UICollectionViewCell {
 		
         imageView.image = #imageLiteral(resourceName: "image placeholder")
 	}
-}
-
-private extension ImageCollectionViewCell {
 
 	func setupImageView() {
 		imageView.contentMode = .scaleAspectFill
@@ -57,30 +48,5 @@ private extension ImageCollectionViewCell {
 			imageView.leftAnchor.constraint(equalTo: contentView.leftAnchor),
 			imageView.rightAnchor.constraint(equalTo: contentView.rightAnchor)
 		])
-	}
-
-	func cornerRadiusDidChange() {
-		setupCorners()
-		setupShadows()
-	}
-
-	func setupCorners() {
-		layer.cornerRadius = cornerRadius
-		layer.masksToBounds = false
-
-		contentView.layer.cornerRadius = cornerRadius
-		contentView.layer.masksToBounds = true
-	}
-
-	func setupShadows() {
-		layer.shadowOffset = CGSize(width: 0.0, height: 0.0)
-		layer.shadowRadius = 3.0
-		layer.shadowOpacity = 0.5
-		updateShadowPath()
-	}
-
-	func updateShadowPath() {
-		let rect = CGRect(origin: CGPoint.zero, size: bounds.size)
-		layer.shadowPath = UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius).cgPath
 	}
 }
