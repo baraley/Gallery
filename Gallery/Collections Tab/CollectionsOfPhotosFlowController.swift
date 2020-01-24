@@ -8,52 +8,54 @@
 
 import UIKit
 
-class CollectionsOfPhotosFlowController: UINavigationController {
-
-	// MARK: - Initialization
-
-	private let authenticationStateProvider: AuthenticationStateProvider
-
-	init(authenticationStateProvider: AuthenticationStateProvider) {
-		self.authenticationStateProvider = authenticationStateProvider
-
-		super.init(nibName: nil, bundle: nil)
-
-		navigationBar.prefersLargeTitles = true
-		title = "Collections"
-		tabBarItem = UITabBarItem(title: title, image: #imageLiteral(resourceName: "collections"), selectedImage: nil)
-	}
-
-	required init?(coder: NSCoder) {
-		fatalError("init(coder:) has not been implemented")
-	}
+class CollectionsOfPhotosFlowController: TabBaseFlowController {
 
 	// MARK: - Properties
 
-	private lazy var searchController = UISearchController(searchResultsController: nil)
 	private weak var collectionsOfPhotosViewController: CollectionsOfPhotosViewController?
 	private weak var lastCollectionOfPhotosModelController: CollectionsOfPhotosModelController?
-
-	// MARK: - Segmented control
-
-	private lazy var collectionOfPhotosTypeSegmentedControl: UISegmentedControl = {
-		let control = UISegmentedControl(items: ["New", "Featured"])
-		control.addTarget(self, action: #selector(segmentedControlValueDidChange), for: .valueChanged)
-		control.selectedSegmentIndex = 0
-
-		return control
-	}()
-
-	@objc func segmentedControlValueDidChange(_ segmentedControl: UISegmentedControl) {
-		collectionsOfPhotosViewController?.dataSource = makeCollectionsOfPhotosModelController()
-	}
 
 	// MARK: - Life cycle
 
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 
-		setupSearchController()
+		searchController.searchBar.delegate = self
+		collectionsOfPhotosViewController?.navigationItem.searchController = searchController
+	}
+
+	// MARK: - Overridden
+
+	override var searchPlaceholder: String {
+		"Search Collections"
+	}
+
+	override var segmentControlItemsTittles: [String] {
+		["New", "Featured"]
+	}
+
+	override func initialSetup() {
+		super.initialSetup()
+
+		title = "Collections"
+		tabBarItem = UITabBarItem(title: title, image: #imageLiteral(resourceName: "collections"), selectedImage: nil)
+	}
+
+	override func updateRootViewControllerDataSource(with searchQuery: String? = nil) {
+		let request: PhotoCollectionListRequest
+
+		if let query = searchQuery {
+			request = PhotoCollectionListRequest(searchQuery: query, accessToken: accessToken)
+
+		} else if rightNavigationItemSegmentedControl.selectedSegmentIndex == 0 {
+			request = PhotoCollectionListRequest(accessToken: accessToken)
+
+		} else {
+			request = PhotoCollectionListRequest( featuredCollectionsWithPageSize: .large, accessToken: accessToken)
+		}
+
+		collectionsOfPhotosViewController?
+			.dataSource = CollectionsOfPhotosModelController(networkService: NetworkService(), request: request)
 	}
 
 	// MARK: - Public
@@ -68,20 +70,16 @@ class CollectionsOfPhotosFlowController: UINavigationController {
 // MARK: - Private
 private extension CollectionsOfPhotosFlowController {
 
-	func setupSearchController() {
-		searchController.obscuresBackgroundDuringPresentation = false
-		searchController.hidesNavigationBarDuringPresentation = true
-		searchController.searchBar.placeholder = "Search Photos"
-		searchController.searchBar.autocorrectionType = .yes
-		searchController.searchBar.delegate = self
-
-		definesPresentationContext = true
-
-		collectionsOfPhotosViewController?.navigationItem.searchController = searchController
+	var accessToken: String? {
+		authenticationStateProvider.accessToken
 	}
 
 	func makeCollectionsOfPhotosViewController() -> CollectionsOfPhotosViewController {
-		let collectionsOfPhotosModelController = makeCollectionsOfPhotosModelController()
+		let request = PhotoCollectionListRequest(accessToken: authenticationStateProvider.accessToken)
+		let collectionsOfPhotosModelController = CollectionsOfPhotosModelController(
+			networkService: NetworkService(),
+			request: request
+		)
 		lastCollectionOfPhotosModelController = collectionsOfPhotosModelController
 
 		let controller = CollectionsOfPhotosViewController(
@@ -90,42 +88,13 @@ private extension CollectionsOfPhotosFlowController {
 		)
 
 		controller.navigationItem.title = title
-		controller.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: collectionOfPhotosTypeSegmentedControl)
+		controller.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: rightNavigationItemSegmentedControl)
 		controller.dataSource = collectionsOfPhotosModelController
 		controller.collectionDidSelectHandler = { [weak self] (selectedCollectionIndex) in
 			self?.handleSelectionOfCollection(at: selectedCollectionIndex)
 		}
 
 		return controller
-	}
-
-	func makeCollectionsOfPhotosModelController(
-		with searchQuery: String? = nil
-	) -> CollectionsOfPhotosModelController {
-
-		let photoCollectionListRequest: PhotoCollectionListRequest
-
-		if let query = searchQuery {
-			photoCollectionListRequest = PhotoCollectionListRequest(
-				searchQuery: query,
-				accessToken: authenticationStateProvider.accessToken
-			)
-
-		} else if collectionOfPhotosTypeSegmentedControl.selectedSegmentIndex == 0 {
-			photoCollectionListRequest = PhotoCollectionListRequest(
-				accessToken: authenticationStateProvider.accessToken
-			)
-
-		} else {
-			photoCollectionListRequest = PhotoCollectionListRequest(
-				featuredCollectionsWithPageSize: .large,
-				accessToken: authenticationStateProvider.accessToken
-			)
-		}
-		return CollectionsOfPhotosModelController(
-			networkService: NetworkService(),
-			request: photoCollectionListRequest
-		)
 	}
 
 	func handleSelectionOfCollection(at index: Int) {
@@ -165,26 +134,8 @@ private extension CollectionsOfPhotosFlowController {
 	}
 }
 
-// MARK: - AuthenticationObserver
-extension CollectionsOfPhotosFlowController: AuthenticationObserver {
-
-	func authenticationDidFinish(with userData: AuthenticatedUserData) {
-		collectionsOfPhotosViewController?.dataSource = makeCollectionsOfPhotosModelController()
-	}
-
-	func deauthenticationDidFinish() {
-		collectionsOfPhotosViewController?.dataSource = makeCollectionsOfPhotosModelController()
-	}
-}
-
 // MARK: - UISearchBarDelegate
-extension CollectionsOfPhotosFlowController: UISearchBarDelegate {
-
-	func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-		if let searchQuery = searchBar.text, !searchQuery.isEmpty {
-			collectionsOfPhotosViewController?.dataSource = makeCollectionsOfPhotosModelController(with: searchQuery)
-		}
-	}
+extension CollectionsOfPhotosFlowController {
 
 	func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
 		searchBar.text = ""
@@ -195,7 +146,7 @@ extension CollectionsOfPhotosFlowController: UISearchBarDelegate {
 		if let currentModelController = dataSource as? CollectionsOfPhotosModelController,
 			currentModelController != lastCollectionOfPhotosModelController {
 
-			collectionsOfPhotosViewController?.dataSource = makeCollectionsOfPhotosModelController()
+			updateRootViewControllerDataSource()
 		}
 	}
 }

@@ -8,52 +8,57 @@
 
 import UIKit
 
-class PhotosFlowController: UINavigationController {
-
-	// MARK: - Initialization
-
-	private let authenticationStateProvider: AuthenticationStateProvider
-
-	init(authenticationStateProvider: AuthenticationStateProvider) {
-		self.authenticationStateProvider = authenticationStateProvider
-
-		super.init(nibName: nil, bundle: nil)
-
-		navigationBar.prefersLargeTitles = true
-		title = "Photos"
-		tabBarItem = UITabBarItem(title: title, image: #imageLiteral(resourceName: "Photos"), selectedImage: nil)
-	}
-
-	required init?(coder: NSCoder) {
-		fatalError("init(coder:) has not been implemented")
-	}
+class PhotosFlowController: TabBaseFlowController {
 
 	// MARK: - Properties
 
-	private lazy var searchController = UISearchController(searchResultsController: nil)
 	private weak var tilesPhotosViewController: TilesPhotosViewController?
 	private weak var lastOrderedPhotosModelController: PhotosModelController?
-
-	// MARK: - Segmented control
-
-	private lazy var photosOrderSegmentedControl: UISegmentedControl = {
-		let control = UISegmentedControl(items: ["New", "Popular"])
-		control.addTarget(self, action: #selector(segmentedControlValueDidChange), for: .valueChanged)
-		control.selectedSegmentIndex = 0
-
-		return control
-	}()
-
-	@objc func segmentedControlValueDidChange(_ segmentedControl: UISegmentedControl) {
-		updateTilesViewControllerDataSource()
-	}
 
 	// MARK: - Life cycle
 
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 
-		setupSearchController()
+		searchController.searchBar.delegate = self
+		tilesPhotosViewController?.navigationItem.searchController = searchController
+	}
+
+	// MARK: - Overridden
+
+	override var searchPlaceholder: String {
+		"Search Photos"
+	}
+
+	override var segmentControlItemsTittles: [String] {
+		["New", "Popular"]
+	}
+
+	override func initialSetup() {
+		super.initialSetup()
+
+		title = "Photos"
+		tabBarItem = UITabBarItem(title: title, image: #imageLiteral(resourceName: "Photos"), selectedImage: nil)
+	}
+
+	override func updateRootViewControllerDataSource(with searchQuery: String? = nil) {
+		let request: PhotoListRequest
+
+		if let searchQuery = searchQuery {
+			request = PhotoListRequest(searchQuery: searchQuery, accessToken: accessToken)
+		} else {
+			request = PhotoListRequest(order: photosOrder, accessToken: accessToken)
+		}
+
+		let photosModelController = PhotosModelController(networkService: NetworkService(), request: request)
+
+		lastOrderedPhotosModelController = searchQuery == nil ? photosModelController : nil
+
+		if let layout = tilesPhotosViewController?.collectionViewLayout as? TilesCollectionViewLayout {
+			layout.dataSource = photosModelController
+		}
+
+		tilesPhotosViewController?.dataSource = photosModelController
 	}
 
 	// MARK: - Public
@@ -69,17 +74,11 @@ class PhotosFlowController: UINavigationController {
 private extension PhotosFlowController {
 
 	var photosOrder: UnsplashPhotoListOrder {
-		photosOrderSegmentedControl.selectedSegmentIndex == 0 ? .latest : .popular
+		rightNavigationItemSegmentedControl.selectedSegmentIndex == 0 ? .latest : .popular
 	}
 
-	func setupSearchController() {
-		searchController.obscuresBackgroundDuringPresentation = false
-		searchController.hidesNavigationBarDuringPresentation = true
-		searchController.searchBar.placeholder = "Search Photos"
-		searchController.searchBar.autocorrectionType = .yes
-		searchController.searchBar.delegate = self
-
-		tilesPhotosViewController?.navigationItem.searchController = searchController
+	var accessToken: String? {
+		authenticationStateProvider.accessToken
 	}
 
 	func makeTilesPhotosViewController() -> TilesPhotosViewController {
@@ -98,7 +97,7 @@ private extension PhotosFlowController {
 		)
 
 		controller.navigationItem.title = title
-		controller.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: photosOrderSegmentedControl)
+		controller.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: rightNavigationItemSegmentedControl)
 		controller.dataSource = photosModelController
 		controller.photoDidSelectHandler = { [weak self] (selectedPhotoIndex) in
 			self?.handleSelectionOfPhoto(at: selectedPhotoIndex)
@@ -121,62 +120,19 @@ private extension PhotosFlowController {
 
 		pushViewController(fullScreenPhotosViewController, animated: true)
 	}
-
-	func updateTilesViewControllerDataSource(with searchQuery: String? = nil) {
-		let photosModelController: PhotosModelController
-
-		if let searchQuery = searchQuery {
-			photosModelController = PhotosModelController(
-				networkService: NetworkService(),
-				request: PhotoListRequest(
-					searchQuery: searchQuery,
-					accessToken: authenticationStateProvider.accessToken
-				)
-			)
-		} else {
-			photosModelController = PhotosModelController(
-				networkService: NetworkService(),
-				request: PhotoListRequest(order: photosOrder, accessToken: authenticationStateProvider.accessToken)
-			)
-			lastOrderedPhotosModelController = photosModelController
-		}
-
-		if let layout = tilesPhotosViewController?.collectionViewLayout as? TilesCollectionViewLayout {
-			layout.dataSource = photosModelController
-		}
-
-		tilesPhotosViewController?.dataSource = photosModelController
-	}
-}
-
-// MARK: - PhotosTabFlowController
-extension PhotosFlowController: AuthenticationObserver {
-
-	func authenticationDidFinish(with userData: AuthenticatedUserData) {
-		updateTilesViewControllerDataSource()
-	}
-
-	func deauthenticationDidFinish() {
-		updateTilesViewControllerDataSource()
-	}
 }
 
 // MARK: - UISearchBarDelegate
-extension PhotosFlowController: UISearchBarDelegate {
-
-	func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-		if let text = searchBar.text, !text.isEmpty {
-			updateTilesViewControllerDataSource(with: text)
-		}
-	}
+extension PhotosFlowController {
 
 	func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
 		searchBar.text = ""
 		searchBar.resignFirstResponder()
+
 		if let currentModelController = tilesPhotosViewController?.dataSource as? PhotosModelController,
 			currentModelController != lastOrderedPhotosModelController {
 			
-			updateTilesViewControllerDataSource()
+			updateRootViewControllerDataSource()
 		}
 	}
 }
