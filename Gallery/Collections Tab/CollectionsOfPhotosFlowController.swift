@@ -37,6 +37,8 @@ class CollectionsOfPhotosFlowController: TabBaseFlowController {
 	override func initialSetup() {
 		super.initialSetup()
 
+		authenticationStateProvider.addObserve(self)
+
 		title = "Collections"
 		tabBarItem = UITabBarItem(title: title, image: #imageLiteral(resourceName: "collections"), selectedImage: nil)
 	}
@@ -61,9 +63,14 @@ class CollectionsOfPhotosFlowController: TabBaseFlowController {
 	// MARK: - Public
 
 	func start() {
-		collectionsOfPhotosViewController = makeCollectionsOfPhotosViewController()
+		let viewController = makeCollectionsOfPhotosViewController()
+		collectionsOfPhotosViewController = viewController
 
-		setViewControllers([collectionsOfPhotosViewController!], animated: false)
+		setViewControllers([viewController], animated: false)
+		
+		if !authenticationStateProvider.isAuthenticating {
+			updateRootViewControllerDataSource()
+		}
 	}
 }
 
@@ -75,12 +82,6 @@ private extension CollectionsOfPhotosFlowController {
 	}
 
 	func makeCollectionsOfPhotosViewController() -> CollectionsOfPhotosViewController {
-		let request = PhotoCollectionListRequest(accessToken: authenticationStateProvider.accessToken)
-		let collectionsOfPhotosModelController = CollectionsOfPhotosModelController(
-			networkService: NetworkService(),
-			request: request
-		)
-		lastCollectionOfPhotosModelController = collectionsOfPhotosModelController
 
 		let controller = CollectionsOfPhotosViewController(
 			networkService: NetworkService(),
@@ -89,7 +90,6 @@ private extension CollectionsOfPhotosFlowController {
 
 		controller.navigationItem.title = title
 		controller.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: rightNavigationItemSegmentedControl)
-		controller.dataSource = collectionsOfPhotosModelController
 		controller.collectionDidSelectHandler = { [weak self] (selectedCollectionIndex) in
 			self?.handleSelectionOfCollection(at: selectedCollectionIndex)
 		}
@@ -131,6 +131,18 @@ private extension CollectionsOfPhotosFlowController {
 		}
 
 		pushViewController(photosViewController, animated: true)
+	}
+}
+
+// MARK: - AuthenticationObserver
+extension CollectionsOfPhotosFlowController: AuthenticationObserver {
+
+	func authenticationDidFinish(with userData: AuthenticatedUserData) {
+		updateRootViewControllerDataSource()
+	}
+
+	func deauthenticationDidFinish() {
+		updateRootViewControllerDataSource()
 	}
 }
 

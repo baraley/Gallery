@@ -459,7 +459,6 @@
 		3DCDB57C20B99376006297A4 /* Requests */ = {
 			isa = PBXGroup;
 			children = (
-				1191741223D36E3700BE1214 /* EditUserRequest.swift */,
 				1191741723D36E3700BE1214 /* ImageRequest.swift */,
 				1191741923D36E3700BE1214 /* PagesNumberRequest.swift */,
 				1191741423D36E3700BE1214 /* PhotoListRequest.swift */,
@@ -467,6 +466,7 @@
 				1191741823D36E3700BE1214 /* TogglePhotoLikeRequest.swift */,
 				1191741323D36E3700BE1214 /* UnsplashAccessTokenRequest.swift */,
 				1191741623D36E3700BE1214 /* UserRequest.swift */,
+				1191741223D36E3700BE1214 /* EditUserRequest.swift */,
 			);
 			path = Requests;
 			sourceTree = "<group>";

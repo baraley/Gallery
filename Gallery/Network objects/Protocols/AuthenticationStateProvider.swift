@@ -33,6 +33,14 @@ extension AuthenticationStateProvider {
 		}
 	}
 
+	var isAuthenticating: Bool {
+		if case .isAuthenticating = state {
+			return true
+		} else {
+			return false
+		}
+	}
+
 	var accessToken: String? {
 		if case .authenticated(let token) = state {
 			return token.accessToken

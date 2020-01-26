@@ -62,7 +62,6 @@ class TabBaseFlowController: UINavigationController {
 	}
 
 	func initialSetup() {
-		authenticationStateProvider.addObserve(self)
 		navigationBar.prefersLargeTitles = true
 	}
 
@@ -80,18 +79,6 @@ private extension TabBaseFlowController {
 		searchController.searchBar.autocorrectionType = .yes
 
 		definesPresentationContext = true
-	}
-}
-
-// MARK: - AuthenticationObserver
-extension TabBaseFlowController: AuthenticationObserver {
-
-	func authenticationDidFinish(with userData: AuthenticatedUserData) {
-		updateRootViewControllerDataSource()
-	}
-
-	func deauthenticationDidFinish() {
-		updateRootViewControllerDataSource()
 	}
 }
 

@@ -16,7 +16,7 @@ class PaginalContentLoader<Request: PaginalRequest> {
 	
 	private let networkService: NetworkService
 	private var request: Request
-	
+
 	init(networkService: NetworkService, request: Request) {
 
 		self.networkService = networkService
@@ -32,7 +32,7 @@ class PaginalContentLoader<Request: PaginalRequest> {
 
 	// MARK: - Private
 	
-	private var totalPages = 1
+	private var totalPages = 2
 	
 	private var currentPage: Int  {
 		get { return request.page }

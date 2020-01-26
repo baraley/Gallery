@@ -109,6 +109,9 @@ extension TilesPhotosViewController {
 		guard let footer = view as? CollectionViewLoadingFooter else { return }
 
 		activityIndicatorView = footer.activityIndicator
-		dataSource?.loadMorePhotos()
+
+		if footer.activityIndicator.isAnimating == false {
+			dataSource?.loadMorePhotos()
+		}
 	}
 }

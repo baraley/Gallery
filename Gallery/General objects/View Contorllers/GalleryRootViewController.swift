@@ -36,12 +36,6 @@ class GalleryRootViewController: UITabBarController {
         instantiateViewControllers()
 		view.backgroundColor = .white
     }
-
-//	override func viewWillAppear(_ animated: Bool) {
-//		super.viewWillAppear(animated)
-//
-//		selectedViewController = viewControllers?[1]
-//	}
 }
 
 // MARK: - Private

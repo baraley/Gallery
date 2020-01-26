@@ -36,6 +36,8 @@ class PhotosFlowController: TabBaseFlowController {
 
 	override func initialSetup() {
 		super.initialSetup()
+		
+		authenticationStateProvider.addObserve(self)
 
 		title = "Photos"
 		tabBarItem = UITabBarItem(title: title, image: #imageLiteral(resourceName: "Photos"), selectedImage: nil)
@@ -64,9 +66,14 @@ class PhotosFlowController: TabBaseFlowController {
 	// MARK: - Public
 
 	func start() {
-		tilesPhotosViewController = makeTilesPhotosViewController()
+		let viewController = makeTilesPhotosViewController()
+		tilesPhotosViewController = viewController
 
-		setViewControllers([tilesPhotosViewController!], animated: false)
+		setViewControllers([viewController], animated: false)
+
+		if !authenticationStateProvider.isAuthenticating {
+			updateRootViewControllerDataSource()
+		}
 	}
 }
 
@@ -83,22 +90,14 @@ private extension PhotosFlowController {
 
 	func makeTilesPhotosViewController() -> TilesPhotosViewController {
 
-		let request = PhotoListRequest(order: photosOrder, accessToken: authenticationStateProvider.accessToken)
-		let photosModelController = PhotosModelController(networkService: NetworkService(), request: request)
-		lastOrderedPhotosModelController = photosModelController
-
-		let layout = TilesCollectionViewLayout()
-		layout.dataSource = photosModelController
-
 		let controller = TilesPhotosViewController(
 			networkService: NetworkService(),
 			authenticationStateProvider: authenticationStateProvider,
-			collectionViewLayout: layout
+			collectionViewLayout: TilesCollectionViewLayout()
 		)
 
 		controller.navigationItem.title = title
 		controller.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: rightNavigationItemSegmentedControl)
-		controller.dataSource = photosModelController
 		controller.photoDidSelectHandler = { [weak self] (selectedPhotoIndex) in
 			self?.handleSelectionOfPhoto(at: selectedPhotoIndex)
 		}
@@ -119,6 +118,18 @@ private extension PhotosFlowController {
 		fullScreenPhotosViewController.dataSource = modelController
 
 		pushViewController(fullScreenPhotosViewController, animated: true)
+	}
+}
+
+// MARK: - AuthenticationObserver
+extension PhotosFlowController: AuthenticationObserver {
+
+	func authenticationDidFinish(with userData: AuthenticatedUserData) {
+		updateRootViewControllerDataSource()
+	}
+
+	func deauthenticationDidFinish() {
+		updateRootViewControllerDataSource()
 	}
 }
 
