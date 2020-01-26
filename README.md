@@ -5,11 +5,13 @@ Client for [Unsplash](https://unsplash.com). Written to learn how to work with R
 
 * Show photos and collections feeds
 * Search photos and collections
-* Show liked photos of the logged-in user
-* Edit logged-in user data
-* Like/Unlike photos
 * Portrait/Landscape orientation
+* Custom layout
 * Sharing
+* Authentication
+	* Show liked photos of the authenticated user
+	* Edit user data
+	* Like/Unlike photos
 
 
 ## Used
@@ -19,6 +21,8 @@ Client for [Unsplash](https://unsplash.com). Written to learn how to work with R
 * Page view controller
 * JSON parsing
 * Static table view
+* Keychain
+* Photos and Collections tabs implemented in code
 
 
 ![](screenshots.jpg)
