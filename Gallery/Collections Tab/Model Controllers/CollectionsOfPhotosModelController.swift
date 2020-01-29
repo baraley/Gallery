@@ -28,6 +28,3 @@ class CollectionsOfPhotosModelController:
 		itemAt(index)
 	}
 }
-
-
-

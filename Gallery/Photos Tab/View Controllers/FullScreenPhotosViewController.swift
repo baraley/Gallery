@@ -84,7 +84,7 @@ class FullScreenPhotosViewController: PhotosBaseViewController, UnsplashItemsLoa
 		return ImageRequest(url: photo.imageURL)
 	}
 
-	func imageDidLoadedForCell(at indexPath: IndexPath) {
+	override func imageDidLoadedForCell(at indexPath: IndexPath) {
 		if indexPath == currentCellIndexPath {
 			updateToolBar()
 		}

@@ -6,7 +6,6 @@
 //  Copyright © 2020 Alexander Baraley. All rights reserved.
 //
 
-
 import UIKit
 
 class PhotosBaseViewController: UICollectionViewController, NetworkImagePresenter {
@@ -64,6 +63,8 @@ class PhotosBaseViewController: UICollectionViewController, NetworkImagePresente
 	func imageRequestForImage(at indexPath: IndexPath) -> ImageRequest? {
 		nil
 	}
+
+	func imageDidLoadedForCell(at indexPath: IndexPath) { }
 
 	// MARK: - Helpers
 

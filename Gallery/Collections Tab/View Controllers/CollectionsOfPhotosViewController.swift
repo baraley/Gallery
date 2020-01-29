@@ -74,6 +74,8 @@ class CollectionsOfPhotosViewController:
 		return ImageRequest(url: collection.thumbURL)
 	}
 
+	func imageDidLoadedForCell(at indexPath: IndexPath) { }
+
 	// MARK: - Helpers
 
 	func dataSourceDidChange() {

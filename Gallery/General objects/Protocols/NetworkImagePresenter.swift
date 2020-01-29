@@ -24,8 +24,6 @@ protocol NetworkImagePresenter: UICollectionViewController {
 
 extension NetworkImagePresenter {
 
-	func imageDidLoadedForCell(at indexPath: IndexPath) { }
-
 	func loadImageForCellAt(_ indexPath: IndexPath) {
 		guard let request = imageRequestForImage(at: indexPath) else { return }
 
