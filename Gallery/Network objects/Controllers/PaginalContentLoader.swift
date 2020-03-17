@@ -31,7 +31,7 @@ class PaginalContentLoader<Request: PaginalRequest> {
 	}
 
 	// MARK: - Private
-	
+	#warning("when items loading finished faster than number of pages request loading of next page happens only after the actual number of pages is returned")
 	private var totalPages = 2
 	
 	private var currentPage: Int  {

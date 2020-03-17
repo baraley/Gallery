@@ -14,9 +14,12 @@ class TilesPhotosViewController: PhotosBaseViewController, UnsplashItemsLoadingO
 
 	var photoDidSelectHandler: ((Int) -> Void)?
 
-	private var layout: TilesCollectionViewLayout? {
-		collectionView.collectionViewLayout as? TilesCollectionViewLayout
-	}
+//	private var layout: TilesCollectionViewLayout? {
+//		collectionView.collectionViewLayout as? TilesCollectionViewLayout
+//	}
+    private var layout: SMMosaicLayout? {
+        collectionView.collectionViewLayout as? SMMosaicLayout
+    }
 	private(set) weak var activityIndicatorView: UIActivityIndicatorView?
 	lazy var refreshControl: UIRefreshControl = {
 		let refreshControl = UIRefreshControl()
@@ -108,7 +111,9 @@ extension TilesPhotosViewController {
 	) {
 		guard let footer = view as? CollectionViewLoadingFooter else { return }
 
-		activityIndicatorView = footer.activityIndicator
+//        UIApplication.shared.delegate?.window??.layer.speed = 0.1
+
+        activityIndicatorView = footer.activityIndicator
 
 		if footer.activityIndicator.isAnimating == false {
 			dataSource?.loadMorePhotos()

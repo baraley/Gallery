@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		04BB7F96241FCF56005AFC27 /* SMMosaicLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BB7F95241FCF55005AFC27 /* SMMosaicLayout.swift */; };
 		1100DBD122CCE9020022E653 /* ProfileTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1100DBD022CCE9020022E653 /* ProfileTabViewController.swift */; };
 		1100DBD322CCF06F0022E653 /* GalleryRootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1100DBD222CCF06F0022E653 /* GalleryRootViewController.swift */; };
 		110600B323DACD1600752E06 /* NetworkImagePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 110600B223DACD1600752E06 /* NetworkImagePresenter.swift */; };
@@ -80,6 +81,7 @@
 
 /* Begin PBXFileReference section */
 		01925D8A1577130F806ABC43 /* Pods-Gallery.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Gallery.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Gallery/Pods-Gallery.debug.xcconfig"; sourceTree = "<group>"; };
+		04BB7F95241FCF55005AFC27 /* SMMosaicLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SMMosaicLayout.swift; sourceTree = "<group>"; };
 		1100DBD022CCE9020022E653 /* ProfileTabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTabViewController.swift; sourceTree = "<group>"; };
 		1100DBD222CCF06F0022E653 /* GalleryRootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryRootViewController.swift; sourceTree = "<group>"; };
 		110600B223DACD1600752E06 /* NetworkImagePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkImagePresenter.swift; sourceTree = "<group>"; };
@@ -477,6 +479,7 @@
 				3D9C6D07217A6C3F00D59D36 /* TilesCollectionViewLayout.swift */,
 				3D9C6D09217A793500D59D36 /* TilesLayoutFrameCalculator.swift */,
 				119172E723CB721C00DEFCB3 /* FullScreenPhotosCollectionViewLayout.swift */,
+				04BB7F95241FCF55005AFC27 /* SMMosaicLayout.swift */,
 			);
 			path = Layout;
 			sourceTree = "<group>";
@@ -639,6 +642,7 @@
 				3D9C6D08217A6C3F00D59D36 /* TilesCollectionViewLayout.swift in Sources */,
 				1151C6F422D7276100F3B657 /* UIStoryboard.swift in Sources */,
 				1191744C23D36EF300BE1214 /* AuthenticatedUserData.swift in Sources */,
+				04BB7F96241FCF56005AFC27 /* SMMosaicLayout.swift in Sources */,
 				1191740F23D36E2800BE1214 /* NetworkService.swift in Sources */,
 				110600B323DACD1600752E06 /* NetworkImagePresenter.swift in Sources */,
 				3D772CAF20B8EA4200F3DC48 /* StringIdentifiable.swift in Sources */,
@@ -817,14 +821,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = A76X2FNZ47;
+				DEVELOPMENT_TEAM = TXRFU397LA;
 				INFOPLIST_FILE = Gallery/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = my.app.Gallery;
+				PRODUCT_BUNDLE_IDENTIFIER = com.testApp.semenag01;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
@@ -839,14 +843,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = A76X2FNZ47;
+				DEVELOPMENT_TEAM = TXRFU397LA;
 				INFOPLIST_FILE = Gallery/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = my.app.Gallery;
+				PRODUCT_BUNDLE_IDENTIFIER = com.testApp.semenag01;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;

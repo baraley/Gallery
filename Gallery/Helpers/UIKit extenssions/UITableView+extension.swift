@@ -35,7 +35,6 @@ extension UITableView {
 
 // MARK: - IndexPath -
 extension IndexPath {
-	static var first: IndexPath {
-		return IndexPath(row: 0, section: 0)
-	}
+
+	static var first: IndexPath = IndexPath(row: 0, section: 0)
 }

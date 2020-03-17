@@ -88,7 +88,7 @@ private extension UnsplashItemsModelController {
 
 	func insertLoadedItems(_ loadedItems: [Model]) {
 		let newItemsNumber: Int
-		let locationIndex = numberOfItems == 0 ? 0 : numberOfItems - 1
+		let locationIndex = numberOfItems == 0 ? 0 : numberOfItems
 
 		if let lastItem = items.last, let lastCommonItemIndex = loadedItems.firstIndex(of: lastItem) {
 

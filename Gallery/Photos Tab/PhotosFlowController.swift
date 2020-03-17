@@ -56,8 +56,10 @@ class PhotosFlowController: TabBaseFlowController {
 
 		lastOrderedPhotosModelController = searchQuery == nil ? photosModelController : nil
 
-		if let layout = tilesPhotosViewController?.collectionViewLayout as? TilesCollectionViewLayout {
+		if let layout = tilesPhotosViewController?.collectionViewLayout as? SMMosaicLayout {
 			layout.dataSource = photosModelController
+            layout.layoutInsets = UIEdgeInsets(top: 10, left: 15, bottom: 10, right: 15)
+            layout.spacing = 10
 		}
 
 		tilesPhotosViewController?.dataSource = photosModelController
@@ -93,7 +95,7 @@ private extension PhotosFlowController {
 		let controller = TilesPhotosViewController(
 			networkService: NetworkService(),
 			authenticationStateProvider: authenticationStateProvider,
-			collectionViewLayout: TilesCollectionViewLayout()
+			collectionViewLayout: SMMosaicLayout()
 		)
 
 		controller.navigationItem.title = title

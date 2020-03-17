@@ -16,7 +16,7 @@ struct PhotoListRequest: UnsplashRequest, Equatable, PaginalRequest {
     private let order: UnsplashPhotoListOrder
 	private var searchQuery: String = ""
 	
-	init(pageSize: UnsplashPageSize = .large,
+	init(pageSize: UnsplashPageSize = .small,
          order: UnsplashPhotoListOrder = .latest,
          accessToken: String? = nil) {
         

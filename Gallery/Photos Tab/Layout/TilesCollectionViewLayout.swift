@@ -73,22 +73,22 @@ extension TilesCollectionViewLayout {
 	
 	override func prepare() {
 		
-		guard cellLayoutAttributes.isEmpty == true, let collectionView = collectionView else { return }
+		guard cellLayoutAttributes.isEmpty, let collectionView = collectionView else { return }
 
-		for item in 0 ..< collectionView.numberOfItems(inSection: 0) {
-			let _ = layoutAttributesForItem(at: IndexPath(item: item, section: 0))
-		}
+        for item in 0 ..< collectionView.numberOfItems(inSection: 0) {
+            let _ = layoutAttributesForItem(at: IndexPath(item: item, section: 0))
+        }
 
-		let _ = layoutAttributesForSupplementaryView(
-			ofKind: UICollectionView.elementKindSectionFooter, at: IndexPath(item: 0, section: 0)
-		)
-	}
-	
-	override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
-		
-		var attributes = cellLayoutAttributes.filter { return $0.frame.intersects(rect) }
-		
-		if let footerAttributes = footerLayoutAttributes, footerAttributes.frame.intersects(rect) {
+        let _ = layoutAttributesForSupplementaryView(
+            ofKind: UICollectionView.elementKindSectionFooter, at: IndexPath(item: 0, section: 0)
+        )
+    }
+
+    override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+
+        var attributes = cellLayoutAttributes.filter { return $0.frame.intersects(rect) }
+
+        if let footerAttributes = footerLayoutAttributes, footerAttributes.frame.intersects(rect) {
 			attributes.append(footerAttributes)
 		}
 		return attributes

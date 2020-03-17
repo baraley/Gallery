@@ -52,3 +52,13 @@ extension PhotosModelController: TilesCollectionViewLayoutDataSource {
 	}
 }
 
+extension PhotosModelController: SMMosaicLayoutDataSource {
+
+    func contentSizeOfItemAt(_ indexPath: IndexPath) -> CGSize {
+
+        let photo = items[indexPath.item]
+
+        return CGSize(width: CGFloat(photo.width), height: CGFloat(photo.height))
+    }
+}
+
